@@ -10,6 +10,10 @@ class MaxPoolUnit(ComponentClass):
     value with the greater value. The en_pool signal enables the output
     register to be stored.
     """
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        print(8*" "+"* Creating MaxPoolUnit channel={}..."
+              .format(self.channel_id))
 
     @block
     def rtl(self, clk, reset, en_pool, input, output):

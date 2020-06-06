@@ -1,6 +1,6 @@
 # Darknet HDL
 
-The main objective of this repository is generate vhd files to use in a co-project implementation of Darknet and Yolo in FPGA devices. The Yolo reference version used to compose the constants in the ComponentClass is tiny-yolov3.
+The main objective of this repository is generate vhd files to use in a co-project implementation of Darknet and Yolo in FPGA devices. The Yolo reference version used to compose the constants in the ComponentClass is yolov3-tiny.
 
 The generated vhd components are replicated extensively in their units, which is why they are transcribed in Python via MyHDL; so don't think that I don't know how to program in VHDL.
 

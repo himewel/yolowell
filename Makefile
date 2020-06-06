@@ -18,5 +18,8 @@ conv_layer:
 		sed -i -e 's/acc((output_index + i)) </acc((output_index + i)) :/g' src/generated/ConvLayer.vhd; \
 	)
 
+pool_layer:
+	python3 src/components/MaxPoolLayer.py MaxPoolLayer src/generated
+
 kernel:
 	python3 src/components/KernelROM.py KernelROM src/generated
