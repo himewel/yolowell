@@ -24,13 +24,12 @@ architecture top of top is
     signal reg00, reg01, reg02:  unsigned(3*16-1 downto 0);
     signal reg10, reg11, reg12:  unsigned(3*16-1 downto 0);
     signal reg20, reg21, reg22:  unsigned(3*16-1 downto 0);
-    signal zero: unsigned(9*16-1 downto 0) := (others => '0');
 
     component ConvLayer
         port (
             clk        : in  std_logic;
             reset      : in  std_logic;
-            input      : in  unsigned(575 downto 0);
+            input      : in  unsigned(431 downto 0);
             output     : out  unsigned(255 downto 0);
             en_mult    : in  std_logic;
             en_sum     : in  std_logic;
@@ -62,7 +61,7 @@ begin
     port map (
         clk        => clk,
         reset      => reset,
-        input      => reg00 & reg01 & reg02 & reg10 & reg11 & reg12 & reg20 & reg21 & reg22 & zero,
+        input      => reg00 & reg01 & reg02 & reg10 & reg11 & reg12 & reg20 & reg21 & reg22,
         output     => output,
         en_mult    => en_mult,
         en_sum     => en_sum,

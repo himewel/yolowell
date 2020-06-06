@@ -38,7 +38,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE115F29C7
-set_global_assignment -name TOP_LEVEL_ENTITY ConvLayer
+set_global_assignment -name TOP_LEVEL_ENTITY top
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION "13.0 SP1"
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "22:51:42  MAY 22, 2020"
 set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
@@ -59,7 +59,6 @@ set_global_assignment -name VHDL_FILE src/generated/ConvLayer.vhd
 set_global_assignment -name VHDL_FILE src/generated/MultiChannelConvUnit.vhd
 set_global_assignment -name VHDL_FILE src/generated/pck_myhdl_011.vhd
 set_global_assignment -name VHDL_FILE src/generated/conv_unit.vhd
-set_global_assignment -name VECTOR_WAVEFORM_FILE src/generated/Waveform.vwf
 
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
