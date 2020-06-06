@@ -2,6 +2,7 @@ db
 incremental_db
 output_files
 simulation
+docs/_build
 
 generated/*
 !generated/.gitkeep
