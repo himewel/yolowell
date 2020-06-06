@@ -1,25 +1,25 @@
 conv_unit:
-	python3 src/components/ConvUnit.py ConvUnit src/generated
+	python3 components/ConvUnit.py ConvUnit generated
 
 multichannel:
 	( \
-		python3 src/components/MultiChannelConvUnit.py MultiChannelConvUnit src/generated; \
-		sed -i -e 's/acc(i) </acc(i) :/g' src/generated/MultiChannelConvUnit.vhd; \
-		sed -i -e 's/acc((output_index + i)) </acc((output_index + i)) :/g' src/generated/MultiChannelConvUnit.vhd; \
+		python3 components/MultiChannelConvUnit.py MultiChannelConvUnit generated; \
+		sed -i -e 's/acc(i) </acc(i) :/g' generated/MultiChannelConvUnit.vhd; \
+		sed -i -e 's/acc((output_index + i)) </acc((output_index + i)) :/g' generated/MultiChannelConvUnit.vhd; \
 	)
 
 multiplier:
-	python3 src/components/FixedPointMultiplier.py Multiplier src/generated
+	python3 components/FixedPointMultiplier.py Multiplier generated
 
 conv_layer:
 	( \
-		python3 src/components/ConvLayer.py ConvLayer src/generated; \
-		sed -i -e 's/acc(i) </acc(i) :/g' src/generated/ConvLayer.vhd; \
-		sed -i -e 's/acc((output_index + i)) </acc((output_index + i)) :/g' src/generated/ConvLayer.vhd; \
+		python3 components/ConvLayer.py ConvLayer generated; \
+		sed -i -e 's/acc(i) </acc(i) :/g' generated/ConvLayer.vhd; \
+		sed -i -e 's/acc((output_index + i)) </acc((output_index + i)) :/g' generated/ConvLayer.vhd; \
 	)
 
 pool_layer:
-	python3 src/components/MaxPoolLayer.py MaxPoolLayer src/generated
+	python3 components/MaxPoolLayer.py MaxPoolLayer generated
 
 kernel:
-	python3 src/components/KernelROM.py KernelROM src/generated
+	python3 components/KernelROM.py KernelROM generated

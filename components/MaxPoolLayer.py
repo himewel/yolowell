@@ -69,7 +69,7 @@ class MaxPoolLayer(ComponentClass):
         }
 
 
-if __name__ == '__main__':
+if (__name__ == '__main__'):
     if (len(argv) > 2):
         name = argv[1]
         path = argv[2]

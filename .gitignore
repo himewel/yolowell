@@ -3,11 +3,13 @@ incremental_db
 output_files
 simulation
 
-src/generated/*
-!src/generated/.gitkeep
+generated/*
+!generated/.gitkeep
 
 */__pycache__/
 *.pyc
 
 *.bak
 *.qws
+*.qpf
+*.qsf

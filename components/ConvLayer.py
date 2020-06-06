@@ -19,8 +19,8 @@ class ConvLayer(ComponentClass):
     :type en_mult: std_logic
     :param en_sum: enable signal
     :type en_sum: std_logic
-    :param input: vector with the nine input values cancatenated, each
-    value should be an signed value with 16 bits width
+    :param input: vector with the nine input values concatenated, each value\
+    should be an signed value with 16 bits width
     :type input: std_logic_vector
     :param output: the output value of the convolutions
     :type output: unsigned
@@ -74,7 +74,7 @@ class ConvLayer(ComponentClass):
         }
 
 
-if __name__ == '__main__':
+if (__name__ == '__main__'):
     if (len(argv) > 2):
         name = argv[1]
         path = argv[2]
