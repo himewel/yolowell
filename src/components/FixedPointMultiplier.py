@@ -1,0 +1,103 @@
+from sys import argv
+from ComponentClass import ComponentClass
+from myhdl import (always_comb, block, Signal, intbv, modbv)
+
+
+class FixedPointMultiplier(ComponentClass):
+    def __init__(self):
+        self.pow = int(2**15) - 1
+
+    @block
+    def concatenator(self, param_a, param_b, index, output):
+        @always_comb
+        def logic():
+            output_var = modbv(0)[30:]
+            if (param_a[index] == 1):
+                output_var[15:] = param_b
+                if (param_b[14] == 1):
+                    output_var[30:15] = self.pow
+                output_var <<= index
+            output.next = output_var
+        return logic
+
+    @block
+    def rtl(self, clk, reset, param_a, param_b, product):
+        concat_value = [Signal(intbv(0)[31:]) for _ in range(15)]
+        first_sum = [Signal(intbv(0)[31:]) for _ in range(7)]
+        second_sum = [Signal(intbv(0)[31:]) for _ in range(4)]
+        third_sum = [Signal(intbv(0)[31:]) for _ in range(2)]
+        fourth_sum = Signal(intbv(0)[31:])
+
+        data_a = Signal(intbv(0)[15:])
+        data_b = Signal(intbv(0)[15:])
+        non_zero_a = Signal(False)
+        non_zero_b = Signal(False)
+        xor_signals = Signal(False)
+        magnitude = Signal(False)
+
+        concatenadores = [self.concatenator(
+            param_a=data_a, param_b=data_b, index=i, output=concat_value[i]
+            ) for i in range(15)]
+
+        @always_comb
+        def combinatorial_first_sums():
+            data_a.next = param_a[15:]
+            data_b.next = param_b[15:]
+
+            first_sum[0].next = concat_value[0] + concat_value[1]
+            first_sum[1].next = concat_value[2] + concat_value[3]
+            first_sum[2].next = concat_value[4] + concat_value[5]
+            first_sum[3].next = concat_value[6] + concat_value[7]
+            first_sum[4].next = concat_value[8] + concat_value[9]
+            first_sum[5].next = concat_value[10] + concat_value[11]
+            first_sum[6].next = concat_value[12] + concat_value[13]
+
+        @always_comb
+        def combinatorial_second_sums():
+            non_zero_a.next = False if (data_a == 0) else True
+            non_zero_b.next = False if (data_b == 0) else True
+            xor_signals.next = param_a[15] ^ param_b[15]
+            second_sum[0].next = first_sum[0] + first_sum[1]
+            second_sum[1].next = first_sum[2] + first_sum[3]
+            second_sum[2].next = first_sum[4] + first_sum[5]
+            second_sum[3].next = first_sum[6] + concat_value[14]
+
+        @always_comb
+        def combinatorial_third_sums():
+            magnitude.next = xor_signals & non_zero_a & non_zero_b
+            third_sum[0].next = second_sum[0] + second_sum[1]
+            third_sum[1].next = second_sum[2] + second_sum[3]
+
+        @always_comb
+        def combinatorial_fourth_sum():
+            fourth_sum.next = third_sum[0] + third_sum[1]
+
+        @always_comb
+        def comb_output():
+            product[15].next = magnitude
+            for i in range(15):
+                product[i].next = fourth_sum[11+i]
+
+        return (concatenadores, comb_output, combinatorial_first_sums,
+                combinatorial_second_sums, combinatorial_third_sums,
+                combinatorial_fourth_sum)
+
+    def get_signals(self):
+        return {
+            "clk": Signal(False),
+            "reset": Signal(False),
+            "param_a": Signal(intbv(0)[16:]),
+            "param_b": Signal(intbv(0)[16:]),
+            "product": Signal(intbv(0)[16:]),
+        }
+
+
+if __name__ == '__main__':
+    if (len(argv) > 2):
+        name = argv[1]
+        path = argv[2]
+
+        unit = FixedPointMultiplier()
+        unit.convert(name, path)
+    else:
+        print("file.py <entityname> <outputfile>")

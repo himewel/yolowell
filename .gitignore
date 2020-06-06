@@ -1,0 +1,12 @@
+db
+incremental_db
+output_files
+simulation
+
+src/generated/*
+!src/generated/.gitkeep
+
+*/__pycache__/
+*.pyc
+
+*.bak
