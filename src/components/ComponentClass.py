@@ -2,6 +2,16 @@ from abc import abstractmethod
 
 
 class ComponentClass():
+    """
+    This class serves as template to build the components in vhdl. The methods
+    rtl and get_signal are obrigated to be implemented. The rtl method should
+    implement a method with @block decorator describeing the desired the logic.
+
+    The get_signals method returns the input and output signals gather in a
+    dict. The convert method call get_signals and rtl methods to generate the
+    vhdl files. Each class builded in ComponentClass have identifiers to layer,
+    desired channel input and which unit inside the superior abstraction.
+    """
     def __init__(self, layer_id=0, channel_id=0, unit_id=0):
         self.n_channels = [3, 16, 32, 64, 16, 32, 64, 16, 32, 64]
         self.n_filters = [16, 32, 64, 64, 128, 256, 512, 1024, 32, 64]

@@ -4,6 +4,26 @@ from myhdl import (always_comb, block, Signal, intbv, modbv)
 
 
 class FixedPointMultiplier(ComponentClass):
+    """
+    This class implements a 16 bits fixed point Q5.11 multiplier. The main
+    objective of this component is make able the use of registers inside the
+    multipliers in the architecture. At first the multipliers offered by the
+    FPGA device were potential critical paths as they are indivisible to the
+    pipeline stages. Although not used yet, the reset and clk signals are here
+    to make the implementation of the registers less painful.
+
+    :param clk: clock signal
+    :type clk: std_logic
+    :param reset: reset signal
+    :type reset: std_logic
+    :param param_a: a value unsigned in fixed point representation
+    :type param_a: unsigned (actually a signed value)
+    :param param_b: other value unsigned in fixed point representation
+    :type param_b: unsigned (actually a signed value)
+    :param product: the result of parm_a and param_b multiplication in fixed
+    point representation.
+    :type product: unsigned (actually a signed value)
+    """
     def __init__(self):
         self.pow = int(2**15) - 1
 

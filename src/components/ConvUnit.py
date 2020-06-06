@@ -16,6 +16,20 @@ class ConvUnit(ComponentClass):
     values to be storaged in registers. The en_sum signal enables the calcule
     of the sums(organized in tree format) between the product of each calue
     calculated to be propagate to the outputs.
+
+    :param clk: clock signal
+    :type clk: std_logic
+    :param reset: reset signal
+    :type reset: std_logic
+    :param en_mult: enable signal
+    :type en_mult: std_logic
+    :param en_sum: enable signal
+    :type en_sum: std_logic
+    :param input: vector with the nine input values cancatenated, each value
+    should be an signed value with 16 bits width
+    :type input: std_logic_vector
+    :param output: the output value of the convolutions
+    :type output: unsigned
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -84,21 +98,6 @@ class ConvUnit(ComponentClass):
                 combinatorial_third_sum)
 
     def get_signals(self):
-        """
-        :param clk: clock signal
-        :type clk: std_logic
-        :param reset: reset signal
-        :type reset: std_logic
-        :param en_mult: enable signal
-        :type en_mult: std_logic
-        :param en_sum: enable signal
-        :type en_sum: std_logic
-        :param input: vector with the nine input values cancatenated, each
-        value should be an signed value with 16 bits width
-        :type input: std_logic_vector
-        :param output: the output value of the convolutions
-        :type output: unsigned
-        """
         return {
             "clk": Signal(False),
             "reset": ResetSignal(0, active=1, isasync=1),

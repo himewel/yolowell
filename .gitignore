@@ -10,3 +10,4 @@ src/generated/*
 *.pyc
 
 *.bak
+*.qws

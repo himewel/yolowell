@@ -16,6 +16,11 @@ class KernelROM(ComponentClass):
     provides some methods to read the weights, convert them to binary values
     and convert them to fixed point representation. By default, each ROM has
     only nine values to feed the convolutional units.
+
+    :param clk: clock signal
+    :type clk: std_logic
+    :param q: the concatenated output values of the ROM
+    :type q: std_logic_vector
     """
 
     def __init__(self, file="yolov3_tiny/yolov3_tiny_weights.h",
@@ -35,12 +40,6 @@ class KernelROM(ComponentClass):
         return
 
     def get_signals(self):
-        """
-        :param clk: clock signal
-        :type clk: std_logic
-        :param q: the concatenated output values of the ROM
-        :type q: std_logic_vector
-        """
         return {
             "clk": Signal(False),
             "q": Signal(intbv(0)[9*16:])

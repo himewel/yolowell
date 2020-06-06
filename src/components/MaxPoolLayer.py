@@ -5,6 +5,24 @@ from myhdl import always_comb, block, Signal, intbv, ResetSignal
 
 
 class MaxPoolLayer(ComponentClass):
+    """
+    This class gather some MaxPoolUnits with different channel input and
+    outputs. Both inputs are concatenated in one signal to the layer. The same
+    to the outputs.
+
+    :param clk: clock signal
+    :type clk: std_logic
+    :param reset: reset signal
+    :type reset: std_logic
+    :param en_pool: enable signal
+    :type en_pool: std_logic
+    :param input: vector with the all channel inputs to the layer concatenated,
+    each channel input gather four input values concatenated to form a
+    input channel, each value should be an signed value with 16 bits width
+    :type input: std_logic_vector
+    :param output: the concatenated output values of the comparations
+    :type output: unsigned
+    """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         print("Creating MaxPoolLayer layer={}...".format(self.layer_id))

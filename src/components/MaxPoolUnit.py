@@ -9,6 +9,18 @@ class MaxPoolUnit(ComponentClass):
     comparators organized in tree format. The output of this block is the input
     value with the greater value. The en_pool signal enables the output
     register to be stored.
+
+    :param clk: clock signal
+    :type clk: std_logic
+    :param reset: reset signal
+    :type reset: std_logic
+    :param en_pool: enable signal
+    :type en_pool: std_logic
+    :param input: vector with the four input values cancatenated, each value
+    should be an signed value with 16 bits width
+    :type input: std_logic_vector
+    :param output: the output value of the comparations
+    :type output: unsigned
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -43,19 +55,6 @@ class MaxPoolUnit(ComponentClass):
         return process, combinatorial_first_pool
 
     def get_signals(self):
-        """
-        :param clk: clock signal
-        :type clk: std_logic
-        :param reset: reset signal
-        :type reset: std_logic
-        :param en_pool: enable signal
-        :type en_pool: std_logic
-        :param input: vector with the nine input values cancatenated, each
-        value should be an signed value with 16 bits width
-        :type input: std_logic_vector
-        :param output: the output value of the comparations
-        :type output: unsigned
-        """
         return {
             "clk": Signal(False),
             "reset": ResetSignal(0, active=1, isasync=1),
