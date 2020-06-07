@@ -18,11 +18,12 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Checkout repository
       uses: actions/checkout@v2
-      
+
     - name: Install setuptools
       run: |
+        apt install python3-sphinx
         pip3 install setuptools
-        pip3 install sphinx pydata-sphinx-theme jupyter_sphinx
+        pip3 install pydata-sphinx-theme jupyter_sphinx
         make -C scripts html
 
     - name: Share artifacts
