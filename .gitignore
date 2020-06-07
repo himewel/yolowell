@@ -2,7 +2,6 @@ db
 incremental_db
 output_files
 simulation
-docs
 doctrees
 
 generated/*
