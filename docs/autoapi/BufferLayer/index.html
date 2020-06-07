@@ -5,7 +5,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>MaxPoolUnit &#8212; DarkHDLnet  documentation</title>
+    <title>BufferLayer &#8212; DarkHDLnet  documentation</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="../../_static/css/index.css" rel="stylesheet">
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
@@ -102,28 +102,9 @@
           
           <div class="d-none d-xl-block col-xl-2 bd-toc">
               
-<div class="tocsection onthispage pt-5 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
 
 <nav id="bd-toc-nav">
     <ul class="nav section-nav flex-column">
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#module-contents" class="nav-link">Module Contents</a><ul class="nav section-nav flex-column">
-                
-        <li class="nav-item toc-entry toc-h3">
-            <a href="#MaxPoolUnit.MaxPoolUnit" class="nav-link">MaxPoolUnit</a><ul class="nav section-nav flex-column">
-                
-        <li class="nav-item toc-entry toc-h4">
-            <a href="#MaxPoolUnit.MaxPoolUnit.rtl" class="nav-link">rtl</a>
-        </li>
-    
-            </ul>
-        </li>
-    
-            </ul>
-        </li>
     
     </ul>
 </nav>
@@ -131,7 +112,7 @@
 
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/himewel/darknet_hdl/edit/master/docs/autoapi/MaxPoolUnit/index.rst">
+    <a href="https://github.com/himewel/darknet_hdl/edit/master/docs/autoapi/BufferLayer/index.rst">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -145,47 +126,8 @@
               
               <div>
                 
-  <div class="section" id="module-MaxPoolUnit">
-<span id="maxpoolunit"></span><h1><a class="reference internal" href="#module-MaxPoolUnit" title="MaxPoolUnit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MaxPoolUnit</span></code></a><a class="headerlink" href="#module-MaxPoolUnit" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="MaxPoolUnit.MaxPoolUnit">
-<em class="property">class </em><code class="sig-prename descclassname">MaxPoolUnit.</code><code class="sig-name descname">MaxPoolUnit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#MaxPoolUnit.MaxPoolUnit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../ComponentClass/index.html#ComponentClass.ComponentClass" title="ComponentClass.ComponentClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentClass.ComponentClass</span></code></a></p>
-<p>This block describes a max pooling unit. Four inputs feeds three
-comparators organized in tree format. The output of this block is the input
-value with the greater value. The en_pool signal enables the output
-register to be stored.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
-<li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
-<li><p><strong>en_pool</strong> (<em>std_logic</em>) – enable signal</p></li>
-<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the four input values cancatenated, each value     should be an signed value with 16 bits width</p></li>
-<li><p><strong>output</strong> (<em>unsigned</em>) – the output value of the comparations</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="MaxPoolUnit.MaxPoolUnit.rtl">
-<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">en_pool</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span><a class="headerlink" href="#MaxPoolUnit.MaxPoolUnit.rtl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="MaxPoolUnit.MaxPoolUnit.get_signals">
-<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#MaxPoolUnit.MaxPoolUnit.get_signals" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py data">
-<dt id="MaxPoolUnit.name">
-<code class="sig-prename descclassname">MaxPoolUnit.</code><code class="sig-name descname">name</code><a class="headerlink" href="#MaxPoolUnit.name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
+  <div class="section" id="module-BufferLayer">
+<span id="bufferlayer"></span><h1><a class="reference internal" href="#module-BufferLayer" title="BufferLayer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">BufferLayer</span></code></a><a class="headerlink" href="#module-BufferLayer" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

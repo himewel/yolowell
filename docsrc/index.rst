@@ -3,12 +3,22 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Darknet HDL's documentation!
+DarkHDLnet's documentation!
 ============================================
+
+Yeah bitch, now we have docs!
+
+This project it's a really nice try to implement traditional blocks of
+convolutional neural networks in VHDL. The components are build with a lib
+from python called MyHDL. The main ideia is use the code implemented to
+generate ROMs with the weight and bias values (and major units as layers). The
+control unit will be implemented direct in VHDL code in the repo *work* folder.
 
 .. toctree::
    :maxdepth: 2
 
+Take a look in `Darknet project website <http://pjreddie.com/darknet>`_ to
+get info about the CNN we want to accelerate: Yolov3.
 
 Indices and tables
 ==================

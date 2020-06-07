@@ -5,7 +5,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Welcome to Darknet HDL’s documentation! &#8212; Darknet HDL  documentation</title>
+    <title>DarkHDLnet’s documentation! &#8212; DarkHDLnet  documentation</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="_static/css/index.css" rel="stylesheet">
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
@@ -29,6 +29,10 @@
     <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main">
 <div class="container-xl">
 
+    
+    <a class="navbar-brand" href="#">
+      <img src="_static/xor.png" class="logo" alt="logo">
+    </a>
     
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -122,25 +126,34 @@
               
               <div>
                 
-  <div class="section" id="welcome-to-darknet-hdl-s-documentation">
-<h1>Welcome to Darknet HDL’s documentation!<a class="headerlink" href="#welcome-to-darknet-hdl-s-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="darkhdlnet-s-documentation">
+<h1>DarkHDLnet’s documentation!<a class="headerlink" href="#darkhdlnet-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Yeah bitch, now we have docs!</p>
+<p>This project it’s a really nice try to implement traditional blocks of
+convolutional neural networks in VHDL. The components are build with a lib
+from python called MyHDL. The main ideia is use the code implemented to
+generate ROMs with the weight and bias values (and major units as layers). The
+control unit will be implemented direct in VHDL code in the repo <em>work</em> folder.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">Components</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="autoapi/BnROM/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">BnROM</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="autoapi/ScatterUnit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ScatterUnit</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="autoapi/MaxPoolLayer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MaxPoolLayer</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="autoapi/MaxPoolUnit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MaxPoolUnit</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="autoapi/ComponentClass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ComponentClass</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="autoapi/MultiChannelConvUnit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MultiChannelConvUnit</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="autoapi/ConvLayer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ConvLayer</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="autoapi/KernelROM/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">KernelROM</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/TriScatterUnit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TriScatterUnit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/BufferLayer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">BufferLayer</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="autoapi/FixedPointMultiplier/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">FixedPointMultiplier</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="autoapi/ConvUnit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ConvUnit</span></code></a></li>
 </ul>
 </li>
 </ul>
 </div>
+<p>Take a look in <a class="reference external" href="http://pjreddie.com/darknet">Darknet project website</a> to
+get info about the CNN we want to accelerate: Yolov3.</p>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>

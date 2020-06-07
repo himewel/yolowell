@@ -24,6 +24,9 @@ pool_layer:
 kernel:
 	python3 components/KernelROM.py KernelROM generated
 
+scatter:
+	python3 components/TriScatterUnit.py TriScatterUnit generated
+
 docs:
 	(\
 		rm -rf ./docs; \

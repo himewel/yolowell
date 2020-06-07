@@ -7,12 +7,13 @@ This page list the classes gather in components directory.
    :titlesonly:
 
    /autoapi/BnROM/index
-   /autoapi/ScatterUnit/index
    /autoapi/MaxPoolLayer/index
    /autoapi/MaxPoolUnit/index
    /autoapi/ComponentClass/index
    /autoapi/MultiChannelConvUnit/index
    /autoapi/ConvLayer/index
    /autoapi/KernelROM/index
+   /autoapi/TriScatterUnit/index
+   /autoapi/BufferLayer/index
    /autoapi/FixedPointMultiplier/index
    /autoapi/ConvUnit/index

@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Darknet HDL'
+project = 'DarkHDLnet'
 copyright = '2020, Welbert Hime'
 author = 'Welbert Hime'
 
@@ -33,7 +33,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.napoleon',
     'autoapi.extension',
-    "jupyter_sphinx",
+    "jupyter_sphinx"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -56,6 +56,7 @@ html_theme = 'pydata_sphinx_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_logo = "_static/xor.png"
 
 # Autoapi dir
 autoapi_dirs = ['../components']
