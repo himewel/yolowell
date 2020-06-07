@@ -1,0 +1,45 @@
+:mod:`MaxPoolUnit`
+==================
+
+.. py:module:: MaxPoolUnit
+
+
+Module Contents
+---------------
+
+
+.. py:class:: MaxPoolUnit(**kwargs)
+
+   Bases: :class:`ComponentClass.ComponentClass`
+
+   This block describes a max pooling unit. Four inputs feeds three
+   comparators organized in tree format. The output of this block is the input
+   value with the greater value. The en_pool signal enables the output
+   register to be stored.
+
+   :param clk: clock signal
+   :type clk: std_logic
+   :param reset: reset signal
+   :type reset: std_logic
+   :param en_pool: enable signal
+   :type en_pool: std_logic
+   :param input: vector with the four input values cancatenated, each value
+   should be an signed value with 16 bits width
+   :type input: std_logic_vector
+   :param output: the output value of the comparations
+   :type output: unsigned
+
+   .. method:: rtl(self, clk, reset, en_pool, input, output)
+
+
+
+   .. method:: get_signals(self)
+
+
+
+
+.. data:: name
+   
+
+   
+
