@@ -16,13 +16,15 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - name: Install setuptools
+    - name: Checkout repository
       uses: actions/checkout@v2
+      
+    - name: Install setuptools
       run: |
         pip3 install setuptools
         pip3 install sphinx pydata-sphinx-theme jupyter_sphinx
         make -C scripts html
-        
+
     - name: Share artifacts
       uses: actions/upload-artifact@v1
       with:
