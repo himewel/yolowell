@@ -23,3 +23,11 @@ pool_layer:
 
 kernel:
 	python3 components/KernelROM.py KernelROM generated
+
+docs:
+	(\
+		rm -rf ./docs; \
+		sphinx-build -M html docsrc docsrc/_build; \
+		cp -rf docsrc/_build/html docs; \
+		echo "" >> docs/.nojekyll; \
+	)

@@ -6,7 +6,7 @@
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
-BUILDDIR      = ..
+BUILDDIR      = _build
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -19,5 +19,5 @@ help:
 %: Makefile
 	( \
 		$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O);\
-		mv $(BUILDDIR)/$@ $(BUILDDIR)/docs; \
+		cp -a $(BUILDDIR)/$@ ../docs; \
 	);

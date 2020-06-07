@@ -1,0 +1,52 @@
+:mod:`ConvUnit`
+===============
+
+.. py:module:: ConvUnit
+
+
+Module Contents
+---------------
+
+
+.. py:class:: ConvUnit(**kwargs)
+
+   Bases: :class:`ComponentClass.ComponentClass`
+
+   This class implements a block of convolutional unit used in this
+   architecture. The block contains nine inputs from the input image channel,
+   nine inputs from the kernel values, some control signals to the pipeline
+   registers and an output representing a convolved pixel.
+
+   The en_mult signal enables the multiplications with inputs and kernel
+   values to be storaged in registers. The en_sum signal enables the calcule
+   of the sums(organized in tree format) between the product of each calue
+   calculated to be propagate to the outputs.
+
+   :param clk: clock signal
+   :type clk: std_logic
+   :param reset: reset signal
+   :type reset: std_logic
+   :param en_mult: enable signal
+   :type en_mult: std_logic
+   :param en_sum: enable signal
+   :type en_sum: std_logic
+   :param input: vector with the nine input values cancatenated, each value
+   should be an signed value with 16 bits width
+   :type input: std_logic_vector
+   :param output: the output value of the convolutions
+   :type output: unsigned
+
+   .. method:: rtl(self, clk, reset, en_mult, en_sum, input, output)
+
+
+
+   .. method:: get_signals(self)
+
+
+
+
+.. data:: name
+   
+
+   
+
