@@ -21,7 +21,7 @@ jobs:
 
     - name: Install setuptools
       run: |
-        apt install python3-sphinx
+        sudo apt install python3-sphinx
         pip3 install setuptools
         pip3 install pydata-sphinx-theme jupyter_sphinx
         make -C scripts html
