@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install dependencies
-      run: pip3 install sphinx pydata-sphinx-theme jupyter_sphinx
+      run: pip3 install setuptools sphinx pydata-sphinx-theme jupyter_sphinx
 
     - name: Change to scripts folder
       run: cd scripts
