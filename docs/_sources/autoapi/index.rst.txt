@@ -1,7 +1,7 @@
-API Reference
+Components
 =============
 
-This page contains auto-generated API reference documentation [#f1]_.
+This page list the classes gather in components directory.
 
 .. toctree::
    :titlesonly:
@@ -16,5 +16,3 @@ This page contains auto-generated API reference documentation [#f1]_.
    /autoapi/KernelROM/index
    /autoapi/FixedPointMultiplier/index
    /autoapi/ConvUnit/index
-
-.. [#f1] Created with `sphinx-autoapi <https://github.com/readthedocs/sphinx-autoapi>`_

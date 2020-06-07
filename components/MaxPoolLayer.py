@@ -16,9 +16,10 @@ class MaxPoolLayer(ComponentClass):
     :type reset: std_logic
     :param en_pool: enable signal
     :type en_pool: std_logic
-    :param input: vector with the all channel inputs to the layer concatenated,
-    each channel input gather four input values concatenated to form a
-    input channel, each value should be an signed value with 16 bits width
+    :param input: vector with the all channel inputs to the layer \
+    concatenated, each channel input gather four input values concatenated \
+    to form a input channel, each value should be an signed value with 16 \
+    bits width
     :type input: std_logic_vector
     :param output: the concatenated output values of the comparations
     :type output: unsigned

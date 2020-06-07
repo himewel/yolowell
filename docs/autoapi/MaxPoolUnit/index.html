@@ -39,7 +39,7 @@
         
         
         <li class="nav-item ">
-            <a class="nav-link" href="../index.html">API Reference</a>
+            <a class="nav-link" href="../index.html">Components</a>
         </li>
         
         
@@ -159,14 +159,11 @@ register to be stored.</p>
 <li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
 <li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
 <li><p><strong>en_pool</strong> (<em>std_logic</em>) – enable signal</p></li>
-<li><p><strong>input</strong> – vector with the four input values cancatenated, each value</p></li>
+<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the four input values cancatenated, each value     should be an signed value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>unsigned</em>) – the output value of the comparations</p></li>
 </ul>
 </dd>
 </dl>
-<p>should be an signed value with 16 bits width
-:type input: std_logic_vector
-:param output: the output value of the comparations
-:type output: unsigned</p>
 <dl class="py method">
 <dt id="MaxPoolUnit.MaxPoolUnit.rtl">
 <code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">en_pool</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span><a class="headerlink" href="#MaxPoolUnit.MaxPoolUnit.rtl" title="Permalink to this definition">¶</a></dt>

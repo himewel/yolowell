@@ -34,10 +34,10 @@ class ComponentClass():
         This function convert the logic implemented in the rtl method in a vhdl
         file. The signal widths can be foun in the rtl method description.
 
-        :param name: A string with the name file to vhdl file generated and the
-        name to the VHDL entity.
+        :param name: A string with the name file to vhdl file generated and \
+        the name to the VHDL entity.
         :type name: str
-        :param path: A string with the path where the output file will be
+        :param path: A string with the path where the output file will be \
         writed.
         :type path: str
         """

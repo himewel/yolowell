@@ -59,6 +59,7 @@ html_static_path = ['_static']
 
 # Autoapi dir
 autoapi_dirs = ['../components']
+autoapi_template_dir = '_templates'
 
 autosummary_generate = True
 

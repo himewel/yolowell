@@ -39,7 +39,7 @@
         
         
         <li class="nav-item ">
-            <a class="nav-link" href="../index.html">API Reference</a>
+            <a class="nav-link" href="../index.html">Components</a>
         </li>
         
         
@@ -158,15 +158,11 @@ to the outputs.</p>
 <li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
 <li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
 <li><p><strong>en_pool</strong> (<em>std_logic</em>) – enable signal</p></li>
-<li><p><strong>input</strong> – vector with the all channel inputs to the layer concatenated,</p></li>
+<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the all channel inputs to the layer     concatenated, each channel input gather four input values concatenated     to form a input channel, each value should be an signed value with 16     bits width</p></li>
+<li><p><strong>output</strong> (<em>unsigned</em>) – the concatenated output values of the comparations</p></li>
 </ul>
 </dd>
 </dl>
-<p>each channel input gather four input values concatenated to form a
-input channel, each value should be an signed value with 16 bits width
-:type input: std_logic_vector
-:param output: the concatenated output values of the comparations
-:type output: unsigned</p>
 <dl class="py method">
 <dt id="MaxPoolLayer.MaxPoolLayer.rtl">
 <code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em>, <em class="sig-param"><span class="n">en_pool</span></em><span class="sig-paren">)</span><a class="headerlink" href="#MaxPoolLayer.MaxPoolLayer.rtl" title="Permalink to this definition">¶</a></dt>

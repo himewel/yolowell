@@ -20,7 +20,7 @@ class FixedPointMultiplier(ComponentClass):
     :type param_a: unsigned (actually a signed value)
     :param param_b: other value unsigned in fixed point representation
     :type param_b: unsigned (actually a signed value)
-    :param product: the result of parm_a and param_b multiplication in fixed
+    :param product: the result of parm_a and param_b multiplication in fixed \
     point representation.
     :type product: unsigned (actually a signed value)
     """

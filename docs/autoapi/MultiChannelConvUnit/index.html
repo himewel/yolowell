@@ -39,7 +39,7 @@
         
         
         <li class="nav-item ">
-            <a class="nav-link" href="../index.html">API Reference</a>
+            <a class="nav-link" href="../index.html">Components</a>
         </li>
         
         
@@ -169,14 +169,11 @@ be updated, the value pass in a leaky relu activation function.</p>
 <li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
 <li><p><strong>en_mult</strong> (<em>std_logic</em>) – enable signal</p></li>
 <li><p><strong>en_sum</strong> (<em>std_logic</em>) – enable signal</p></li>
-<li><p><strong>input</strong> – vector with the nine input values cancatenated, each</p></li>
+<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the nine input values cancatenated, each value     should be an signed value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>unsigned</em>) – the output value of the convolutions</p></li>
 </ul>
 </dd>
 </dl>
-<p>value should be an signed value with 16 bits width
-:type input: std_logic_vector
-:param output: the output value of the convolutions
-:type output: unsigned</p>
 <dl class="py method">
 <dt id="MultiChannelConvUnit.MultiChannelConvUnit.get_signals">
 <code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#MultiChannelConvUnit.MultiChannelConvUnit.get_signals" title="Permalink to this definition">¶</a></dt>
