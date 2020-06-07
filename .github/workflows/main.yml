@@ -25,4 +25,4 @@ jobs:
       run: pip3 install sphinx pydata-sphinx-theme jupyter_sphinx
 
     - name: Change current directory and run the makefile to generate the docs
-      run: cd scripts & ls & make html
+      run: make -C scripts html
