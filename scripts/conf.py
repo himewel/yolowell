@@ -58,7 +58,7 @@ html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
 
 # Autoapi dir
-autoapi_dirs = ['../src/components']
+autoapi_dirs = ['../components']
 
 autosummary_generate = True
 
