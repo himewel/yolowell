@@ -24,8 +24,5 @@ jobs:
     - name: Install dependencies
       run: pip3 install sphinx pydata-sphinx-theme jupyter_sphinx
 
-    - name: Change to scripts folder
-      run: cd scripts
-
-    - name: Run a makefile to generate the docs
-      run: make dirhtml
+    - name: Change current directory and run the makefile to generate the docs
+      run: cd scripts & make dirhtml
