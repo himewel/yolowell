@@ -1,6 +1,0 @@
-:mod:`BufferLayer`
-==================
-
-.. py:module:: BufferLayer
-
-

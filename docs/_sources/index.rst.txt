@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 DarkHDLnet's documentation!
-============================================
+===========================
 
 Yeah bitch, now we have docs!
 
@@ -17,8 +17,12 @@ control unit will be implemented direct in VHDL code in the repo *work* folder.
 .. toctree::
    :maxdepth: 2
 
-Take a look in `Darknet project website <http://pjreddie.com/darknet>`_ to
+Take a look in `Darknet project website <http://pjreddie.com/darknet/yolo>`_ to
 get info about the CNN we want to accelerate: Yolov3.
+
+Could be a really nice paper **DarkHDLnet: an efficient hardware and software
+co-project implementation of CNNs to FPGA devices** (who knows what future
+holds?).
 
 Indices and tables
 ==================

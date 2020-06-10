@@ -1,0 +1,68 @@
+:mod:`base_component`
+=====================
+
+.. py:module:: base_component
+
+
+Module Contents
+---------------
+
+
+.. py:class:: BaseComponent(layer_id=0, channel_id=0, unit_id=0)
+
+   This class serves as template to build the components in vhdl. The methods
+   rtl and get_signal are obrigated to be implemented. The rtl method should
+   implement a method with @block decorator describeing the desired the logic.
+
+   The get_signals method returns the input and output signals gather in a
+   dict. The convert method call get_signals and rtl methods to generate the
+   vhdl files. Each class builded in BaseComponent have identifiers to layer,
+   desired channel input and which unit inside the superior abstraction.
+
+   :param layer_id: layer index
+   :type layer_id: int
+   :param unit_id: index of the unit inside a layer
+   :type unit_id: int
+   :param channel_id: index of the channel input inside a unit
+   :type channel_id: int
+
+   .. method:: rtl(self)
+      :abstractmethod:
+
+
+
+   .. method:: get_signals(self)
+      :abstractmethod:
+
+
+
+   .. method:: convert(self, name='', path='')
+
+
+      This function convert the logic implemented in the rtl method in a vhdl
+      file. The signal widths can be foun in the rtl method description.
+
+      :param name: A string with the name file to vhdl file generated and         the name to the VHDL entity.
+      :type name: str
+      :param path: A string with the path where the output file will be         writed.
+      :type path: str
+
+
+   .. method:: read_floats(self, PATH, FILE, start=0, final=0)
+
+
+      This function reads the file passed by the parameters and return the
+      float list of values readed in the file.
+
+
+   .. method:: convert_fixed(self, weights)
+
+
+      This funtion receives a list of weights and convert each one of the
+      values to fixed point representation. By default, the decimal portion
+      of the values are represented with 11 bits while the int portion is
+      represented with 4 bits. One bit is reserved to the magnitude
+      representation, totalizing 16 bits of fixed point representation.
+
+
+

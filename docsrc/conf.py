@@ -32,8 +32,7 @@ extensions = [
     "sphinx.ext.autosummary",
     'sphinx.ext.coverage',
     'sphinx.ext.napoleon',
-    'autoapi.extension',
-    "jupyter_sphinx"
+    'autoapi.extension'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -74,7 +73,8 @@ html_context = {
 html_theme_options = {
     "search_bar_position": "navbar",
     "navigation_with_keys": True,
-    "use_edit_page_button": True,
     "github_url": "https://github.com/himewel/darknet_hdl",
     "twitter_url": "https://twitter.com/himewel"
 }
+
+pygments_style = 'xcode'
