@@ -1,10 +1,10 @@
 from sys import argv
-from ComponentClass import ComponentClass
-from MaxPoolUnit import MaxPoolUnit
+from base_component import BaseComponent
+from max_pool_unit import MaxPoolUnit
 from myhdl import always_comb, block, Signal, intbv, ResetSignal
 
 
-class MaxPoolLayer(ComponentClass):
+class MaxPoolLayer(BaseComponent):
     """
     This class gather some MaxPoolUnits with different channel input and
     outputs. Both inputs are concatenated in one signal to the layer. The same

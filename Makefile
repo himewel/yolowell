@@ -1,35 +1,35 @@
 conv_unit:
-	python3 components/ConvUnit.py ConvUnit generated
+	python3 components/conv_unit.py ConvUnit generated
 
 multichannel:
 	( \
-		python3 components/MultiChannelConvUnit.py MultiChannelConvUnit generated; \
+		python3 components/multi_channel_conv_unit.py MultiChannelConvUnit generated; \
 		sed -i -e 's/acc(i) </acc(i) :/g' generated/MultiChannelConvUnit.vhd; \
 		sed -i -e 's/acc((output_index + i)) </acc((output_index + i)) :/g' generated/MultiChannelConvUnit.vhd; \
 	)
 
 multiplier:
-	python3 components/FixedPointMultiplier.py Multiplier generated
+	python3 components/fixed_point_multiplier.py Multiplier generated
 
 conv_layer:
 	( \
-		python3 components/ConvLayer.py ConvLayer generated; \
+		python3 components/conv_layer.py ConvLayer generated; \
 		sed -i -e 's/acc(i) </acc(i) :/g' generated/ConvLayer.vhd; \
 		sed -i -e 's/acc((output_index + i)) </acc((output_index + i)) :/g' generated/ConvLayer.vhd; \
 	)
 
 pool_layer:
-	python3 components/MaxPoolLayer.py MaxPoolLayer generated
+	python3 components/max_pool_layer.py MaxPoolLayer generated
 
 kernel:
-	python3 components/KernelROM.py KernelROM generated
+	python3 components/kernel_rom.py KernelROM generated
 
 scatter:
-	python3 components/TriScatterUnit.py TriScatterUnit generated
+	python3 components/tri_scatter_unit.py TriScatterUnit generated
 
 docs:
 	(\
-		rm -rf ./docs; \
+		rm -rf ./docs ./docsrc/_build; \
 		sphinx-build -M html docsrc docsrc/_build; \
 		cp -rf docsrc/_build/html docs; \
 		echo "" >> docs/.nojekyll; \

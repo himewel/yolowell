@@ -1,11 +1,11 @@
 from sys import argv
 from math import ceil, log
-from ComponentClass import ComponentClass
+from base_component import BaseComponent
 from myhdl import (always_comb, always_seq, always, block, Signal, intbv,
                    ResetSignal)
 
 
-class TriScatterUnit(ComponentClass):
+class TriScatterUnit(BaseComponent):
     """
     This block implements a unit to fill the inputs of a ConvUnit block. Nine
     outputs are provided for this cause. Four line buffers are implemented
@@ -150,8 +150,7 @@ class TriScatterUnit(ComponentClass):
         :return: a dict specifying the input and outputs signals of the block.
         :rtype: dict of myhdl.Signal
 
-
-        **Python definition of the input and ouputs:**
+        **Python definition of the and ouputs:**
 
         .. code-block:: python
 
@@ -188,6 +187,7 @@ class TriScatterUnit(ComponentClass):
                     output         : out unsigned(143 downto 0)
                 );
             end component TriScatterUnit;
+
         """
         return {
             "clk": Signal(False),

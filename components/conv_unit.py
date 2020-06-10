@@ -1,11 +1,11 @@
 from sys import argv
-from ComponentClass import ComponentClass
-from KernelROM import KernelROM
-from FixedPointMultiplier import FixedPointMultiplier
+from base_component import BaseComponent
+from kernel_rom import KernelROM
+from fixed_point_multiplier import FixedPointMultiplier
 from myhdl import always_seq, always_comb, block, Signal, intbv, ResetSignal
 
 
-class ConvUnit(ComponentClass):
+class ConvUnit(BaseComponent):
     """
     This class implements a block of convolutional unit used in this
     architecture. The block contains nine inputs from the input image channel,

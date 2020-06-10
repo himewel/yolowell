@@ -1,13 +1,13 @@
 from sys import argv
 from math import log, ceil
-from ComponentClass import ComponentClass
-from ConvUnit import ConvUnit
-from BnROM import BnROM
+from base_component import BaseComponent
+from conv_unit import ConvUnit
+from bn_rom import BnROM
 from myhdl import (always_seq, always_comb, block, Signal, intbv, bin,
                    ResetSignal)
 
 
-class MultiChannelConvUnit(ComponentClass):
+class MultiChannelConvUnit(BaseComponent):
     """
     This block gather n_inputs convolutional units receiveing n_inputs bus
     inputs concatenated in one port, the same for the outputs. The kernel, bias

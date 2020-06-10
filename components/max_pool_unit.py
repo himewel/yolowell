@@ -1,9 +1,9 @@
 from sys import argv
-from ComponentClass import ComponentClass
+from base_component import BaseComponent
 from myhdl import always_seq, always_comb, block, Signal, intbv, ResetSignal
 
 
-class MaxPoolUnit(ComponentClass):
+class MaxPoolUnit(BaseComponent):
     """
     This block describes a max pooling unit. Four inputs feeds three
     comparators organized in tree format. The output of this block is the input

@@ -1,9 +1,9 @@
 from sys import argv
-from ComponentClass import ComponentClass
+from base_component import BaseComponent
 from myhdl import (always_comb, block, Signal, intbv, modbv)
 
 
-class FixedPointMultiplier(ComponentClass):
+class FixedPointMultiplier(BaseComponent):
     """
     This class implements a 16 bits fixed point Q5.11 multiplier. The main
     objective of this component is make able the use of registers inside the

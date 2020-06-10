@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 
-class ComponentClass():
+class BaseComponent():
     """
     This class serves as template to build the components in vhdl. The methods
     rtl and get_signal are obrigated to be implemented. The rtl method should
@@ -9,8 +9,15 @@ class ComponentClass():
 
     The get_signals method returns the input and output signals gather in a
     dict. The convert method call get_signals and rtl methods to generate the
-    vhdl files. Each class builded in ComponentClass have identifiers to layer,
+    vhdl files. Each class builded in BaseComponent have identifiers to layer,
     desired channel input and which unit inside the superior abstraction.
+
+    :param layer_id: layer index
+    :type layer_id: int
+    :param unit_id: index of the unit inside a layer
+    :type unit_id: int
+    :param channel_id: index of the channel input inside a unit
+    :type channel_id: int
     """
     def __init__(self, layer_id=0, channel_id=0, unit_id=0):
         self.n_channels = [3, 16, 32, 64, 16, 32, 64, 16, 32, 64]

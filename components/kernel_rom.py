@@ -1,9 +1,9 @@
 from sys import argv
-from ComponentClass import ComponentClass
+from base_component import BaseComponent
 from myhdl import always, block, Signal, intbv
 
 
-class KernelROM(ComponentClass):
+class KernelROM(BaseComponent):
     """
     This class implements some functions to read the weights file and generate
     a ROM with the values identifyied by the layer_id, channel_id and unit_id.
