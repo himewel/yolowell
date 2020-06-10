@@ -41,7 +41,7 @@
         
         
         <li class="nav-item ">
-            <a class="nav-link" href="../index.html">Components</a>
+            <a class="nav-link" href="../index.html">Blocks</a>
         </li>
         
         
@@ -147,26 +147,67 @@
 <p>This class gather some MaxPoolUnits with different channel input and
 outputs. Both inputs are concatenated in one signal to the layer. The same
 to the outputs.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
-<li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
-<li><p><strong>en_pool</strong> (<em>std_logic</em>) – enable signal</p></li>
-<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the all channel inputs to the layer     concatenated, each channel input gather four input values concatenated     to form a input channel, each value should be an signed value with 16     bits width</p></li>
-<li><p><strong>output</strong> (<em>unsigned</em>) – the concatenated output values of the comparations</p></li>
-</ul>
-</dd>
-</dl>
 <dl class="py method">
 <dt id="max_pool_layer.MaxPoolLayer.rtl">
 <code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em>, <em class="sig-param"><span class="n">en_pool</span></em><span class="sig-paren">)</span><a class="headerlink" href="#max_pool_layer.MaxPoolLayer.rtl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This function implements the combinational and sequential blocks of
+this block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>Signal</em><em>(</em><em>)</em>) – clock signal</p></li>
+<li><p><strong>reset</strong> (<em>Signal</em><em>(</em><em>)</em>) – reset signal</p></li>
+<li><p><strong>en_pool</strong> (<em>Signal</em><em>(</em><em>)</em>) – enable signal</p></li>
+<li><p><strong>input</strong> (<em>Signal</em><em>(</em><em>intbv</em><em>(</em><em>)</em><em>[</em><em>]</em><em>)</em>) – vector with the all channel inputs to the layer         concatenated, each channel input gather four input values         concatenated to form a input channel, each value should be an signed         value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>Signal</em><em>(</em><em>intbv</em><em>(</em><em>)</em><em>[</em><em>]</em><em>)</em>) – the concatenated output values of the comparations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>logic of this block</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>&#64;block method</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="max_pool_layer.MaxPoolLayer.get_signals">
 <code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#max_pool_layer.MaxPoolLayer.get_signals" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This function returns the signals necessairly to instantiate the rtl
+block and convert the python method to a vhdl file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a dict specifying the input and outputs signals of the block.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict of myhdl.Signal</p>
+</dd>
+</dl>
+<p><strong>Python definition of the and ouputs:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;clk&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;reset&quot;</span><span class="p">:</span> <span class="n">ResetSignal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">isasync</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_inputs</span><span class="o">*</span><span class="mi">16</span><span class="p">:]),</span>
+        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_outputs</span><span class="o">*</span><span class="mi">16</span><span class="p">:]),</span>
+        <span class="s2">&quot;en_pool&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>VHDL component generated:</strong></p>
+<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">component</span> <span class="nc">MaxPoolLayer</span>
+    <span class="k">port</span> <span class="p">(</span>
+        <span class="n">clk</span>     <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">reset</span>   <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">input</span>   <span class="o">:</span> <span class="k">in</span>  <span class="kt">unsigned</span><span class="p">(</span><span class="mi">1023</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">output</span>  <span class="o">:</span> <span class="k">out</span> <span class="kt">unsigned</span><span class="p">(</span><span class="mi">255</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">en_pool</span> <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span>
+    <span class="p">);</span>
+<span class="k">end</span> <span class="k">component</span> <span class="nc">MaxPoolLayer</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
 
 </dd></dl>
 

@@ -1,0 +1,14 @@
+Layer ID, Layer type, Clock cycles, Intern units, Image size
+1, **conv**, 5, **16**, 512x512
+, **buffer**, 1024, 16, 512x512
+, **pool**, 1, 16, **256x256**
+, **buffer**, 512, 16, 256x256
+2, **conv**, 5, **32**, 256x256
+, **buffer**, 512, 32, 256x256
+, **pool**, 1, 32, **128x128**
+, **buffer**, 256, 32, 128x128
+3, **conv**, 5, **64**, 128x128
+, **buffer**, 256, 64, 128x128
+, **pool**, 1, 64, **64x64**
+, **buffer**, 128, 64, 64x64
+**TOTAL**, , 2706 cycles, 129 MHz, ~ 0.00203s

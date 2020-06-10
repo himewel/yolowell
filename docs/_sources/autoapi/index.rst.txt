@@ -1,7 +1,9 @@
-Components
+Blocks
 =============
 
-This page list the classes gather in components directory.
+This page list the classes gather in components directory. Except from
+*base_component*, all the other classes implements one VHDL entity or a set of
+them.
 
 .. toctree::
    :titlesonly:

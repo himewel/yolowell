@@ -9,20 +9,6 @@ class MaxPoolLayer(BaseComponent):
     This class gather some MaxPoolUnits with different channel input and
     outputs. Both inputs are concatenated in one signal to the layer. The same
     to the outputs.
-
-    :param clk: clock signal
-    :type clk: std_logic
-    :param reset: reset signal
-    :type reset: std_logic
-    :param en_pool: enable signal
-    :type en_pool: std_logic
-    :param input: vector with the all channel inputs to the layer \
-    concatenated, each channel input gather four input values concatenated \
-    to form a input channel, each value should be an signed value with 16 \
-    bits width
-    :type input: std_logic_vector
-    :param output: the concatenated output values of the comparations
-    :type output: unsigned
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -37,6 +23,27 @@ class MaxPoolLayer(BaseComponent):
 
     @block
     def rtl(self, clk, reset, input, output, en_pool):
+        """
+        This function implements the combinational and sequential blocks of
+        this block.
+
+        :param clk: clock signal
+        :type clk: Signal()
+        :param reset: reset signal
+        :type reset: Signal()
+        :param en_pool: enable signal
+        :type en_pool: Signal()
+        :param input: vector with the all channel inputs to the layer \
+        concatenated, each channel input gather four input values \
+        concatenated to form a input channel, each value should be an signed \
+        value with 16 bits width
+        :type input: Signal(intbv()[])
+        :param output: the concatenated output values of the comparations
+        :type output: Signal(intbv()[])
+
+        :return: logic of this block
+        :rtype: @block method
+        """
         wire_channel_inputs = [Signal(intbv(0)[4*16:])
                                for _ in range(self.n_inputs)]
         wire_channel_outputs = [Signal(intbv(0)[16:])
@@ -61,6 +68,41 @@ class MaxPoolLayer(BaseComponent):
         return (max_pool_units, comb_wire_outputs, comb_wire_inputs)
 
     def get_signals(self):
+        """
+        This function returns the signals necessairly to instantiate the rtl
+        block and convert the python method to a vhdl file.
+
+        :return: a dict specifying the input and outputs signals of the block.
+        :rtype: dict of myhdl.Signal
+
+        **Python definition of the and ouputs:**
+
+        .. code-block:: python
+
+            def get_signals(self):
+                return {
+                    "clk": Signal(False),
+                    "reset": ResetSignal(0, active=1, isasync=1),
+                    "input": Signal(intbv(0)[4*self.n_inputs*16:]),
+                    "output": Signal(intbv(0)[self.n_outputs*16:]),
+                    "en_pool": Signal(False),
+                }
+
+        **VHDL component generated:**
+
+        .. code-block:: vhdl
+
+            component MaxPoolLayer
+                port (
+                    clk     : in  std_logic;
+                    reset   : in  std_logic;
+                    input   : in  unsigned(1023 downto 0);
+                    output  : out unsigned(255 downto 0);
+                    en_pool : in  std_logic
+                );
+            end component MaxPoolLayer;
+
+        """
         return {
             "clk": Signal(False),
             "reset": ResetSignal(0, active=1, isasync=1),

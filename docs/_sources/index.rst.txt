@@ -14,11 +14,17 @@ from python called MyHDL. The main ideia is use the code implemented to
 generate ROMs with the weight and bias values (and major units as layers). The
 control unit will be implemented direct in VHDL code in the repo *work* folder.
 
+.. csv-table:: **Table 1** - Layer types and expected number of cycles until outputs be generated in each cycle (based on *yolov3_tiny*).
+   :file: _static/tiny_layers.csv
+   :widths: 15, 30, 20, 15, 20
+   :header-rows: 1
+   :align: center
+
 .. toctree::
    :maxdepth: 2
 
 Take a look in `Darknet project website <http://pjreddie.com/darknet/yolo>`_ to
-get info about the CNN we want to accelerate: Yolov3.
+get info about the CNN we want to accelerate: *yolov3_tiny*.
 
 Could be a really nice paper **DarkHDLnet: an efficient hardware and software
 co-project implementation of CNNs to FPGA devices** (who knows what future
