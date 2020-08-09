@@ -1,5 +1,6 @@
 from conv_layer import ConvLayer
 from max_pool_layer import MaxPoolLayer
+from buffer_layer import BufferLayer
 from utils import read_floats
 import yaml
 
@@ -13,6 +14,7 @@ class NetworkParser():
         self.output_path = network["output_path"]
         self.input_channels = network["channels"]
         self.layer_groups = network["layer_groups"]
+        self.width = network["width"]
 
         # parse the file with weights
         self.weights = read_floats(file_path=self.weight_file)
@@ -27,6 +29,8 @@ class NetworkParser():
             self.__parse_conv_layer(layer, filters, channels)
         elif (layer["type"] == "max_pool_layer"):
             self.__parse_max_pool_layer(layer, filters, channels)
+        elif (layer["type"] == "buffer_layer"):
+            self.__parse_buffer_layer(layer, filters, channels)
         else:
             print("Layer type not recognized: " + layer["type"])
         pass
@@ -55,6 +59,7 @@ class NetworkParser():
 
     def __parse_max_pool_layer(self, layer, filters, channels):
         binary = layer["binary"]
+        self.width /= 2
 
         self.layers.append({
             "type": "max_pool_layer",
@@ -62,6 +67,19 @@ class NetworkParser():
                 binary=binary, filters=filters)
         })
         return
+
+    def __parse_buffer_layer(self, layer, filters, channels):
+        binary = layer["binary"]
+        scattering = layer["scattering"]
+
+        self.layers.append({
+            "type": "buffer_layer",
+            "object": BufferLayer(
+                binary=binary, filters=filters, scattering=scattering,
+                width=self.width)
+        })
+        return
+
 
     def parse_network(self):
         # initalize current channe inputs with the network input
@@ -81,11 +99,10 @@ class NetworkParser():
     def generate(self):
         for i in range(len(self.layers)):
             layer = self.layers[i]
+            type = layer["type"]
             object = layer["object"]
-            object.convert(
-                name="{layer_type}{index}".format(
-                    layer_type=layer["type"], index=i),
-                path=self.output_path)
+            object.convert(name="{type}{index}".format(type=type, index=i),
+                           path=self.output_path)
 
 
 if __name__ == '__main__':

@@ -17,15 +17,16 @@ class TriScatterUnit(BaseComponent):
     :param input_size: size of the line_buffers of this unit.
     :type input_size: int
     """
-    def __init__(self, width=0, binary=False, **kwargs):
+    def __init__(self, binary=False, mem_size=0, counter_size=0,
+                 **kwargs):
         super().__init__(**kwargs)
-        print(8*" "+"Creating TriScatterUnit unit={}...".format(self.unit_id))
+        print("%-24s%-10i%-10i%-16i%-10s%-10s" % ("TriScatterUnit",
+              self.layer_id, self.unit_id, self.channel_id, "-", "-"))
 
         self.INPUT_WIDTH = 1 if binary else 16
-        self.width = width
 
-        self.mem_size = int(2 ** ceil(log(self.width, 2)))
-        self.counter_size = int(log(self.mem_size, 2))
+        self.mem_size = mem_size
+        self.counter_size = counter_size
         self.size = 3
         self.n_outputs = 9
         return
@@ -54,8 +55,8 @@ class TriScatterUnit(BaseComponent):
         """
         wire_outputs = [Signal(intbv(0)[self.INPUT_WIDTH:])
                         for _ in range(self.n_outputs)]
-        wire_output_counters = [Signal(intbv(0)[self.counter_size:])
-                                for _ in range(self.n_outputs)]
+        # wire_output_counters = [Signal(intbv(0)[self.counter_size:])
+        #                         for _ in range(self.n_outputs)]
 
         line_buffer0 = [Signal(intbv(0)[self.INPUT_WIDTH:])
                         for _ in range(self.mem_size)]
@@ -75,30 +76,30 @@ class TriScatterUnit(BaseComponent):
         def comb_wire_buffer_addr():
             if (mode[0] == 1):
                 buffer_addr0.next = input_counter
-                buffer_addr1.next = wire_output_counters[0]
-                buffer_addr2.next = wire_output_counters[1]
-                buffer_addr3.next = wire_output_counters[2]
+                buffer_addr1.next = output_counter
+                buffer_addr2.next = output_counter
+                buffer_addr3.next = output_counter
             elif (mode[1] == 1):
-                buffer_addr0.next = wire_output_counters[0]
+                buffer_addr0.next = output_counter
                 buffer_addr1.next = input_counter
-                buffer_addr2.next = wire_output_counters[1]
-                buffer_addr3.next = wire_output_counters[2]
+                buffer_addr2.next = output_counter
+                buffer_addr3.next = output_counter
             elif (mode[2] == 1):
-                buffer_addr0.next = wire_output_counters[0]
-                buffer_addr1.next = wire_output_counters[1]
+                buffer_addr0.next = output_counter
+                buffer_addr1.next = output_counter
                 buffer_addr2.next = input_counter
-                buffer_addr3.next = wire_output_counters[2]
+                buffer_addr3.next = output_counter
             else:
-                buffer_addr0.next = wire_output_counters[0]
-                buffer_addr1.next = wire_output_counters[1]
-                buffer_addr2.next = wire_output_counters[2]
+                buffer_addr0.next = output_counter
+                buffer_addr1.next = output_counter
+                buffer_addr2.next = output_counter
                 buffer_addr3.next = input_counter
 
-        @always_comb
-        def comb_wire_counter():
-            for i in range(self.size):
-                wire_output_counters[i].next = \
-                    output_counter[self.counter_size*(i+1):self.counter_size*i]
+        # @always_comb
+        # def comb_wire_counter():
+        #     for i in range(self.size):
+        #         wire_output_counters[i].next = \
+        #             output_counter[self.counter_size*(i+1):self.counter_size*i]
 
         @always_comb
         def comb_wire_channel_outputs():
@@ -148,7 +149,7 @@ class TriScatterUnit(BaseComponent):
                     line_buffer3[buffer_addr3].next = input
 
         return (write_line_buffer, shift_outputs, comb_wire_channel_outputs,
-                comb_wire_counter, comb_wire_buffer_addr)
+                comb_wire_buffer_addr)
 
     def get_signals(self):
         """
@@ -203,7 +204,7 @@ class TriScatterUnit(BaseComponent):
             "input": Signal(intbv(0)[self.INPUT_WIDTH:]),
             "input_counter": Signal(intbv(0)[self.counter_size:]),
             "output": Signal(intbv(0)[self.n_outputs*self.INPUT_WIDTH:]),
-            "output_counter": Signal(intbv(0)[self.size*self.counter_size:]),
+            "output_counter": Signal(intbv(0)[self.counter_size:]),
             "en_zero": Signal(False),
             "mode": Signal(intbv(0)[self.size+1:]),
             "en_read": Signal(False),

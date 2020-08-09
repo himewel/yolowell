@@ -30,8 +30,11 @@ bin_max_pool_unit:
 kernel:
 	python3 components/kernel_rom.py KernelROM generated
 
-scatter:
+tri_scatter:
 	python3 components/tri_scatter_unit.py TriScatterUnit generated
+
+buffer_layer:
+	python3 components/buffer_layer.py BufferLayer generated
 
 docs:
 	(\
