@@ -1,5 +1,6 @@
-weights: "/home/welberthime/Documentos/nios-darknet/include/yolov3_tiny/yolov3_tiny_weights.h"
-output_path: "/home/welberthime/Documentos/nios-darknet/myhdl/generated"
+weights: "/content/yolov3_tiny_weights.h"
+output_path: "/content"
+width: 416
 channels: 3
 layer_groups:
 # -----------------------------------------------------------------------------
@@ -19,85 +20,85 @@ layer_groups:
     binary: True
     scattering: 3
 # -----------------------------------------------------------------------------
-# - filters: 32
-#   layers:
-#   - type: "conv_layer"
-#     size: 3
-#     binary: True
-#     bin_input: True
-#     bin_output: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 2
-#   - type: "max_pool_layer"
-#     binary: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 3
+- filters: 32
+  layers:
+  - type: "conv_layer"
+    size: 3
+    binary: True
+    bin_input: True
+    bin_output: True
+  - type: "buffer_layer"
+    binary: True
+    scattering: 2
+  - type: "max_pool_layer"
+    binary: True
+  - type: "buffer_layer"
+    binary: True
+    scattering: 3
 # -----------------------------------------------------------------------------
-# - filters: 64
-#   layers:
-#   - type: "conv_layer"
-#     size: 3
-#     binary: True
-#     bin_input: True
-#     bin_output: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 2
-#   - type: "max_pool_layer"
-#     binary: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 3
+- filters: 64
+  layers:
+  - type: "conv_layer"
+    size: 3
+    binary: True
+    bin_input: True
+    bin_output: True
+  - type: "buffer_layer"
+    binary: True
+    scattering: 2
+  - type: "max_pool_layer"
+    binary: True
+  - type: "buffer_layer"
+    binary: True
+    scattering: 3
 # -----------------------------------------------------------------------------
-# - filters: 128
-#   layers:
-#   - type: "conv_layer"
-#     size: 3
-#     binary: True
-#     bin_input: True
-#     bin_output: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 2
-#   - type: "max_pool_layer"
-#     binary: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 3
+- filters: 128
+  layers:
+  - type: "conv_layer"
+    size: 3
+    binary: True
+    bin_input: True
+    bin_output: True
+  - type: "buffer_layer"
+    binary: True
+    scattering: 2
+  - type: "max_pool_layer"
+    binary: True
+  - type: "buffer_layer"
+    binary: True
+    scattering: 3
 # -----------------------------------------------------------------------------
-# - filters: 256
-#   layers:
-#   - type: "conv_layer"
-#     size: 3
-#     binary: True
-#     bin_input: True
-#     bin_output: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 2
-#   - type: "max_pool_layer"
-#     binary: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 3
-# -----------------------------------------------------------------------------
-# - filters: 512
-#   layers:
-#   - type: "conv_layer"
-#     size: 3
-#     binary: True
-#     bin_input: True
-#     bin_output: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 2
-#   - type: "max_pool_layer"
-#     binary: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 3
+- filters: 256
+  layers:
+  - type: "conv_layer"
+    size: 3
+    binary: True
+    bin_input: True
+    bin_output: True
+  - type: "buffer_layer"
+    binary: True
+    scattering: 2
+  - type: "max_pool_layer"
+    binary: True
+  - type: "buffer_layer"
+    binary: True
+    scattering: 3
+-----------------------------------------------------------------------------
+- filters: 512
+  layers:
+  - type: "conv_layer"
+    size: 3
+    binary: True
+    bin_input: True
+    bin_output: True
+  - type: "buffer_layer"
+    binary: True
+    scattering: 2
+  - type: "max_pool_layer"
+    binary: True
+  - type: "buffer_layer"
+    binary: True
+    scattering: 3
 # -----------------------------------------------------------------------------
 # - filters: 1024
 #   layers:
