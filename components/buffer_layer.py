@@ -2,6 +2,7 @@ from sys import argv
 from math import ceil, log
 from base_component import BaseComponent
 from tri_scatter_unit import TriScatterUnit
+from dual_scatter_unit import DualScatterUnit
 from myhdl import always_comb, always_seq, block, Signal, intbv, ResetSignal
 
 
@@ -24,13 +25,14 @@ class BufferLayer(BaseComponent):
 
         if (scattering == 3):
             self.scattering_units = [TriScatterUnit(
-                layer_id=self.layer_id, channel_id=i, mem_size=mem_size,
+                layer_id=self.layer_id, unit_id=i, mem_size=mem_size,
                 counter_size=self.counter_size, binary=binary)
                 for i in range(self.filters)]
-        # elif (scattering == 2):
-        #     self.scatter_units = [DualScatterUnit(
-        #         layer_id=self.layer_id, unit_id=i, width=width,
-        #         binary=binary) for i in range(self.filters)]
+        elif (scattering == 2):
+            self.scattering_units = [DualScatterUnit(
+                layer_id=self.layer_id, unit_id=i, mem_size=mem_size,
+                counter_size=self.counter_size, binary=binary)
+                for i in range(self.filters)]
         # elif (scattering == 1):
         #     self.scatter_units = [MonoScatterUnit(
         #         layer_id=self.layer_id, unit_id=i, width=width,
@@ -99,7 +101,7 @@ if (__name__ == '__main__'):
         name = argv[1]
         path = argv[2]
 
-        unit = BufferLayer(scattering=3, binary=True, width=416, filters=16)
+        unit = BufferLayer(scattering=2, binary=True, width=416, filters=16)
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")

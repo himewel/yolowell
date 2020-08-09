@@ -82,6 +82,9 @@ class NetworkParser():
 
 
     def parse_network(self):
+        print("\n" + "%-24s%-10s%-10s%-16s%-10s%-10s" % ("component",
+              "layer_id", "unit_id", "channel_id", "channels", "filters"))
+        print(80*"-")
         # initalize current channe inputs with the network input
         channels = self.input_channels
         # intialize array of layers
@@ -92,6 +95,7 @@ class NetworkParser():
             filters = group["filters"]
             for layer in group["layers"]:
                 self.__parse_layer(layer, filters, channels)
+                print(80*"-")
             # update number of inputs of the next layers
             channels = filters
         return

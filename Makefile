@@ -25,6 +25,9 @@ kernel:
 tri_scatter:
 	python3 components/tri_scatter_unit.py TriScatterUnit generated
 
+dual_scatter:
+	python3 components/dual_scatter_unit.py DualScatterUnit generated
+
 buffer_layer:
 	python3 components/buffer_layer.py BufferLayer generated
 
