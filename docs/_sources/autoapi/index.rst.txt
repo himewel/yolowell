@@ -8,14 +8,4 @@ them.
 .. toctree::
    :titlesonly:
 
-   /autoapi/conv_layer/index
-   /autoapi/tri_scatter_unit/index
-   /autoapi/bn_rom/index
-   /autoapi/max_pool_layer/index
-   /autoapi/fixed_point_multiplier/index
-   /autoapi/kernel_rom/index
-   /autoapi/mult_channel_conv_unit/index
-   /autoapi/conv_unit/index
-   /autoapi/max_pool_unit/index
-   /autoapi/buffer_layer/index
-   /autoapi/base_component/index
+   /autoapi/components/index

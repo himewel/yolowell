@@ -1,0 +1,888 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>components &#8212; DarkHDLnet  documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main">
+<div class="container-xl">
+
+    
+    <a class="navbar-brand" href="../../index.html">
+      <img src="../../_static/xor.png" class="logo" alt="logo">
+    </a>
+    
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar-menu" class="col-lg-9 collapse navbar-collapse">
+      <ul id="navbar-main-elements" class="navbar-nav mr-auto">
+        
+        
+        <li class="nav-item ">
+            <a class="nav-link" href="../index.html">Blocks</a>
+        </li>
+        
+        
+      </ul>
+
+
+      <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      
+
+      <ul class="navbar-nav">
+        
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/himewel/darknet_hdl" target="_blank" rel="noopener">
+              <span><i class="fab fa-github-square"></i></span>
+            </a>
+          </li>
+        
+        
+          <li class="nav-item">
+            <a class="nav-link" href="https://twitter.com/himewel" target="_blank" rel="noopener">
+              <span><i class="fab fa-twitter-square"></i></span>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+          <div class="col-12 col-md-3 bd-sidebar">
+
+
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+
+  <div class="bd-toc-item active">
+  
+
+  <ul class="nav bd-sidenav">
+      
+      
+      
+    </ul>
+
+</nav>
+          </div>
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+              
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="nav section-nav flex-column">
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#submodules" class="nav-link">Submodules</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#package-contents" class="nav-link">Package Contents</a><ul class="nav section-nav flex-column">
+                
+        <li class="nav-item toc-entry toc-h3">
+            <a href="#components.BaseComponent" class="nav-link">BaseComponent</a><ul class="nav section-nav flex-column">
+                
+        <li class="nav-item toc-entry toc-h4">
+            <a href="#components.BaseComponent.rtl" class="nav-link">rtl</a>
+        </li>
+    
+            </ul>
+        </li>
+    
+            </ul>
+        </li>
+    
+    </ul>
+</nav>
+
+
+              
+          </div>
+          
+
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <div class="section" id="module-components">
+<span id="components"></span><h1><a class="reference internal" href="#module-components" title="components"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components</span></code></a><a class="headerlink" href="#module-components" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="base_component/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.base_component</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="bin_conv_unit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.bin_conv_unit</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="bin_max_pool_unit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.bin_max_pool_unit</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="bn_rom/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.bn_rom</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="buffer_layer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.buffer_layer</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="conv_layer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.conv_layer</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="conv_unit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.conv_unit</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="fixed_point_multiplier/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.fixed_point_multiplier</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="kernel_rom/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.kernel_rom</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="max_pool_layer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.max_pool_layer</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="max_pool_unit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.max_pool_unit</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_channel_conv_unit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.multi_channel_conv_unit</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="network_parser/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.network_parser</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="tri_scatter_unit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.tri_scatter_unit</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">components.utils</span></code></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="components.BaseComponent">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">BaseComponent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">layer_id</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">channel_id</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">unit_id</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">convert</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BaseComponent" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class serves as template to build the components in vhdl. The methods
+rtl and get_signal are obrigated to be implemented. The rtl method should
+implement a method with &#64;block decorator describeing the desired the logic.</p>
+<p>The get_signals method returns the input and output signals gather in a
+dict. The convert method call get_signals and rtl methods to generate the
+vhdl files. Each class builded in BaseComponent have identifiers to layer,
+desired channel input and which unit inside the superior abstraction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer_id</strong> (<em>int</em>) – layer index</p></li>
+<li><p><strong>unit_id</strong> (<em>int</em>) – index of the unit inside a layer</p></li>
+<li><p><strong>channel_id</strong> (<em>int</em>) – index of the channel input inside a unit</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.BaseComponent.rtl">
+<em class="property">abstract </em><code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BaseComponent.rtl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.BaseComponent.get_signals">
+<em class="property">abstract </em><code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BaseComponent.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.BaseComponent.convert">
+<code class="sig-name descname">convert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BaseComponent.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function convert the logic implemented in the rtl method in a vhdl
+file. The signal widths can be foun in the rtl method description.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – A string with the name file to vhdl file generated and         the name to the VHDL entity.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – A string with the path where the output file will be         writed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.BnROM">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">BnROM</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean_file</span><span class="o">=</span><span class="default_value">'yolov3_tiny/yolov3_tiny_mean.h'</span></em>, <em class="sig-param"><span class="n">scale_file</span><span class="o">=</span><span class="default_value">'yolov3_tiny/yolov3_tiny_scale.h'</span></em>, <em class="sig-param"><span class="n">variance_file</span><span class="o">=</span><span class="default_value">'yolov3_tiny/yolov3_tiny_variance.h'</span></em>, <em class="sig-param"><span class="n">bias_file</span><span class="o">=</span><span class="default_value">'yolov3_tiny/yolov3_tiny_biases.h'</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">'/home/welberthime/Documentos/nios-darknet/include'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BnROM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">base_component.BaseComponent</span></code></a></p>
+<p>This class implements some functions to read the weights file and generate
+a ROM with the values identifyied by the layer_id, channel_id and unit_id.
+The clock signal serves only to give a signal to the sensitive list of the
+process, registers should not be generated.</p>
+<p>Both path to weights and data arrays about the weight organizations should
+be informed or implemented. The data to tiny_yolov3 first layer weights is
+informed in the __init__ method. To generate the kernel ROMs, this class
+provides some methods to read the weights, convert them to binary values
+and convert them to fixed point representation. By default, each ROM has
+only nine values to feed the convolutional units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
+<li><p><strong>q</strong> (<em>std_logic_vector</em>) – the concatenated output values of the ROM</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.BnROM.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BnROM.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.BnROM.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">q_bn</span></em>, <em class="sig-param"><span class="n">q_ssi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BnROM.rtl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.KernelROM">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">KernelROM</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.KernelROM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">base_component.BaseComponent</span></code></a></p>
+<p>This class implements some functions to read the weights file and generate
+a ROM with the values identifyied by the layer_id, channel_id and unit_id.
+The clock signal serves only to give a signal to the sensitive list of the
+process, registers should not be generated.</p>
+<p>Both path to weights and data arrays about the weight organizations should
+be informed or implemented. The data to tiny_yolov3 first layer weights is
+informed in the __init__ method. To generate the kernel ROMs, this class
+provides some methods to read the weights, convert them to binary values
+and convert them to fixed point representation. By default, each ROM has
+only nine values to feed the convolutional units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
+<li><p><strong>q</strong> (<em>std_logic_vector</em>) – the concatenated output values of the ROM</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.KernelROM.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.KernelROM.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.KernelROM.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.KernelROM.rtl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.ConvLayer">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">ConvLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">filters</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">binary</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">bin_input</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">bin_output</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.ConvLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">base_component.BaseComponent</span></code></a></p>
+<p>This class gather some MultiChannelConvUnits sharing the same inputs and
+makes your outputs availables to an external unit, probably a BufferLayer.
+The number MultiChannelConvUnits instantiated is this class is defined in
+the constants of the BaseComponent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filters</strong> – number of filters in this layer (outputs).</p></li>
+<li><p><strong>channels</strong> (<em>int</em>) – number of channels to be convolved (inputs)</p></li>
+<li><p><strong>weights</strong> (<em>List</em><em>(</em><em>)</em>) – array with weights to be distributed in conv units</p></li>
+<li><p><strong>binary</strong> (<em>bool</em>) – flag setting if will be used BinConvUnit or ConvUnit</p></li>
+<li><p><strong>bin_input</strong> (<em>bool</em>) – flag setting if the input is truncated to 1 bit</p></li>
+<li><p><strong>bin_output</strong> (<em>bool</em>) – flag setting if the output will be truncated to 1 bit</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.ConvLayer.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em>, <em class="sig-param"><span class="n">en_mult</span></em>, <em class="sig-param"><span class="n">en_sum</span></em>, <em class="sig-param"><span class="n">en_channel</span></em>, <em class="sig-param"><span class="n">en_batch</span></em>, <em class="sig-param"><span class="n">en_act</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.ConvLayer.rtl" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function implements the combinational and sequential blocks of
+this block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>Signal</em><em>(</em><em>)</em>) – clock signal</p></li>
+<li><p><strong>reset</strong> (<em>ResetSignal</em><em>(</em><em>)</em>) – reset signal</p></li>
+<li><p><strong>en_mult</strong> (<em>Signal</em><em>(</em><em>)</em>) – enable signal</p></li>
+<li><p><strong>en_sum</strong> (<em>Signal</em><em>(</em><em>)</em>) – enable signal</p></li>
+<li><p><strong>en_channel</strong> (<em>Signal</em><em>(</em><em>)</em>) – enable signal</p></li>
+<li><p><strong>en_batch</strong> (<em>Signal</em><em>(</em><em>)</em>) – enable signal</p></li>
+<li><p><strong>en_act</strong> (<em>Signal</em><em>(</em><em>)</em>) – enable signal</p></li>
+<li><p><strong>input</strong> (<em>Signal</em><em>(</em><em>intbv</em><em>(</em><em>)</em><em>[</em><em>:</em><em>]</em><em>)</em>) – vector with the nine input values concatenated, each value should be an signed value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>Signal</em><em>(</em><em>intbv</em><em>(</em><em>)</em><em>[</em><em>:</em><em>]</em><em>)</em>) – the output value of the convolutions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>logic of this block</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>&#64;block method</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="components.ConvLayer.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.ConvLayer.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function return the necessair signals to instantiate the rtl
+block and convert the python method to a vhdl file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a dict specifying the input and outputs signals of the block.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict of myhdl.Signal</p>
+</dd>
+</dl>
+<p><strong>Python definition of inputs and ouputs:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;clk&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;reset&quot;</span><span class="p">:</span> <span class="n">ResetSignal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">isasync</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">9</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="o">*</span><span class="mi">16</span><span class="p">:]),</span>
+        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">*</span><span class="mi">16</span><span class="p">:]),</span>
+        <span class="s2">&quot;en_mult&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;en_sum&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;en_channel&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;en_batch&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;en_act&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>VHDL component generated:</strong></p>
+<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">component</span> <span class="nc">ConvLayer</span>
+    <span class="k">port</span> <span class="p">(</span>
+        <span class="n">clk</span>        <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">reset</span>      <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">input</span>      <span class="o">:</span> <span class="k">in</span>  <span class="kt">unsigned</span><span class="p">(</span><span class="mi">9</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">channels</span><span class="o">*</span><span class="mi">16</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">output</span>     <span class="o">:</span> <span class="k">out</span>  <span class="kt">unsigned</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">filters</span><span class="o">*</span><span class="mi">16</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">en_mult</span>    <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">en_sum</span>     <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">en_channel</span> <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">en_batch</span>   <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">en_act</span>     <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span>
+    <span class="p">);</span>
+<span class="k">end</span> <span class="k">component</span> <span class="nc">ConvLayer</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.MultiChannelConvUnit">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">MultiChannelConvUnit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">channels</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">binary</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">bin_input</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">bin_output</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.MultiChannelConvUnit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">base_component.BaseComponent</span></code></a></p>
+<p>This block gather CHANNELS convolutional units receiveing CHANNEL bus
+inputs concatenated in one port, the same for the outputs. The kernel, bias
+and batch normalization values ​​are provided inside this unit for each
+convolutional unit input, except the control signs comes from a external
+control unit. Therefore, this constant values are updated to the
+convolutional units just in the right cicles. The same happens with the
+convolution units signs, so, the convolution units at principle runs
+synchronous with each other.</p>
+<p>The output port of this block is the result of the multichannel convolution
+operation with different kernel values and input channels. After the
+individual process of convolution between kernel values and input channels,
+the results are normalized and added with a bias value. Before the output
+be updated, the value pass in a leaky relu activation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filters</strong> – number of filters in this layer (outputs).</p></li>
+<li><p><strong>channels</strong> (<em>int</em>) – number of channels to be convolved (inputs)</p></li>
+<li><p><strong>weights</strong> (<em>List</em><em>(</em><em>)</em>) – array with weights to be distributed in conv units</p></li>
+<li><p><strong>binary</strong> (<em>bool</em>) – flag setting if will be used BinConvUnit or ConvUnit</p></li>
+<li><p><strong>bin_input</strong> (<em>bool</em>) – flag setting if the input is be truncated to 1 bit</p></li>
+<li><p><strong>bin_output</strong> (<em>bool</em>) – flag setting if the output will be truncated to 1 bit</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.MultiChannelConvUnit.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.MultiChannelConvUnit.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.MultiChannelConvUnit.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em>, <em class="sig-param"><span class="n">en_mult</span></em>, <em class="sig-param"><span class="n">en_sum</span></em>, <em class="sig-param"><span class="n">en_channel</span></em>, <em class="sig-param"><span class="n">en_batch</span></em>, <em class="sig-param"><span class="n">en_act</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.MultiChannelConvUnit.rtl" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
+<li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
+<li><p><strong>en_mult</strong> (<em>std_logic</em>) – enable signal</p></li>
+<li><p><strong>en_sum</strong> (<em>std_logic</em>) – enable signal</p></li>
+<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the nine input values cancatenated, each value         should be an signed value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>unsigned</em>) – the output value of the convolutions</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.BinConvUnit">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">BinConvUnit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bin_input</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BinConvUnit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">base_component.BaseComponent</span></code></a></p>
+<p>This class implements a block of binary convolutional unit used in this
+architecture. The block contains nine inputs from the input image channel,
+nine inputs from the kernel values, some control signals to the pipeline
+registers and an output representing a convolved pixel.</p>
+<p>The en_mult signal enables the multiplications with inputs and kernel
+values to be storaged in registers. The en_sum signal enables the calcule
+of the sums(organized in tree format) between the product of each calue
+calculated to be propagate to the outputs. The convolutions are maked using
+only the magnitude signal as in binary convolution networks.</p>
+<dl class="py method">
+<dt id="components.BinConvUnit.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">en_mult</span></em>, <em class="sig-param"><span class="n">en_sum</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BinConvUnit.rtl" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function implements the combinational and sequential blocks of
+this block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
+<li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
+<li><p><strong>en_mult</strong> (<em>std_logic</em>) – enable signal</p></li>
+<li><p><strong>en_sum</strong> (<em>std_logic</em>) – enable signal</p></li>
+<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the nine input values cancatenated, each value         should be an signed value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>unsigned</em>) – the output value of the convolutions</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="components.BinConvUnit.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BinConvUnit.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the signals necessairly to instantiate the rtl
+block and convert the python method to a vhdl file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a dict specifying the input and outputs signals of the block.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict of myhdl.Signal</p>
+</dd>
+</dl>
+<p><strong>Python definition of inputs and ouputs:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;clk&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;reset&quot;</span><span class="p">:</span> <span class="n">ResetSignal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">isasync</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="s2">&quot;en_mult&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;en_sum&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">9</span><span class="o">*</span><span class="mi">16</span><span class="p">:]),</span>
+        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">16</span><span class="p">:])</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>VHDL component generated:</strong></p>
+<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">component</span> <span class="nc">BinConvUnit</span>
+    <span class="k">port</span> <span class="p">(</span>
+        <span class="n">clk</span><span class="o">:</span> <span class="k">in</span> <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">reset</span><span class="o">:</span> <span class="k">in</span> <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">en_mult</span><span class="o">:</span> <span class="k">in</span> <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">en_sum</span><span class="o">:</span> <span class="k">in</span> <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">input</span><span class="o">:</span> <span class="k">in</span> <span class="kt">unsigned</span><span class="p">(</span><span class="mi">143</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">output</span><span class="o">:</span> <span class="k">out</span> <span class="kt">unsigned</span><span class="p">(</span><span class="mi">15</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">);</span>
+<span class="k">end</span> <span class="k">component</span> <span class="nc">BinConvUnit</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.ConvUnit">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">ConvUnit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.ConvUnit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">base_component.BaseComponent</span></code></a></p>
+<p>This class implements a block of convolutional unit used in this
+architecture. The block contains nine inputs from the input image channel,
+nine inputs from the kernel values, some control signals to the pipeline
+registers and an output representing a convolved pixel.</p>
+<p>The en_mult signal enables the multiplications with inputs and kernel
+values to be storaged in registers. The en_sum signal enables the calcule
+of the sums(organized in tree format) between the product of each calue
+calculated to be propagate to the outputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>weights</strong> (<em>List</em><em>(</em><em>)</em>) – an array with the weights to be filled in KernelROM</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.ConvUnit.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">en_mult</span></em>, <em class="sig-param"><span class="n">en_sum</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.ConvUnit.rtl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.ConvUnit.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.ConvUnit.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
+<li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
+<li><p><strong>en_mult</strong> (<em>std_logic</em>) – enable signal</p></li>
+<li><p><strong>en_sum</strong> (<em>std_logic</em>) – enable signal</p></li>
+<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the nine input values cancatenated, each value         should be an signed value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>unsigned</em>) – the output value of the convolutions</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.FixedPointMultiplier">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">FixedPointMultiplier</code><a class="headerlink" href="#components.FixedPointMultiplier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">base_component.BaseComponent</span></code></a></p>
+<p>This class implements a 16 bits fixed point Q5.11 multiplier. The main
+objective of this component is make able the use of registers inside the
+multipliers in the architecture. At first the multipliers offered by the
+FPGA device were potential critical paths as they are indivisible to the
+pipeline stages. Although not used yet, the reset and clk signals are here
+to make the implementation of the registers less painful.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
+<li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
+<li><p><strong>param_a</strong> (<em>unsigned</em><em> (</em><em>actually a signed value</em><em>)</em>) – a value unsigned in fixed point representation</p></li>
+<li><p><strong>param_b</strong> (<em>unsigned</em><em> (</em><em>actually a signed value</em><em>)</em>) – other value unsigned in fixed point representation</p></li>
+<li><p><strong>product</strong> (<em>unsigned</em><em> (</em><em>actually a signed value</em><em>)</em>) – the result of parm_a and param_b multiplication in fixed     point representation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.FixedPointMultiplier.concatenator">
+<code class="sig-name descname">concatenator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">param_a</span></em>, <em class="sig-param"><span class="n">param_b</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.FixedPointMultiplier.concatenator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.FixedPointMultiplier.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">param_a</span></em>, <em class="sig-param"><span class="n">param_b</span></em>, <em class="sig-param"><span class="n">product</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.FixedPointMultiplier.rtl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.FixedPointMultiplier.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.FixedPointMultiplier.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.MaxPoolLayer">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">MaxPoolLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filters</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">binary</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.MaxPoolLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">base_component.BaseComponent</span></code></a></p>
+<p>This class gather some MaxPoolUnits with different channel input and
+outputs. Both inputs are concatenated in one signal to the layer. The same
+to the outputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filters</strong> (<em>int</em>) – number of filters inputs to this layer</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.MaxPoolLayer.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em>, <em class="sig-param"><span class="n">en_pool</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.MaxPoolLayer.rtl" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function implements the combinational and sequential blocks of
+this block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>Signal</em><em>(</em><em>)</em>) – clock signal</p></li>
+<li><p><strong>reset</strong> (<em>Signal</em><em>(</em><em>)</em>) – reset signal</p></li>
+<li><p><strong>en_pool</strong> (<em>Signal</em><em>(</em><em>)</em>) – enable signal</p></li>
+<li><p><strong>input</strong> (<em>Signal</em><em>(</em><em>intbv</em><em>(</em><em>)</em><em>[</em><em>]</em><em>)</em>) – vector with the all channel inputs to the layer         concatenated, each channel input gather four input values         concatenated to form a input channel, each value should be an signed         value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>Signal</em><em>(</em><em>intbv</em><em>(</em><em>)</em><em>[</em><em>]</em><em>)</em>) – the concatenated output values of the comparations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>logic of this block</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>&#64;block method</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="components.MaxPoolLayer.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.MaxPoolLayer.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the signals necessairly to instantiate the rtl
+block and convert the python method to a vhdl file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a dict specifying the input and outputs signals of the block.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict of myhdl.Signal</p>
+</dd>
+</dl>
+<p><strong>Python definition of inputs and ouputs:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;clk&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;reset&quot;</span><span class="p">:</span> <span class="n">ResetSignal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">isasync</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">PORT_WIDTH</span><span class="p">:]),</span>
+        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">PORT_WIDTH</span><span class="p">:]),</span>
+        <span class="s2">&quot;en_pool&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>VHDL component generated:</strong></p>
+<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">component</span> <span class="nc">MaxPoolLayer</span>
+    <span class="k">port</span> <span class="p">(</span>
+        <span class="n">clk</span>     <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">reset</span>   <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">input</span>   <span class="o">:</span> <span class="k">in</span>  <span class="kt">unsigned</span><span class="p">(</span><span class="mi">1023</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">output</span>  <span class="o">:</span> <span class="k">out</span> <span class="kt">unsigned</span><span class="p">(</span><span class="mi">255</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">en_pool</span> <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span>
+    <span class="p">);</span>
+<span class="k">end</span> <span class="k">component</span> <span class="nc">MaxPoolLayer</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.MaxPoolUnit">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">MaxPoolUnit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.MaxPoolUnit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">base_component.BaseComponent</span></code></a></p>
+<p>This block describes a max pooling unit. Four inputs feeds three
+comparators organized in tree format. The output of this block is the input
+value with the greater value. The en_pool signal enables the output
+register to be stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
+<li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
+<li><p><strong>en_pool</strong> (<em>std_logic</em>) – enable signal</p></li>
+<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the four input values cancatenated, each value     should be an signed value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>unsigned</em>) – the output value of the comparations</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.MaxPoolUnit.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">en_pool</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.MaxPoolUnit.rtl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.MaxPoolUnit.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.MaxPoolUnit.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.BinMaxPoolUnit">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">BinMaxPoolUnit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BinMaxPoolUnit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">base_component.BaseComponent</span></code></a></p>
+<p>This block describes a max pooling unit. Four inputs feeds three
+comparators organized in tree format. The output of this block is the input
+value with the greater value. The en_pool signal enables the output
+register to be stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
+<li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
+<li><p><strong>en_pool</strong> (<em>std_logic</em>) – enable signal</p></li>
+<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the four input values cancatenated, each value     should be an signed value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>unsigned</em>) – the output value of the comparations</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.BinMaxPoolUnit.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">en_pool</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BinMaxPoolUnit.rtl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.BinMaxPoolUnit.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.BinMaxPoolUnit.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.TriScatterUnit">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">TriScatterUnit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.TriScatterUnit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_component/index.html#components.base_component.BaseComponent" title="components.base_component.BaseComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">components.base_component.BaseComponent</span></code></a></p>
+<p>This block implements a unit to fill the inputs of a ConvUnit block. Nine
+outputs are provided for this cause. Four line buffers are implemented
+receiveing the outputs from the predecessor layer with four modes to read
+and write. The read and write mode define which line buffer will be used to
+write the outputs of the last layer. The three line buffers remaining are
+used to fill the registers outputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_size</strong> (<em>int</em>) – size of the line_buffers of this unit.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="components.TriScatterUnit.rtl">
+<code class="sig-name descname">rtl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">clk</span></em>, <em class="sig-param"><span class="n">reset</span></em>, <em class="sig-param"><span class="n">input_counter</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output_counter</span></em>, <em class="sig-param"><span class="n">output</span></em>, <em class="sig-param"><span class="n">en_zero</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">en_read</span></em>, <em class="sig-param"><span class="n">en_write</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.TriScatterUnit.rtl" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function implements the combinational and sequential blocks of
+this block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clk</strong> (<em>std_logic</em>) – clock signal</p></li>
+<li><p><strong>reset</strong> (<em>std_logic</em>) – reset signal</p></li>
+<li><p><strong>en_zero</strong> (<em>std_logic</em>) – enable signal</p></li>
+<li><p><strong>en_read</strong> (<em>std_logic</em>) – enable signal</p></li>
+<li><p><strong>input</strong> (<em>std_logic_vector</em>) – vector with the input value with 16 bits width</p></li>
+<li><p><strong>output</strong> (<em>std_logic_vector</em>) – the nine output values of the concatenated</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the logic implemented in this block</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>a method with &#64;block decorator</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="components.TriScatterUnit.get_signals">
+<code class="sig-name descname">get_signals</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.TriScatterUnit.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the signals necessairly to instantiate the rtl
+block and convert the python method to a vhdl file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a dict specifying the input and output signals of the block.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict of myhdl.Signal</p>
+</dd>
+</dl>
+<p><strong>Python definition of inputs and ouputs:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;clk&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;reset&quot;</span><span class="p">:</span> <span class="n">ResetSignal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">isasync</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">16</span><span class="p">:]),</span>
+        <span class="s2">&quot;input_counter&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">counter_size</span><span class="p">:]),</span>
+        <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_outputs</span><span class="o">*</span><span class="mi">16</span><span class="p">:]),</span>
+        <span class="s2">&quot;output_counter&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">counter_size</span><span class="p">:]),</span>
+        <span class="s2">&quot;en_zero&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">+</span><span class="mi">1</span><span class="p">:]),</span>
+        <span class="s2">&quot;en_read&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s2">&quot;en_write&quot;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>VHDL component generated:</strong></p>
+<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">component</span> <span class="nc">TriScatterUnit</span> <span class="k">is</span>
+    <span class="k">port</span> <span class="p">(</span>
+        <span class="n">clk</span>            <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">reset</span>          <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">en_zero</span>        <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">en_read</span>        <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">en_write</span>       <span class="o">:</span> <span class="k">in</span>  <span class="kt">std_logic</span><span class="p">;</span>
+        <span class="n">mode</span>           <span class="o">:</span> <span class="k">in</span>  <span class="kt">unsigned</span><span class="p">(</span><span class="mi">3</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">input_counter</span>  <span class="o">:</span> <span class="k">in</span>  <span class="kt">unsigned</span><span class="p">(</span><span class="mi">8</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">input</span>          <span class="o">:</span> <span class="k">in</span>  <span class="kt">unsigned</span><span class="p">(</span><span class="mi">15</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">output_counter</span> <span class="o">:</span> <span class="k">in</span>  <span class="kt">unsigned</span><span class="p">(</span><span class="mi">26</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">output</span>         <span class="o">:</span> <span class="k">out</span> <span class="kt">unsigned</span><span class="p">(</span><span class="mi">143</span> <span class="k">downto</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">);</span>
+<span class="k">end</span> <span class="k">component</span> <span class="nc">TriScatterUnit</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="components.NetworkParser">
+<em class="property">class </em><code class="sig-prename descclassname">components.</code><code class="sig-name descname">NetworkParser</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">network_file</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.NetworkParser" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="components.NetworkParser.__parse_layer">
+<code class="sig-name descname">__parse_layer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">layer</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">channels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.NetworkParser.__parse_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.NetworkParser.__parse_conv_layer">
+<code class="sig-name descname">__parse_conv_layer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">layer</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">channels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.NetworkParser.__parse_conv_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.NetworkParser.__parse_max_pool_layer">
+<code class="sig-name descname">__parse_max_pool_layer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">layer</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">channels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.NetworkParser.__parse_max_pool_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.NetworkParser.parse_network">
+<code class="sig-name descname">parse_network</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.NetworkParser.parse_network" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="components.NetworkParser.generate">
+<code class="sig-name descname">generate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.NetworkParser.generate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="components.read_floats">
+<code class="sig-prename descclassname">components.</code><code class="sig-name descname">read_floats</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">final</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.read_floats" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function reads the file passed by the parameters and return the
+float list of values readed in the file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="components.convert_fixed">
+<code class="sig-prename descclassname">components.</code><code class="sig-name descname">convert_fixed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#components.convert_fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>This funtion receives a list of weights and convert each one of the
+values to fixed point representation. By default, the decimal portion
+of the values are represented with 11 bits while the int portion is
+represented with 4 bits. One bit is reserved to the magnitude
+representation, totalizing 16 bits of fixed point representation.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+              </div>
+              
+              
+              <div class='prev-next-bottom'>
+                
+
+              </div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+
+    <script src="../../_static/js/index.js"></script>
+    <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    <p>
+          &copy; Copyright 2020, Welbert Hime.<br/>
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

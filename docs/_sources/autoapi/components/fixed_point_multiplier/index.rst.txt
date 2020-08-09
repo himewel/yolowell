@@ -1,0 +1,50 @@
+:mod:`components.fixed_point_multiplier`
+========================================
+
+.. py:module:: components.fixed_point_multiplier
+
+
+Module Contents
+---------------
+
+
+.. py:class:: FixedPointMultiplier
+
+   Bases: :class:`base_component.BaseComponent`
+
+   This class implements a 16 bits fixed point Q5.11 multiplier. The main
+   objective of this component is make able the use of registers inside the
+   multipliers in the architecture. At first the multipliers offered by the
+   FPGA device were potential critical paths as they are indivisible to the
+   pipeline stages. Although not used yet, the reset and clk signals are here
+   to make the implementation of the registers less painful.
+
+   :param clk: clock signal
+   :type clk: std_logic
+   :param reset: reset signal
+   :type reset: std_logic
+   :param param_a: a value unsigned in fixed point representation
+   :type param_a: unsigned (actually a signed value)
+   :param param_b: other value unsigned in fixed point representation
+   :type param_b: unsigned (actually a signed value)
+   :param product: the result of parm_a and param_b multiplication in fixed     point representation.
+   :type product: unsigned (actually a signed value)
+
+   .. method:: concatenator(self, param_a, param_b, index, output)
+
+
+
+   .. method:: rtl(self, clk, reset, param_a, param_b, product)
+
+
+
+   .. method:: get_signals(self)
+
+
+
+
+.. data:: name
+   
+
+   
+

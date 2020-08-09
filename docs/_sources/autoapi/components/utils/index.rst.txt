@@ -1,0 +1,25 @@
+:mod:`components.utils`
+=======================
+
+.. py:module:: components.utils
+
+
+Module Contents
+---------------
+
+
+.. function:: read_floats(file_path='', start=0, final=0)
+
+   This function reads the file passed by the parameters and return the
+   float list of values readed in the file.
+
+
+.. function:: convert_fixed(weights=[])
+
+   This funtion receives a list of weights and convert each one of the
+   values to fixed point representation. By default, the decimal portion
+   of the values are represented with 11 bits while the int portion is
+   represented with 4 bits. One bit is reserved to the magnitude
+   representation, totalizing 16 bits of fixed point representation.
+
+

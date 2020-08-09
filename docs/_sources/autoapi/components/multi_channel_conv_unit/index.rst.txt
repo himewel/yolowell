@@ -1,0 +1,69 @@
+:mod:`components.multi_channel_conv_unit`
+=========================================
+
+.. py:module:: components.multi_channel_conv_unit
+
+
+Module Contents
+---------------
+
+
+.. py:class:: MultiChannelConvUnit(channels=0, binary=False, bin_input=False, bin_output=False, weights=[], **kwargs)
+
+   Bases: :class:`base_component.BaseComponent`
+
+   This block gather CHANNELS convolutional units receiveing CHANNEL bus
+   inputs concatenated in one port, the same for the outputs. The kernel, bias
+   and batch normalization values ​​are provided inside this unit for each
+   convolutional unit input, except the control signs comes from a external
+   control unit. Therefore, this constant values are updated to the
+   convolutional units just in the right cicles. The same happens with the
+   convolution units signs, so, the convolution units at principle runs
+   synchronous with each other.
+
+   The output port of this block is the result of the multichannel convolution
+   operation with different kernel values and input channels. After the
+   individual process of convolution between kernel values and input channels,
+   the results are normalized and added with a bias value. Before the output
+   be updated, the value pass in a leaky relu activation function.
+
+   :param filters: number of filters in this layer (outputs).
+   :type filter: int
+   :param channels: number of channels to be convolved (inputs)
+   :type channels: int
+   :param weights: array with weights to be distributed in conv units
+   :type weights: List()
+   :param binary: flag setting if will be used BinConvUnit or ConvUnit
+   :type binary: bool
+   :param bin_input: flag setting if the input is be truncated to 1 bit
+   :type bin_input: bool
+   :param bin_output: flag setting if the output will be truncated to 1 bit
+   :type bin_output: bool
+
+   .. method:: get_signals(self)
+
+
+
+   .. method:: rtl(self, clk, reset, input, output, en_mult, en_sum, en_channel, en_batch, en_act)
+
+
+      :param clk: clock signal
+      :type clk: std_logic
+      :param reset: reset signal
+      :type reset: std_logic
+      :param en_mult: enable signal
+      :type en_mult: std_logic
+      :param en_sum: enable signal
+      :type en_sum: std_logic
+      :param input: vector with the nine input values cancatenated, each value         should be an signed value with 16 bits width
+      :type input: std_logic_vector
+      :param output: the output value of the convolutions
+      :type output: unsigned
+
+
+
+.. data:: name
+   
+
+   
+
