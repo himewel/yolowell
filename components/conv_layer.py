@@ -30,13 +30,14 @@ class ConvLayer(BaseComponent):
         super().__init__(**kwargs)
         print("%-24s%-10i%-10i%-16i%-10i%-10s" % ("Convlayer",
               self.layer_id, self.unit_id, self.channel_id, channels, "-"))
+        self.size = size*size
         self.channels = channels
         self.filters = filters
 
-        # sort weights in buckets of 9 values
+        # sort weights in buckets of size^2 values
         bucket_weights = []
-        for i in range(0, 9*channels*filters, 9*channels):
-            bucket_weights.append(weights[i:i+9*channels])
+        for i in range(0, self.size*channels*filters, self.size*channels):
+            bucket_weights.append(weights[i:i+self.size*channels])
 
         # set input and output width
         self.INPUT_WIDTH = 1 if bin_input else 16
@@ -45,7 +46,7 @@ class ConvLayer(BaseComponent):
         self.mult_channel_conv_units = [MultiChannelConvUnit(
             layer_id=self.layer_id, unit_id=i, channels=self.channels,
             binary=binary, bin_input=bin_input, bin_output=bin_output,
-            weights=bucket_weights[i]) for i in range(self.filters)]
+            weights=bucket_weights[i], size=size) for i in range(self.filters)]
         return
 
     @block
@@ -142,7 +143,8 @@ value should be an signed value with 16 bits width
         return {
             "clk": Signal(False),
             "reset": ResetSignal(0, active=1, isasync=1),
-            "input": Signal(intbv(0)[9*self.channels*self.INPUT_WIDTH:]),
+            "input":
+                Signal(intbv(0)[self.size*self.channels*self.INPUT_WIDTH:]),
             "output": Signal(intbv(0)[self.filters*self.OUTPUT_WIDTH:]),
             "en_mult": Signal(False),
             "en_sum": Signal(False),
@@ -158,9 +160,9 @@ if (__name__ == '__main__'):
         path = argv[2]
 
         file = "yolov3_tiny/yolov3_tiny_weights.h"
-        path = "/home/welberthime/Documentos/nios-darknet/include"
+        w_path = "/home/welberthime/Documentos/nios-darknet/include/"
         f_index = 9 * 32 * 16
-        weights = read_floats(path, file, final=f_index+9)
+        weights = read_floats(w_path+file, final=f_index+9)
 
         header = ("component\t\tlayer_id\tunit_id\tchannel_id\tchannels\t" +
                   "filters")
@@ -168,7 +170,7 @@ if (__name__ == '__main__'):
               "layer_id", "unit_id", "channel_id", "channels", "filters"))
         print(80*"-")
         unit = ConvLayer(channels=3, filters=16, binary=False, bin_input=False,
-                         bin_output=True, weights=weights)
-        unit.convert(name)
+                         bin_output=True, weights=weights, size=3)
+        unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")

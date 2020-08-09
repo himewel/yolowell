@@ -19,7 +19,7 @@ class BinConvUnit(BaseComponent):
     calculated to be propagate to the outputs. The convolutions are maked using
     only the magnitude signal as in binary convolution networks.
     """
-    def __init__(self, bin_input=False, weights=[], **kwargs):
+    def __init__(self, size=3, bin_input=False, weights=[], **kwargs):
         super().__init__(**kwargs)
         print("%-24s%-10i%-10i%-16i%-10s%-10s" % ("BinConvUnit", self.layer_id,
               self.unit_id, self.channel_id, "-", "-"))
@@ -32,6 +32,7 @@ class BinConvUnit(BaseComponent):
         # set input and output width
         self.INPUT_WIDTH = 1 if bin_input else 16
         self.SIGNAL_BIT = self.INPUT_WIDTH - 1
+        self.SIZE = size*size
 
         self.mult = FixedPointMultiplier()
         return
@@ -56,31 +57,31 @@ class BinConvUnit(BaseComponent):
         :param output: the output value of the convolutions
         :type output: unsigned
         """
-        wire_inputs = [Signal(intbv(0)[self.INPUT_WIDTH:]) for _ in range(9)]
+        wire_inputs = [Signal(intbv(0)[self.INPUT_WIDTH:])
+                       for _ in range(self.SIZE)]
 
-        xor_list = [Signal(intbv(0)[3:]) for _ in range(9)]
-        first_sum = [Signal(intbv(0)[4:]) for _ in range(4)]
-        second_sum = [Signal(intbv(0)[5:]) for _ in range(2)]
-        third_sum = Signal(intbv(0)[6:])
+        xor_list = [Signal(intbv(1, min=-2, max=2)) for _ in range(9)]
+        first_sum = [Signal(intbv(0, min=-3, max=3)) for _ in range(4)]
+        second_sum = [Signal(intbv(0, min=-5, max=5)) for _ in range(2)]
+        third_sum = Signal(intbv(0, min=-16, max=16))
 
         kernel = Signal(intbv(self.kernel)[16:])
-        delta = Signal(intbv(0)[16:])
+        delta = Signal(intbv(0, min=-(2**15)+1, max=(2**15)-1))
         mult_ouput = Signal(intbv(0)[16:])
 
         multplier_unit = self.mult.rtl(
             clk=clk, reset=reset, param_a=delta, param_b=kernel,
-            product=mult_ouput
-        )
+            product=mult_ouput)
 
         @always_comb
         def combinatorial_wires():
-            for i in range(9):
+            for i in range(self.SIZE):
                 wire_inputs[i].next = \
                     input[self.INPUT_WIDTH*(i+1):self.INPUT_WIDTH*i]
 
         @always_comb
         def combinational_xor():
-            for i in range(9):
+            for i in range(self.SIZE):
                 if (wire_inputs[i][self.SIGNAL_BIT] ^ kernel[15]):
                     xor_list[i].next = 1
                 else:
@@ -105,16 +106,19 @@ class BinConvUnit(BaseComponent):
         @always_seq(clk.posedge, reset=reset)
         def process():
             if (en_mult == 1):
-                for i in range(5, 15):
-                    delta[i].next = 0
-                delta[15].next = third_sum[5]
-                delta[4].next = third_sum[4]
-                delta[3].next = third_sum[3]
-                delta[2].next = third_sum[2]
-                delta[1].next = third_sum[1]
-                delta[0].next = third_sum[0]
+                if (self.SIZE == 9):
+                    delta.next = third_sum
+                else:
+                    delta.next = xor_list[0]
+
             if (en_sum == 1):
-                output.next = mult_ouput
+                if (self.SIZE == 9):
+                    output.next = mult_ouput
+                else:
+                    if (delta[15] == 0):
+                        output.next = kernel
+                    else:
+                        output.next = -kernel
 
         return (combinatorial_wires, multplier_unit, combinational_xor,
                 process, combinatorial_first_sums, combinatorial_second_sums,
@@ -163,7 +167,7 @@ class BinConvUnit(BaseComponent):
             "reset": ResetSignal(0, active=1, isasync=1),
             "en_mult": Signal(False),
             "en_sum": Signal(False),
-            "input": Signal(intbv(0)[9*self.INPUT_WIDTH:]),
+            "input": Signal(intbv(0)[self.SIZE*self.INPUT_WIDTH:]),
             "output": Signal(intbv(0)[16:])
         }
 
@@ -173,7 +177,7 @@ if __name__ == '__main__':
         name = argv[1]
         path = argv[2]
 
-        unit = BinConvUnit(weights=[15.58], bin_input=True)
+        unit = BinConvUnit(weights=[15.58], size=1, bin_input=True)
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")

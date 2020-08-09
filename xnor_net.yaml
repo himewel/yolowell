@@ -108,7 +108,7 @@ layer_groups:
 #     bin_output: True
 #   - type: "buffer_layer"
 #     binary: True
-#     scattering: 3
+#     scattering: 1
 # -----------------------------------------------------------------------------
 # - filters: 256
 #   layers:
@@ -130,7 +130,7 @@ layer_groups:
 #     bin_output: True
 #   - type: "buffer_layer"
 #     binary: True
-#     scattering: 3
+#     scattering: 1
 # -----------------------------------------------------------------------------
 # - filters: 1024
 #   layers:
