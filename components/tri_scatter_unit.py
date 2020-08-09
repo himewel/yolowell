@@ -1,6 +1,6 @@
 from sys import argv
 from math import ceil, log
-from .base_component import BaseComponent
+from base_component import BaseComponent
 from myhdl import (always_comb, always_seq, always, block, Signal, intbv,
                    ResetSignal)
 
@@ -17,12 +17,14 @@ class TriScatterUnit(BaseComponent):
     :param input_size: size of the line_buffers of this unit.
     :type input_size: int
     """
-    def __init__(self, input_size=0, **kwargs):
+    def __init__(self, width=0, binary=False, **kwargs):
         super().__init__(**kwargs)
         print(8*" "+"Creating TriScatterUnit unit={}...".format(self.unit_id))
 
-        self.input_size = input_size
-        self.mem_size = int(2 ** ceil(log(self.input_size, 2)))
+        self.INPUT_WIDTH = 1 if binary else 16
+        self.width = width
+
+        self.mem_size = int(2 ** ceil(log(self.width, 2)))
         self.counter_size = int(log(self.mem_size, 2))
         self.size = 3
         self.n_outputs = 9
@@ -50,14 +52,19 @@ class TriScatterUnit(BaseComponent):
         :return: the logic implemented in this block
         :rtype: a method with @block decorator
         """
-        wire_outputs = [Signal(intbv(0)[16:]) for _ in range(self.n_outputs)]
+        wire_outputs = [Signal(intbv(0)[self.INPUT_WIDTH:])
+                        for _ in range(self.n_outputs)]
         wire_output_counters = [Signal(intbv(0)[self.counter_size:])
                                 for _ in range(self.n_outputs)]
 
-        line_buffer0 = [Signal(intbv(0)[16:]) for _ in range(self.mem_size)]
-        line_buffer1 = [Signal(intbv(0)[16:]) for _ in range(self.mem_size)]
-        line_buffer2 = [Signal(intbv(0)[16:]) for _ in range(self.mem_size)]
-        line_buffer3 = [Signal(intbv(0)[16:]) for _ in range(self.mem_size)]
+        line_buffer0 = [Signal(intbv(0)[self.INPUT_WIDTH:])
+                        for _ in range(self.mem_size)]
+        line_buffer1 = [Signal(intbv(0)[self.INPUT_WIDTH:])
+                        for _ in range(self.mem_size)]
+        line_buffer2 = [Signal(intbv(0)[self.INPUT_WIDTH:])
+                        for _ in range(self.mem_size)]
+        line_buffer3 = [Signal(intbv(0)[self.INPUT_WIDTH:])
+                        for _ in range(self.mem_size)]
 
         buffer_addr0 = Signal(intbv(0)[self.counter_size:])
         buffer_addr1 = Signal(intbv(0)[self.counter_size:])
@@ -95,9 +102,10 @@ class TriScatterUnit(BaseComponent):
 
         @always_comb
         def comb_wire_channel_outputs():
-            aux = intbv(0)[self.n_outputs*16:]
+            aux = intbv(0)[self.n_outputs*self.INPUT_WIDTH:]
             for i in range(self.n_outputs):
-                aux[(i+1)*16:i*16] = wire_outputs[i]
+                aux[(i+1)*self.INPUT_WIDTH:i*self.INPUT_WIDTH] = \
+                    wire_outputs[i]
             output.next = aux
 
         @always_seq(clk.posedge, reset=reset)
@@ -192,9 +200,9 @@ class TriScatterUnit(BaseComponent):
         return {
             "clk": Signal(False),
             "reset": ResetSignal(0, active=1, isasync=1),
-            "input": Signal(intbv(0)[16:]),
+            "input": Signal(intbv(0)[self.INPUT_WIDTH:]),
             "input_counter": Signal(intbv(0)[self.counter_size:]),
-            "output": Signal(intbv(0)[self.n_outputs*16:]),
+            "output": Signal(intbv(0)[self.n_outputs*self.INPUT_WIDTH:]),
             "output_counter": Signal(intbv(0)[self.size*self.counter_size:]),
             "en_zero": Signal(False),
             "mode": Signal(intbv(0)[self.size+1:]),
@@ -208,7 +216,7 @@ if (__name__ == '__main__'):
         name = argv[1]
         path = argv[2]
 
-        unit = TriScatterUnit(input_size=416)
+        unit = TriScatterUnit(width=416, binary=True)
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")
