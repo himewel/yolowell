@@ -1,6 +1,7 @@
 from sys import argv
 from base_component import BaseComponent
 from max_pool_unit import MaxPoolUnit
+from bin_max_pool_unit import BinMaxPoolUnit
 from myhdl import always_comb, block, Signal, intbv, ResetSignal
 
 
@@ -9,16 +10,24 @@ class MaxPoolLayer(BaseComponent):
     This class gather some MaxPoolUnits with different channel input and
     outputs. Both inputs are concatenated in one signal to the layer. The same
     to the outputs.
+
+    :param filters: number of filters inputs to this layer
+    :type filters: int
     """
-    def __init__(self, **kwargs):
+    def __init__(self, filters=0, binary=False, **kwargs):
         super().__init__(**kwargs)
-        print("Creating MaxPoolLayer layer={}...".format(self.layer_id))
+        print("%-24s%-10i%-10i%-16i%-10i%-10s" % ("MaxPoolLayer",
+              self.layer_id, self.unit_id, self.channel_id, filters, "-"))
 
-        self.n_inputs = self.n_filters[self.layer_id]
-        self.n_outputs = self.n_filters[self.layer_id]
+        self.filters = filters
+        self.PORT_WIDTH = 1 if binary else 16
 
-        self.max_pool_units = [MaxPoolUnit(channel_id=i)
-                               for i in range(self.n_outputs)]
+        if (binary):
+            self.max_pool_units = \
+                [BinMaxPoolUnit(channel_id=i) for i in range(self.filters)]
+        else:
+            self.max_pool_units = \
+                [MaxPoolUnit(channel_id=i) for i in range(self.filters)]
         return
 
     @block
@@ -44,25 +53,27 @@ class MaxPoolLayer(BaseComponent):
         :return: logic of this block
         :rtype: @block method
         """
-        wire_channel_inputs = [Signal(intbv(0)[4*16:])
-                               for _ in range(self.n_inputs)]
-        wire_channel_outputs = [Signal(intbv(0)[16:])
-                                for _ in range(self.n_outputs)]
+        wire_channel_inputs = [Signal(intbv(0)[4*self.PORT_WIDTH:])
+                               for _ in range(self.filters)]
+        wire_channel_outputs = [Signal(intbv(0)[self.PORT_WIDTH:])
+                                for _ in range(self.filters)]
         max_pool_units = [self.max_pool_units[i].rtl(
             clk=clk, reset=reset, input=wire_channel_inputs[i],
             en_pool=en_pool, output=wire_channel_outputs[i]
-        ) for i in range(self.n_outputs)]
+        ) for i in range(self.filters)]
 
         @always_comb
         def comb_wire_inputs():
-            for i in range(self.n_inputs):
-                wire_channel_inputs[i].next = input[4*16*(i+1):4*16*i]
+            for i in range(self.filters):
+                wire_channel_inputs[i].next = \
+                    input[4*self.PORT_WIDTH*(i+1):4*self.PORT_WIDTH*i]
 
         @always_comb
         def comb_wire_outputs():
-            aux = intbv(0)[self.n_outputs*16:]
-            for i in range(self.n_outputs):
-                aux[(i+1)*16:i*16] = wire_channel_outputs[i]
+            aux = intbv(0)[self.filters*self.PORT_WIDTH:]
+            for i in range(self.filters):
+                aux[(i+1)*self.PORT_WIDTH:i*self.PORT_WIDTH] = \
+                    wire_channel_outputs[i]
             output.next = aux
 
         return (max_pool_units, comb_wire_outputs, comb_wire_inputs)
@@ -75,7 +86,7 @@ class MaxPoolLayer(BaseComponent):
         :return: a dict specifying the input and outputs signals of the block.
         :rtype: dict of myhdl.Signal
 
-        **Python definition of the and ouputs:**
+        **Python definition of inputs and ouputs:**
 
         .. code-block:: python
 
@@ -83,8 +94,8 @@ class MaxPoolLayer(BaseComponent):
                 return {
                     "clk": Signal(False),
                     "reset": ResetSignal(0, active=1, isasync=1),
-                    "input": Signal(intbv(0)[4*self.n_inputs*16:]),
-                    "output": Signal(intbv(0)[self.n_outputs*16:]),
+                    "input": Signal(intbv(0)[4*self.filters*self.PORT_WIDTH:]),
+                    "output": Signal(intbv(0)[self.filters*self.PORT_WIDTH:]),
                     "en_pool": Signal(False),
                 }
 
@@ -106,8 +117,8 @@ class MaxPoolLayer(BaseComponent):
         return {
             "clk": Signal(False),
             "reset": ResetSignal(0, active=1, isasync=1),
-            "input": Signal(intbv(0)[4*self.n_inputs*16:]),
-            "output": Signal(intbv(0)[self.n_outputs*16:]),
+            "input": Signal(intbv(0)[4*self.filters*self.PORT_WIDTH:]),
+            "output": Signal(intbv(0)[self.filters*self.PORT_WIDTH:]),
             "en_pool": Signal(False),
         }
 
@@ -117,7 +128,7 @@ if (__name__ == '__main__'):
         name = argv[1]
         path = argv[2]
 
-        unit = MaxPoolLayer(layer_id=0)
+        unit = MaxPoolLayer(filters=16, binary=True)
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")

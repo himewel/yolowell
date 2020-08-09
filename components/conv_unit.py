@@ -17,28 +17,17 @@ class ConvUnit(BaseComponent):
     of the sums(organized in tree format) between the product of each calue
     calculated to be propagate to the outputs.
 
-    :param clk: clock signal
-    :type clk: std_logic
-    :param reset: reset signal
-    :type reset: std_logic
-    :param en_mult: enable signal
-    :type en_mult: std_logic
-    :param en_sum: enable signal
-    :type en_sum: std_logic
-    :param input: vector with the nine input values cancatenated, each value \
-    should be an signed value with 16 bits width
-    :type input: std_logic_vector
-    :param output: the output value of the convolutions
-    :type output: unsigned
+    :param weights: an array with the weights to be filled in KernelROM
+    :type weights: List()
     """
-    def __init__(self, **kwargs):
+    def __init__(self, weights=[], **kwargs):
         super().__init__(**kwargs)
-        print(8*" "+"* Creating ConvUnit channel={}..."
-              .format(self.channel_id))
+        print("%-24s%-10i%-10i%-16i%-10s%-10s" % ("ConvUnit", self.layer_id,
+              self.unit_id, self.channel_id, "-", "-"))
 
-        self.kernel_rom = KernelROM(layer_id=self.layer_id,
-                                    channel_id=self.channel_id,
-                                    unit_id=self.unit_id)
+        self.kernel_rom = KernelROM(
+            layer_id=self.layer_id, channel_id=self.channel_id,
+            unit_id=self.unit_id, weights=weights)
         self.mult = [FixedPointMultiplier() for i in range(9)]
         return
 
@@ -58,7 +47,7 @@ class ConvUnit(BaseComponent):
 
         # external unit instantiation
         kernel_units = self.kernel_rom.rtl(clk=clk, q=kernel)
-        multplier_units = [self.mult[i].rtl(
+        multiplier_units = [self.mult[i].rtl(
             clk=clk, reset=reset, param_a=wire_inputs[i],
             param_b=wire_kernels[i], product=mult_ouputs[i]
             ) for i in range(9)]
@@ -93,11 +82,26 @@ class ConvUnit(BaseComponent):
             if (en_sum == 1):
                 output.next = third_sum
 
-        return (kernel_units, multplier_units, combinatorial_wires, process,
+        return (kernel_units, multiplier_units, combinatorial_wires, process,
                 combinatorial_first_sums, combinatorial_second_sums,
                 combinatorial_third_sum)
 
     def get_signals(self):
+        """
+        :param clk: clock signal
+        :type clk: std_logic
+        :param reset: reset signal
+        :type reset: std_logic
+        :param en_mult: enable signal
+        :type en_mult: std_logic
+        :param en_sum: enable signal
+        :type en_sum: std_logic
+        :param input: vector with the nine input values cancatenated, each value \
+        should be an signed value with 16 bits width
+        :type input: std_logic_vector
+        :param output: the output value of the convolutions
+        :type output: unsigned
+        """
         return {
             "clk": Signal(False),
             "reset": ResetSignal(0, active=1, isasync=1),
@@ -113,7 +117,7 @@ if __name__ == '__main__':
         name = argv[1]
         path = argv[2]
 
-        unit = ConvUnit()
+        unit = ConvUnit(weights=9*[26.59])
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")

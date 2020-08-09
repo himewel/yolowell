@@ -1,9 +1,10 @@
 from sys import argv
-from ComponentClass import ComponentClass
+from base_component import BaseComponent
 from myhdl import always, block, Signal, intbv
+from random import randrange
 
 
-class BnROM(ComponentClass):
+class BnROM(BaseComponent):
     """
     This class implements some functions to read the weights file and generate
     a ROM with the values identifyied by the layer_id, channel_id and unit_id.
@@ -30,15 +31,16 @@ class BnROM(ComponentClass):
                  path="/home/welberthime/Documentos/nios-darknet/include",
                  **kwargs):
         super().__init__(**kwargs)
-        print(8*" "+"- Creating BnROM layer={} unit={} channel={}...".format(
-            self.layer_id, self.unit_id, self.channel_id))
+        print("%-24s%-10i%-10i%-16i%-10s%-10s" % ("BnROM", self.layer_id,
+              self.unit_id, self.channel_id, "-", "-"))
         # mean = self.read_floats(path, mean_file)
         # variance = self.read_floats(path, variance_file)
         # scale = self.read_floats(path, scale_file)
         # bias = self.read_floats(path, bias_file)
 
-        self.bn_content = Signal(intbv(3)[16:])
-        self.ssi_content = Signal(intbv(3)[16:])
+        # self.bn_content = Signal(intbv(randrange(0, 2**16))[16:])
+        # self.ssi_content = Signal(intbv(randrange(0, 2**16))[16:])
+        self.CONTENT = tuple([randrange(0, 2**16), randrange(0, 2**16)])
         return
 
     def get_signals(self):
@@ -52,8 +54,8 @@ class BnROM(ComponentClass):
     def rtl(self, clk, q_bn, q_ssi):
         @always(clk)
         def logic():
-            q_bn.next = self.bn_content
-            q_ssi.next = self.ssi_content
+            q_bn.next = self.CONTENT[0]
+            q_ssi.next = self.CONTENT[1]
         return logic
 
 

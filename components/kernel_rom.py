@@ -1,5 +1,6 @@
 from sys import argv
 from base_component import BaseComponent
+from utils import convert_fixed
 from myhdl import always, block, Signal, intbv
 
 
@@ -23,19 +24,12 @@ class KernelROM(BaseComponent):
     :type q: std_logic_vector
     """
 
-    def __init__(self, file="yolov3_tiny/yolov3_tiny_weights.h",
-                 path="/home/welberthime/Documentos/nios-darknet/include",
-                 **kwargs):
+    def __init__(self, weights=[], **kwargs):
         super().__init__(**kwargs)
-        print(8*" "+"- Creating KernelROM channel={}..."
-              .format(self.channel_id))
+        print("%-24s%-10i%-10i%-16i%-10s%-10s" % ("KernelROM", self.layer_id,
+              self.unit_id, self.channel_id, "-", "-"))
 
-        unit_weights = []
-        f_index = 9 * (self.channel_id + self.unit_id *
-                       sum(self.n_filters[:max(0, self.layer_id-1)]))
-        weights = self.read_floats(path, file, start=f_index, final=f_index+9)
-
-        unit_weights = self.convert_fixed(weights)
+        unit_weights = convert_fixed(weights)
         self.CONTENT = tuple(unit_weights)
         return
 

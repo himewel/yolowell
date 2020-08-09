@@ -1,6 +1,6 @@
 from sys import argv
 from math import ceil, log
-from base_component import BaseComponent
+from .base_component import BaseComponent
 from myhdl import (always_comb, always_seq, always, block, Signal, intbv,
                    ResetSignal)
 
@@ -147,10 +147,10 @@ class TriScatterUnit(BaseComponent):
         This function returns the signals necessairly to instantiate the rtl
         block and convert the python method to a vhdl file.
 
-        :return: a dict specifying the input and outputs signals of the block.
+        :return: a dict specifying the input and output signals of the block.
         :rtype: dict of myhdl.Signal
 
-        **Python definition of the and ouputs:**
+        **Python definition of inputs and ouputs:**
 
         .. code-block:: python
 
