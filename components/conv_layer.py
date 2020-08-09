@@ -153,6 +153,19 @@ value should be an signed value with 16 bits width
             "en_act": Signal(False)
         }
 
+    def fix_syntax(self, name="", path=""):
+        file = open("{path}/{name}.vhd".format(path=path, name=name), "r")
+        text = file.read()
+        text = text.replace("acc(i) <", "acc(i) :")
+        text = text.replace("acc((output_index + i)) <",
+                            "acc((output_index + i)) :")
+        file.close()
+
+        file = open("{path}/{name}.vhd".format(path=path, name=name), "w")
+        file.write(text)
+        file.close()
+        return
+
 
 if (__name__ == '__main__'):
     if (len(argv) > 2):

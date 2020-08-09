@@ -5,21 +5,13 @@ bin_conv_unit:
 	python3 components/bin_conv_unit.py BinConvUnit generated
 
 multichannel:
-	( \
-		python3 components/multi_channel_conv_unit.py MultiChannelConvUnit generated; \
-		sed -i -e 's/acc(i) </acc(i) :/g' generated/MultiChannelConvUnit.vhd; \
-		sed -i -e 's/acc((output_index + i)) </acc((output_index + i)) :/g' generated/MultiChannelConvUnit.vhd; \
-	)
+	python3 components/multi_channel_conv_unit.py MultiChannelConvUnit generated; \
 
 multiplier:
 	python3 components/fixed_point_multiplier.py Multiplier generated
 
 conv_layer:
-	( \
-		python3 components/conv_layer.py ConvLayer ./generated; \
-		sed -i -e 's/acc(i) </acc(i) :/g' generated/ConvLayer.vhd; \
-		sed -i -e 's/acc((output_index + i)) </acc((output_index + i)) :/g' generated/ConvLayer.vhd; \
-	)
+	python3 components/conv_layer.py ConvLayer ./generated
 
 pool_layer:
 	python3 components/max_pool_layer.py MaxPoolLayer generated

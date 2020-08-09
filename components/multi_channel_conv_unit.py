@@ -116,9 +116,6 @@ class MultiChannelConvUnit(BaseComponent):
         :param output: the output value of the convolutions
         :type output: unsigned
         """
-        # 11 fractional bits 0.125 leaky constant value
-        leaky_constant = Signal(intbv(bin("0000000010000000"))[16:])
-
         # treatment to generic number of inputs
         wire_conv_outputs = [Signal(intbv(0)[16:])
                              for _ in range(self.channels)]
@@ -149,9 +146,8 @@ class MultiChannelConvUnit(BaseComponent):
         @always_comb
         def combinational_wire_inputs():
             for i in range(self.channels):
-                min_index = (i+1)*self.INPUT_WIDTH*self.size
-                max_index = i*self.INPUT_WIDTH*self.size
-                wire_inputs[i].next = input[min_index:max_index]
+                wire_inputs[i].next = input[(i+1)*self.INPUT_WIDTH*self.size:
+                                            i*self.INPUT_WIDTH*self.size]
 
         @always_seq(clk.posedge, reset=reset)
         def acc_process():
@@ -197,10 +193,23 @@ class MultiChannelConvUnit(BaseComponent):
                     if (reg_batch[15] == 0):
                         output.next = reg_batch
                     else:
-                        output.next = reg_batch * leaky_constant
+                        output.next = reg_batch >> 3
 
         return (acc_process, conv_units, bn_rom, bn_multiplier,
                 combinational_wire_inputs, batch_process, act_process)
+
+    def fix_syntax(self, name="", path=""):
+        file = open("{path}/{name}.vhd".format(path=path, name=name), "r")
+        text = file.read()
+        text = text.replace("acc(i) <", "acc(i) :")
+        text = text.replace("acc((output_index + i)) <",
+                            "acc((output_index + i)) :")
+        file.close()
+
+        file = open("{path}/{name}.vhd".format(path=path, name=name), "w")
+        file.write(text)
+        file.close()
+        return
 
 
 if __name__ == '__main__':

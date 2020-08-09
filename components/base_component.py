@@ -39,6 +39,10 @@ class BaseComponent():
     def get_signals(self):
         pass
 
+    @abstractmethod
+    def fix_syntax(self, name="", path=""):
+        pass
+
     def convert(self, name="", path=""):
         """
         This function convert the logic implemented in the rtl method in a vhdl
@@ -55,4 +59,5 @@ class BaseComponent():
         entity = self.rtl(**signals)
         print("Converting vhd file... ", end="")
         entity.convert(hdl="vhdl", name=name, path=path)
+        self.fix_syntax(name=name, path=path)
         print("Ok!")
