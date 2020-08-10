@@ -65,7 +65,7 @@ class BinConvUnit(BaseComponent):
         second_sum = [Signal(intbv(0, min=-5, max=5)) for _ in range(2)]
         third_sum = Signal(intbv(0, min=-16, max=16))
 
-        kernel = Signal(intbv(self.kernel)[16:])
+        kernel = intbv(self.kernel)[16:]
         delta = Signal(intbv(0, min=-(2**15)+1, max=(2**15)-1))
         mult_ouput = Signal(intbv(0)[16:])
 

@@ -182,7 +182,7 @@ if (__name__ == '__main__'):
         print("\n" + "%-24s%-10s%-10s%-16s%-10s%-10s" % ("component",
               "layer_id", "unit_id", "channel_id", "channels", "filters"))
         print(80*"-")
-        unit = ConvLayer(channels=3, filters=16, binary=False, bin_input=False,
+        unit = ConvLayer(channels=3, filters=16, binary=True, bin_input=False,
                          bin_output=True, weights=weights, size=3)
         unit.convert(name, path)
     else:
