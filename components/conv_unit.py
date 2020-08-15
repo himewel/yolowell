@@ -21,27 +21,43 @@ class ConvUnit(BaseComponent):
     :param weights: an array with the weights to be filled in KernelROM
     :type weights: List()
     """
-    def __init__(self, size=3, weights=[], **kwargs):
+    def __init__(self, size=3, width=16, weights=[], **kwargs):
         super().__init__(**kwargs)
         print("%-24s%-10i%-10i%-16i%-10s%-10s" % ("ConvUnit", self.layer_id,
               self.unit_id, self.channel_id, "-", "-"))
 
         self.size = size*size
-        self.kernel_rom = tuple(convert_fixed(weights))
-        self.mult = [FixedPointMultiplier() for i in range(self.size)]
+        self.width = width
+
+        if (width == 16):
+            self.kernel_rom = tuple(
+                convert_fixed(
+                    weights=weights,
+                    integer_portion=4,
+                    decimal_portion=11))
+        else:
+            self.kernel_rom = tuple(
+                convert_fixed(
+                    weights=weights,
+                    integer_portion=3,
+                    decimal_portion=4))
+
+        self.mult = [FixedPointMultiplier(width=width)
+                     for i in range(self.size)]
         return
 
     @block
     def rtl(self, clk, reset, en_mult, en_sum, input, output):
-        wire_inputs = [Signal(intbv(0)[16:]) for _ in range(self.size)]
-        wire_kernels = [Signal(intbv(0)[16:]) for _ in range(self.size)]
+        wire_inputs = [Signal(intbv(0)[self.width:]) for _ in range(self.size)]
+        wire_kernels = [Signal(intbv(0)[self.width:])
+                        for _ in range(self.size)]
 
-        partial_mult = [Signal(intbv(0)[16:]) for _ in range(9)]
-        mult_ouputs = [Signal(intbv(0)[16:]) for _ in range(9)]
+        partial_mult = [Signal(intbv(0)[self.width:]) for _ in range(9)]
+        mult_ouputs = [Signal(intbv(0)[self.width:]) for _ in range(9)]
 
-        first_sum = [Signal(intbv(0)[16:]) for _ in range(4)]
-        second_sum = [Signal(intbv(0)[16:]) for _ in range(2)]
-        third_sum = Signal(intbv(0)[16:])
+        first_sum = [Signal(intbv(0)[self.width:]) for _ in range(4)]
+        second_sum = [Signal(intbv(0)[self.width:]) for _ in range(2)]
+        third_sum = Signal(intbv(0)[self.width:])
 
         kernel = self.kernel_rom
 
@@ -54,7 +70,7 @@ class ConvUnit(BaseComponent):
         @always_comb
         def combinatorial_wires():
             for i in range(self.size):
-                wire_inputs[i].next = input[16*(i+1):16*i]
+                wire_inputs[i].next = input[self.width*(i+1):self.width*i]
                 wire_kernels[i].next = kernel[i]
 
         @always_comb
@@ -109,8 +125,8 @@ class ConvUnit(BaseComponent):
             "reset": ResetSignal(0, active=1, isasync=1),
             "en_mult": Signal(False),
             "en_sum": Signal(False),
-            "input": Signal(intbv(0)[self.size*16:]),
-            "output": Signal(intbv(0)[16:])
+            "input": Signal(intbv(0)[self.size*self.width:]),
+            "output": Signal(intbv(0)[self.width:])
         }
 
 
@@ -119,7 +135,7 @@ if __name__ == '__main__':
         name = argv[1]
         path = argv[2]
 
-        unit = ConvUnit(weights=9*[26.59], size=3)
+        unit = ConvUnit(weights=9*[2.59], size=3, width=8)
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")

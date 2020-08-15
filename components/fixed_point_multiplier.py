@@ -24,29 +24,32 @@ class FixedPointMultiplier(BaseComponent):
     point representation.
     :type product: unsigned (actually a signed value)
     """
-    def __init__(self):
-        self.pow = int(2**15) - 1
+    def __init__(self, width=16):
+        self.width = width
+        self.lower_output_bit = int(width - width/2)
+        self.pow = int(2**(width-1)) - 1
+        return
 
     @block
     def concatenator(self, param_a, param_b, index, output):
         @always_comb
         def logic():
-            output_var = modbv(0)[30:]
+            output_var = modbv(0)[self.width*2-2:]
             if (param_a[index] == 1):
-                output_var[15:] = param_b
-                if (param_b[14] == 1):
-                    output_var[30:15] = self.pow
+                output_var[self.width-1:] = param_b
+                if (param_b[self.width-2] == 1):
+                    output_var[self.width*2-2:self.width-1] = self.pow
                 output_var <<= index
             output.next = output_var
         return logic
 
     @block
     def rtl(self, clk, reset, param_a, param_b, product):
-        concat_value = [Signal(intbv(0)[31:]) for _ in range(15)]
-        first_sum = [Signal(intbv(0)[31:]) for _ in range(7)]
-        second_sum = [Signal(intbv(0)[31:]) for _ in range(4)]
-        third_sum = [Signal(intbv(0)[31:]) for _ in range(2)]
-        fourth_sum = Signal(intbv(0)[31:])
+        concat_value = [Signal(intbv(0)[self.width*2-1:]) for _ in range(15)]
+        first_sum = [Signal(intbv(0)[self.width*2-1:]) for _ in range(7)]
+        second_sum = [Signal(intbv(0)[self.width*2-1:]) for _ in range(4)]
+        third_sum = [Signal(intbv(0)[self.width*2-1:]) for _ in range(2)]
+        fourth_sum = Signal(intbv(0)[self.width*2-1:])
 
         data_a = Signal(intbv(0)[15:])
         data_b = Signal(intbv(0)[15:])
@@ -55,14 +58,13 @@ class FixedPointMultiplier(BaseComponent):
         xor_signals = Signal(False)
         magnitude = Signal(False)
 
-        concatenadores = [self.concatenator(
-            param_a=data_a, param_b=data_b, index=i, output=concat_value[i]
-            ) for i in range(15)]
+        concatenadores = [self.concatenator(param_a=data_a, param_b=data_b,
+            index=i, output=concat_value[i]) for i in range(15)]
 
         @always_comb
         def combinatorial_first_sums():
-            data_a.next = param_a[15:]
-            data_b.next = param_b[15:]
+            data_a.next = param_a[self.width-1:]
+            data_b.next = param_b[self.width-1:]
 
             first_sum[0].next = concat_value[0] + concat_value[1]
             first_sum[1].next = concat_value[2] + concat_value[3]
@@ -76,7 +78,7 @@ class FixedPointMultiplier(BaseComponent):
         def combinatorial_second_sums():
             non_zero_a.next = False if (data_a == 0) else True
             non_zero_b.next = False if (data_b == 0) else True
-            xor_signals.next = param_a[15] ^ param_b[15]
+            xor_signals.next = param_a[self.width-1] ^ param_b[self.width-1]
             second_sum[0].next = first_sum[0] + first_sum[1]
             second_sum[1].next = first_sum[2] + first_sum[3]
             second_sum[2].next = first_sum[4] + first_sum[5]
@@ -94,9 +96,9 @@ class FixedPointMultiplier(BaseComponent):
 
         @always_comb
         def comb_output():
-            product[15].next = magnitude
-            for i in range(15):
-                product[i].next = fourth_sum[11+i]
+            product[self.width-1].next = magnitude
+            for i in range(self.width-1):
+                product[i].next = fourth_sum[self.lower_output_bit+i]
 
         return (concatenadores, comb_output, combinatorial_first_sums,
                 combinatorial_second_sums, combinatorial_third_sums,
@@ -106,9 +108,9 @@ class FixedPointMultiplier(BaseComponent):
         return {
             "clk": Signal(False),
             "reset": Signal(False),
-            "param_a": Signal(intbv(0)[16:]),
-            "param_b": Signal(intbv(0)[16:]),
-            "product": Signal(intbv(0)[16:]),
+            "param_a": Signal(intbv(0)[self.width:]),
+            "param_b": Signal(intbv(0)[self.width:]),
+            "product": Signal(intbv(0)[self.width:]),
         }
 
 
@@ -117,7 +119,7 @@ if __name__ == '__main__':
         name = argv[1]
         path = argv[2]
 
-        unit = FixedPointMultiplier()
+        unit = FixedPointMultiplier(width=8)
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")

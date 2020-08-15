@@ -19,7 +19,8 @@ class BinConvUnit(BaseComponent):
     calculated to be propagate to the outputs. The convolutions are maked using
     only the magnitude signal as in binary convolution networks.
     """
-    def __init__(self, size=3, bin_input=False, weights=[], **kwargs):
+    def __init__(self, size=3, width=16, bin_input=False, weights=[],
+                 **kwargs):
         super().__init__(**kwargs)
         print("%-24s%-10i%-10i%-16i%-10s%-10s" % ("BinConvUnit", self.layer_id,
               self.unit_id, self.channel_id, "-", "-"))
@@ -27,14 +28,26 @@ class BinConvUnit(BaseComponent):
         # quantify weights
         sum_weights = sum(weights)
         avg_weights = 0 if not sum_weights else sum_weights/len(weights)
-        self.kernel = convert_fixed([avg_weights])[0]
+
+        if (width == 16):
+            self.kernel = convert_fixed(
+                weights=[avg_weights],
+                integer_portion=4,
+                decimal_portion=11)[0]
+        else:
+            self.kernel = convert_fixed(
+                weights=[avg_weights],
+                integer_portion=3,
+                decimal_portion=4)[0]
+
+        self.width = width
 
         # set input and output width
-        self.INPUT_WIDTH = 1 if bin_input else 16
+        self.INPUT_WIDTH = 1 if bin_input else self.width
         self.SIGNAL_BIT = self.INPUT_WIDTH - 1
         self.SIZE = size*size
 
-        self.mult = FixedPointMultiplier()
+        self.mult = FixedPointMultiplier(width=width)
         return
 
     @block
@@ -65,9 +78,9 @@ class BinConvUnit(BaseComponent):
         second_sum = [Signal(intbv(0, min=-5, max=5)) for _ in range(2)]
         third_sum = Signal(intbv(0, min=-16, max=16))
 
-        kernel = intbv(self.kernel)[16:]
+        kernel = Signal(intbv(self.kernel)[self.width:])
         delta = Signal(intbv(0, min=-(2**15)+1, max=(2**15)-1))
-        mult_ouput = Signal(intbv(0)[16:])
+        mult_ouput = Signal(intbv(0)[self.width:])
 
         multplier_unit = self.mult.rtl(
             clk=clk, reset=reset, param_a=delta, param_b=kernel,
@@ -82,7 +95,7 @@ class BinConvUnit(BaseComponent):
         @always_comb
         def combinational_xor():
             for i in range(self.SIZE):
-                if (wire_inputs[i][self.SIGNAL_BIT] ^ kernel[15]):
+                if (wire_inputs[i][self.SIGNAL_BIT] ^ kernel[self.width-1]):
                     xor_list[i].next = 1
                 else:
                     xor_list[i].next = -1
@@ -168,7 +181,7 @@ class BinConvUnit(BaseComponent):
             "en_mult": Signal(False),
             "en_sum": Signal(False),
             "input": Signal(intbv(0)[self.SIZE*self.INPUT_WIDTH:]),
-            "output": Signal(intbv(0)[16:])
+            "output": Signal(intbv(0)[self.width:])
         }
 
 
@@ -177,7 +190,7 @@ if __name__ == '__main__':
         name = argv[1]
         path = argv[2]
 
-        unit = BinConvUnit(weights=[15.58], size=1, bin_input=True)
+        unit = BinConvUnit(weights=[2.58], size=1, width=8, bin_input=True)
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")

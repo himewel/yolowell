@@ -1,5 +1,6 @@
 from sys import argv
 from math import log, ceil
+from random import randrange
 from myhdl import (always_seq, always_comb, block, Signal, intbv, bin,
                    ResetSignal)
 
@@ -40,14 +41,15 @@ class MultiChannelConvUnit(BaseComponent):
     :param bin_output: flag setting if the output will be truncated to 1 bit
     :type bin_output: bool
     """
-    def __init__(self, channels=0, size=3, binary=False, bin_input=False,
-                 bin_output=False, weights=[], **kwargs):
+    def __init__(self, channels=0, width=16, size=3, binary=False,
+                 bin_input=False, bin_output=False, weights=[], **kwargs):
         super().__init__(**kwargs)
         print("%-24s%-10i%-10i%-16i%-10i%-10s" % ("MultiChannelConvUnit",
               self.layer_id, self.unit_id, self.channel_id, channels, "-"))
 
         self.channels = channels
         self.size = size*size
+        self.width = width
 
         # set coeficients to build the tree adders
         if (self.channels & (self.channels - 1) == 0):
@@ -64,24 +66,25 @@ class MultiChannelConvUnit(BaseComponent):
             bucket_weights.append(weights[i:i+self.size])
 
         # set input and output width
-        self.INPUT_WIDTH = 1 if bin_input else 16
-        self.OUTPUT_WIDTH = 1 if bin_output else 16
+        self.INPUT_WIDTH = 1 if bin_input else self.width
+        self.OUTPUT_WIDTH = 1 if bin_output else self.width
 
         # instantiate binary conv unit if it is setted
         if (binary):
             self.conv_units = [BinConvUnit(
                 layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
-                weights=bucket_weights[i], bin_input=bin_input, size=size)
-                for i in range(self.channels)]
+                weights=bucket_weights[i], bin_input=bin_input, width=width,
+                size=size) for i in range(self.channels)]
         else:
             self.conv_units = [ConvUnit(
                 layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
-                weights=bucket_weights[i], size=size)
+                weights=bucket_weights[i], width=width, size=size)
                 for i in range(self.channels)]
 
         # instantiate batch normalization units
-        self.bn_rom = BnROM(layer_id=self.layer_id, unit_id=self.unit_id)
-        self.bn_multiplier = FixedPointMultiplier()
+        self.bn_rom = tuple([randrange(0, 2**self.width),
+                             randrange(0, 2**self.width)])
+        self.bn_multiplier = FixedPointMultiplier(width=width)
         return
 
     def get_signals(self):
@@ -117,28 +120,28 @@ class MultiChannelConvUnit(BaseComponent):
         :type output: unsigned
         """
         # treatment to generic number of inputs
-        wire_conv_outputs = [Signal(intbv(0)[16:])
+        wire_conv_outputs = [Signal(intbv(0)[self.width:])
                              for _ in range(self.channels)]
         wire_inputs = [Signal(intbv(0)[self.size*self.INPUT_WIDTH:])
                        for _ in range(self.channels)]
 
         # signals readed from ROMs
-        ssi_coef = Signal(intbv(0)[16:])
-        bn_coef = Signal(intbv(0)[16:])
+        ssi_coef = Signal(intbv(self.bn_rom[0])[self.width:])
+        bn_coef = Signal(intbv(self.bn_rom[1])[self.width:])
 
         # pipeline registers
-        reg_accumulator = Signal(intbv(0)[16:])
-        reg_batch = Signal(intbv(0)[16:])
+        reg_accumulator = Signal(intbv(0)[self.width:])
+        reg_batch = Signal(intbv(0)[self.width:])
 
         # convolutinal units instatiation
         conv_units = [self.conv_units[i].rtl(
-                clk=clk, reset=reset, en_mult=en_mult, en_sum=en_sum,
-                input=wire_inputs[i], output=wire_conv_outputs[i],
-            ) for i in range(self.channels)]
+            clk=clk, reset=reset, en_mult=en_mult, en_sum=en_sum,
+            input=wire_inputs[i], output=wire_conv_outputs[i],
+        ) for i in range(self.channels)]
 
         # batch normalization units
-        bn_product = Signal(intbv(0)[16:])
-        bn_rom = self.bn_rom.rtl(clk=clk, q_bn=bn_coef, q_ssi=ssi_coef)
+        bn_product = Signal(intbv(0)[self.width:])
+        # bn_rom = self.bn_rom.rtl(clk=clk, q_bn=bn_coef, q_ssi=ssi_coef)
         bn_multiplier = self.bn_multiplier.rtl(
             clk=clk, reset=reset, param_a=reg_accumulator, param_b=ssi_coef,
             product=bn_product)
@@ -151,7 +154,7 @@ class MultiChannelConvUnit(BaseComponent):
 
         @always_seq(clk.posedge, reset=reset)
         def acc_process():
-            acc = [intbv(0)[16:] for _ in range(self.acc_id)]
+            acc = [intbv(0)[self.width:] for _ in range(self.acc_id)]
             if (en_channel == 1):
                 n_elements = self.half_elements
                 input_index = 0
@@ -188,14 +191,14 @@ class MultiChannelConvUnit(BaseComponent):
         def act_process():
             if (en_act == 1):
                 if (self.OUTPUT_WIDTH == 1):
-                    output.next = reg_batch[15]
+                    output.next = reg_batch[self.width-1]
                 else:
-                    if (reg_batch[15] == 0):
+                    if (reg_batch[self.width-1] == 0):
                         output.next = reg_batch
                     else:
                         output.next = reg_batch >> 3
 
-        return (acc_process, conv_units, bn_rom, bn_multiplier,
+        return (acc_process, conv_units, bn_multiplier,
                 combinational_wire_inputs, batch_process, act_process)
 
     def fix_syntax(self, name="", path=""):
@@ -217,7 +220,8 @@ if __name__ == '__main__':
         name = argv[1]
         path = argv[2]
 
-        unit = MultiChannelConvUnit(channels=3, size=1, weights=[], binary=True)
+        unit = MultiChannelConvUnit(channels=3, size=1, weights=[],
+                                    binary=False)
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")

@@ -18,7 +18,7 @@ def read_floats(file_path="", start=0, final=0):
 
     return weights
 
-def convert_fixed(weights=[]):
+def convert_fixed(weights=[], integer_portion=4, decimal_portion=11):
     """
     This funtion receives a list of weights and convert each one of the
     values to fixed point representation. By default, the decimal portion
@@ -32,11 +32,13 @@ def convert_fixed(weights=[]):
         inteiro = int(abs(w))
         decimal = abs(w - inteiro)
 
-        while decimal*10 <= 2**11 and decimal != 0:
+        while decimal*(decimal_portion-1) <= 2**decimal_portion and decimal != 0:
             decimal *= 10
 
-        num = "{}{}".format('{0:04b}'.format(inteiro),
-                            '{0:011b}'.format(int(decimal)))
+        integer_mask = '{0:0' + str(integer_portion) +'b}'
+        decimal_mask = '{0:0' + str(decimal_portion) +'b}'
+        num = "{}{}".format(integer_mask.format(inteiro),
+                            decimal_mask.format(int(decimal)))
 
         if (sinal == 1):
             num = num.replace("0", "-")
@@ -46,7 +48,9 @@ def convert_fixed(weights=[]):
         else:
             num = int(num, 2)
 
+        fixed_weight_mask = \
+            '{0:0' + str(integer_portion + decimal_portion) + 'b}'
         fixed_weights.append(
             int("{}{}".format('{0:01b}'.format(sinal),
-                              '{0:015b}'.format(int(num))), 2))
+                              fixed_weight_mask.format(int(num))), 2))
     return fixed_weights

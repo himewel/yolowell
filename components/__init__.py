@@ -14,6 +14,8 @@ from .max_pool_unit import MaxPoolUnit
 from .bin_max_pool_unit import BinMaxPoolUnit
 
 from .tri_scatter_unit import TriScatterUnit
+from .dual_scatter_unit import DualScatterUnit
+from .mono_scatter_unit import MonoScatterUnit
 
 from .network_parser import NetworkParser
 

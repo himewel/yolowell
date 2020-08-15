@@ -25,7 +25,7 @@ class ConvLayer(BaseComponent):
     :param bin_output: flag setting if the output will be truncated to 1 bit
     :type bin_output: bool
     """
-    def __init__(self, size=3, channels=0, filters=0, binary=False,
+    def __init__(self, size=3, width=16, channels=0, filters=0, binary=False,
                  bin_input=False, bin_output=False, weights=[], **kwargs):
         super().__init__(**kwargs)
         print("%-24s%-10i%-10i%-16i%-10i%-10s" % ("Convlayer",
@@ -33,6 +33,7 @@ class ConvLayer(BaseComponent):
         self.size = size*size
         self.channels = channels
         self.filters = filters
+        self.width = width
 
         # sort weights in buckets of size^2 values
         bucket_weights = []
@@ -40,13 +41,14 @@ class ConvLayer(BaseComponent):
             bucket_weights.append(weights[i:i+self.size*channels])
 
         # set input and output width
-        self.INPUT_WIDTH = 1 if bin_input else 16
-        self.OUTPUT_WIDTH = 1 if bin_output else 16
+        self.INPUT_WIDTH = 1 if bin_input else self.width
+        self.OUTPUT_WIDTH = 1 if bin_output else self.width
 
         self.mult_channel_conv_units = [MultiChannelConvUnit(
-            layer_id=self.layer_id, unit_id=i, channels=self.channels,
-            binary=binary, bin_input=bin_input, bin_output=bin_output,
-            weights=bucket_weights[i], size=size) for i in range(self.filters)]
+            layer_id=self.layer_id, unit_id=i, width=self.width,
+            channels=self.channels, binary=binary, bin_input=bin_input,
+            bin_output=bin_output, weights=bucket_weights[i], size=size)
+            for i in range(self.filters)]
         return
 
     @block
@@ -183,7 +185,7 @@ if (__name__ == '__main__'):
               "layer_id", "unit_id", "channel_id", "channels", "filters"))
         print(80*"-")
         unit = ConvLayer(channels=3, filters=16, binary=True, bin_input=False,
-                         bin_output=True, weights=weights, size=3)
+                         width=8, bin_output=True, weights=weights, size=3)
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")
