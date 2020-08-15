@@ -28,6 +28,9 @@ tri_scatter:
 dual_scatter:
 	python3 components/dual_scatter_unit.py DualScatterUnit generated
 
+mono_scatter:
+	python3 components/mono_scatter_unit.py MonoScatterUnit generated
+
 buffer_layer:
 	python3 components/buffer_layer.py BufferLayer generated
 
