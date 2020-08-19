@@ -1,4 +1,5 @@
 from sys import argv
+import logging
 from base_component import BaseComponent
 from myhdl import (always_comb, block, Signal, intbv, modbv)
 
@@ -24,6 +25,8 @@ class FixedPointMultiplier(BaseComponent):
     point representation.
     :type product: unsigned (actually a signed value)
     """
+    logger = logging.getLogger(__name__)
+
     def __init__(self, width=16):
         self.width = width
         self.lower_output_bit = int(width - width/2)
@@ -59,7 +62,7 @@ class FixedPointMultiplier(BaseComponent):
         magnitude = Signal(False)
 
         concatenadores = [self.concatenator(param_a=data_a, param_b=data_b,
-            index=i, output=concat_value[i]) for i in range(15)]
+                          index=i, output=concat_value[i]) for i in range(15)]
 
         @always_comb
         def combinatorial_first_sums():

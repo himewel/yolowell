@@ -1,4 +1,5 @@
 from sys import argv
+import logging
 from math import ceil, log
 from base_component import BaseComponent
 from myhdl import (always_comb, always_seq, always, block, Signal, intbv,
@@ -17,11 +18,11 @@ class DualScatterUnit(BaseComponent):
     :param input_size: size of the line_buffers of this unit.
     :type input_size: int
     """
+    logger = logging.getLogger(__name__)
+
     def __init__(self, binary=False, mem_size=0, counter_size=0,
                  **kwargs):
         super().__init__(**kwargs)
-        print("%-24s%-10i%-10i%-16i%-10s%-10s" % ("DualScatterUnit",
-              self.layer_id, self.unit_id, self.channel_id, "-", "-"))
 
         self.INPUT_WIDTH = 1 if binary else 16
 
@@ -53,6 +54,7 @@ class DualScatterUnit(BaseComponent):
         :return: the logic implemented in this block
         :rtype: a method with @block decorator
         """
+
         wire_outputs = [Signal(intbv(0)[self.INPUT_WIDTH:])
                         for _ in range(self.n_outputs)]
 

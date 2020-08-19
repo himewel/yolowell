@@ -1,4 +1,5 @@
 from sys import argv
+import logging
 from math import ceil, log
 from base_component import BaseComponent
 from tri_scatter_unit import TriScatterUnit
@@ -7,11 +8,11 @@ from myhdl import always_comb, always_seq, block, Signal, intbv, ResetSignal
 
 
 class BufferLayer(BaseComponent):
+    logger = logging.getLogger(__name__)
+
     def __init__(self, scattering=3, binary=False, width=416, filters=16,
                  **kwargs):
         super().__init__(**kwargs)
-        print("%-24s%-10i%-10i%-16i%-10i%-10s" % ("BufferLayer",
-              self.layer_id, self.unit_id, self.channel_id, filters, "-"))
 
         self.filters = filters
 
@@ -85,7 +86,7 @@ class BufferLayer(BaseComponent):
             "clk": Signal(False),
             "reset": ResetSignal(0, active=1, isasync=1),
             "input": Signal(intbv(0)[self.filters*self.PORT_WIDTH:]),
-            "output": \
+            "output":
                 Signal(intbv(0)[self.size*self.filters*self.PORT_WIDTH:]),
             "mode": Signal(intbv(0)[self.mode_width:]),
             "en_zero": Signal(False),

@@ -1,4 +1,5 @@
 from sys import argv
+import logging
 from base_component import BaseComponent
 from max_pool_unit import MaxPoolUnit
 from bin_max_pool_unit import BinMaxPoolUnit
@@ -14,10 +15,10 @@ class MaxPoolLayer(BaseComponent):
     :param filters: number of filters inputs to this layer
     :type filters: int
     """
+    logger = logging.getLogger(__name__)
+
     def __init__(self, filters=0, binary=False, **kwargs):
         super().__init__(**kwargs)
-        print("%-24s%-10i%-10i%-16i%-10i%-10s" % ("MaxPoolLayer",
-              self.layer_id, self.unit_id, self.channel_id, filters, "-"))
 
         self.filters = filters
         self.PORT_WIDTH = 1 if binary else 16

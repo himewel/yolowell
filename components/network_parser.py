@@ -1,6 +1,7 @@
 from multiprocessing import Pool
 import yaml
 import os
+from myhdl import ToVHDLWarning
 
 from conv_layer import ConvLayer
 from max_pool_layer import MaxPoolLayer
@@ -84,9 +85,6 @@ class NetworkParser():
         return
 
     def parse_network(self):
-        print("\n" + "%-24s%-10s%-10s%-16s%-10s%-10s" % ("component",
-              "layer_id", "unit_id", "channel_id", "channels", "filters"))
-        print(80*"-")
         # initalize current channe inputs with the network input
         channels = self.input_channels
         # intialize array of layers
@@ -99,7 +97,6 @@ class NetworkParser():
             for layer in group["layers"]:
                 self.__parse_layer(index, layer, filters, channels)
                 index += 1
-                print(80*"-")
             # update number of inputs of the next layers
             channels = filters
         return
@@ -118,7 +115,8 @@ class NetworkParser():
                 name = "{type}{index}".format(type=type, index=i),
                 path = self.output_path
 
-                pool.apply_async(self.call_convertion, (object, name, path))
+                pool.apply_async(self.call_convertion,
+                                 tuple([object, str(name), str(path)]))
 
                 i += 1
                 del self.layers[0]
@@ -128,6 +126,14 @@ class NetworkParser():
 
 
 if __name__ == '__main__':
+    import logging
+    format = ("Layer: %(name)s\nLayer ID: %(layer_id)s\nUnit ID: %(unit_id)s\n"
+              "Channel ID: %(channel_id)s\n"+80*"-")
+    logging.basicConfig(format=format, level=logging.INFO)
+
+    import warnings
+    warnings.filterwarnings("ignore", message="Signal is not driven")
+
     net = NetworkParser("xnor_net.yaml")
     net.parse_network()
     net.generate()

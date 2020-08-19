@@ -1,6 +1,6 @@
 from sys import argv
+import logging
 from base_component import BaseComponent
-from kernel_rom import KernelROM
 from fixed_point_multiplier import FixedPointMultiplier
 from utils import convert_fixed
 from myhdl import always_seq, always_comb, block, Signal, intbv, ResetSignal
@@ -19,12 +19,11 @@ class BinConvUnit(BaseComponent):
     calculated to be propagate to the outputs. The convolutions are maked using
     only the magnitude signal as in binary convolution networks.
     """
+    logger = logging.getLogger(__name__)
+
     def __init__(self, size=3, width=16, bin_input=False, weights=[],
                  **kwargs):
         super().__init__(**kwargs)
-        print("%-24s%-10i%-10i%-16i%-10s%-10s" % ("BinConvUnit", self.layer_id,
-              self.unit_id, self.channel_id, "-", "-"))
-
         # quantify weights
         sum_weights = sum(weights)
         avg_weights = 0 if not sum_weights else sum_weights/len(weights)
@@ -64,8 +63,8 @@ class BinConvUnit(BaseComponent):
         :type en_mult: std_logic
         :param en_sum: enable signal
         :type en_sum: std_logic
-        :param input: vector with the nine input values cancatenated, each value \
-        should be an signed value with 16 bits width
+        :param input: vector with the nine input values cancatenated, each \
+value should be an signed value with 16 bits width
         :type input: std_logic_vector
         :param output: the output value of the convolutions
         :type output: unsigned

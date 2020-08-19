@@ -1,4 +1,5 @@
 from sys import argv
+import logging
 from base_component import BaseComponent
 from multi_channel_conv_unit import MultiChannelConvUnit
 from utils import read_floats
@@ -25,11 +26,12 @@ class ConvLayer(BaseComponent):
     :param bin_output: flag setting if the output will be truncated to 1 bit
     :type bin_output: bool
     """
+    logger = logging.getLogger(__name__)
+
     def __init__(self, size=3, width=16, channels=0, filters=0, binary=False,
                  bin_input=False, bin_output=False, weights=[], **kwargs):
         super().__init__(**kwargs)
-        print("%-24s%-10i%-10i%-16i%-10i%-10s" % ("Convlayer",
-              self.layer_id, self.unit_id, self.channel_id, channels, "-"))
+
         self.size = size*size
         self.channels = channels
         self.filters = filters
@@ -179,13 +181,13 @@ if (__name__ == '__main__'):
         f_index = 9 * 32 * 16
         weights = read_floats(w_path+file, final=f_index+9)
 
-        header = ("component\t\tlayer_id\tunit_id\tchannel_id\tchannels\t" +
+        header = ("component\t\tlayer_id\tunit_id\tchannel_id\tchannels\t"
                   "filters")
         print("\n" + "%-24s%-10s%-10s%-16s%-10s%-10s" % ("component",
               "layer_id", "unit_id", "channel_id", "channels", "filters"))
         print(80*"-")
         unit = ConvLayer(channels=3, filters=16, binary=True, bin_input=False,
-                         width=8, bin_output=True, weights=weights, size=3)
+                         width=8, bin_output=True, weights=weights, size=1)
         unit.convert(name, path)
     else:
         print("file.py <entityname> <outputfile>")

@@ -18,6 +18,7 @@ def read_floats(file_path="", start=0, final=0):
 
     return weights
 
+
 def convert_fixed(weights=[], integer_portion=4, decimal_portion=11):
     """
     This funtion receives a list of weights and convert each one of the
@@ -32,11 +33,12 @@ def convert_fixed(weights=[], integer_portion=4, decimal_portion=11):
         inteiro = int(abs(w))
         decimal = abs(w - inteiro)
 
-        while decimal*(decimal_portion-1) <= 2**decimal_portion and decimal != 0:
+        while (decimal*(decimal_portion-1) <= 2**decimal_portion
+               and decimal != 0):
             decimal *= 10
 
-        integer_mask = '{0:0' + str(integer_portion) +'b}'
-        decimal_mask = '{0:0' + str(decimal_portion) +'b}'
+        integer_mask = '{0:0' + str(integer_portion) + 'b}'
+        decimal_mask = '{0:0' + str(decimal_portion) + 'b}'
         num = "{}{}".format(integer_mask.format(inteiro),
                             decimal_mask.format(int(decimal)))
 

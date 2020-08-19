@@ -1,14 +1,13 @@
 from sys import argv
+import logging
 from math import log, ceil
 from random import randrange
-from myhdl import (always_seq, always_comb, block, Signal, intbv, bin,
-                   ResetSignal)
+from myhdl import (always_seq, always_comb, block, Signal, intbv, ResetSignal)
 
 from fixed_point_multiplier import FixedPointMultiplier
 from base_component import BaseComponent
 from conv_unit import ConvUnit
 from bin_conv_unit import BinConvUnit
-from bn_rom import BnROM
 
 
 class MultiChannelConvUnit(BaseComponent):
@@ -41,11 +40,11 @@ class MultiChannelConvUnit(BaseComponent):
     :param bin_output: flag setting if the output will be truncated to 1 bit
     :type bin_output: bool
     """
+    logger = logging.getLogger(__name__)
+
     def __init__(self, channels=0, width=16, size=3, binary=False,
                  bin_input=False, bin_output=False, weights=[], **kwargs):
         super().__init__(**kwargs)
-        print("%-24s%-10i%-10i%-16i%-10i%-10s" % ("MultiChannelConvUnit",
-              self.layer_id, self.unit_id, self.channel_id, channels, "-"))
 
         self.channels = channels
         self.size = size*size
@@ -113,12 +112,13 @@ class MultiChannelConvUnit(BaseComponent):
         :type en_mult: std_logic
         :param en_sum: enable signal
         :type en_sum: std_logic
-        :param input: vector with the nine input values cancatenated, each value \
-        should be an signed value with 16 bits width
+        :param input: vector with the nine input values cancatenated, each \
+value should be an signed value with 16 bits width
         :type input: std_logic_vector
         :param output: the output value of the convolutions
         :type output: unsigned
         """
+
         # treatment to generic number of inputs
         wire_conv_outputs = [Signal(intbv(0)[self.width:])
                              for _ in range(self.channels)]
@@ -185,7 +185,7 @@ class MultiChannelConvUnit(BaseComponent):
         @always_seq(clk.posedge, reset=reset)
         def batch_process():
             if (en_batch == 1):
-                reg_batch.next = bn_product  + bn_coef
+                reg_batch.next = bn_product + bn_coef
 
         @always_seq(clk.posedge, reset=reset)
         def act_process():

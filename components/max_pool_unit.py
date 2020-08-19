@@ -1,4 +1,5 @@
 from sys import argv
+import logging
 from base_component import BaseComponent
 from myhdl import always_seq, always_comb, block, Signal, intbv, ResetSignal
 
@@ -22,10 +23,10 @@ class MaxPoolUnit(BaseComponent):
     :param output: the output value of the comparations
     :type output: unsigned
     """
+    logger = logging.getLogger(__name__)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        print("%-24s%-10i%-10i%-16i%-10s%-10s" % ("MaxPoolUnit",
-              self.layer_id, self.unit_id, self.channel_id, "-", "-"))
 
     @block
     def rtl(self, clk, reset, en_pool, input, output):

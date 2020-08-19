@@ -19,6 +19,7 @@ class BaseComponent():
     :param channel_id: index of the channel input inside a unit
     :type channel_id: int
     """
+
     def __init__(self, layer_id=0, channel_id=0, unit_id=0, convert=""):
         self.n_channels = [3, 16, 32, 64, 16, 32, 64, 16, 32, 64]
         self.n_filters = [16, 32, 64, 64, 128, 256, 512, 1024, 32, 64]
@@ -27,6 +28,12 @@ class BaseComponent():
         self.layer_id = layer_id
         self.channel_id = channel_id
         self.unit_id = unit_id
+
+        self.logger.info("", extra={
+            'layer_id': self.layer_id,
+            'channel_id': self.channel_id,
+            'unit_id': self.unit_id
+        })
 
         if (convert != ""):
             self.convert(convert)
