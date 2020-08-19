@@ -1,8 +1,11 @@
+from multiprocessing import Pool
+import yaml
+import os
+
 from conv_layer import ConvLayer
 from max_pool_layer import MaxPoolLayer
 from buffer_layer import BufferLayer
 from utils import read_floats
-import yaml
 
 
 class NetworkParser():
@@ -24,18 +27,18 @@ class NetworkParser():
         self.weights_end_index = 0
         pass
 
-    def __parse_layer(self, layer, filters, channels):
+    def __parse_layer(self, index, layer, filters, channels):
         if (layer["type"] == "conv_layer"):
-            self.__parse_conv_layer(layer, filters, channels)
+            self.__parse_conv_layer(index, layer, filters, channels)
         elif (layer["type"] == "max_pool_layer"):
-            self.__parse_max_pool_layer(layer, filters, channels)
+            self.__parse_max_pool_layer(index, layer, filters, channels)
         elif (layer["type"] == "buffer_layer"):
-            self.__parse_buffer_layer(layer, filters, channels)
+            self.__parse_buffer_layer(index, layer, filters, channels)
         else:
             print("Layer type not recognized: " + layer["type"])
         pass
 
-    def __parse_conv_layer(self, layer, filters, channels):
+    def __parse_conv_layer(self, index, layer, filters, channels):
         size = layer["size"]
         binary = layer["binary"]
         bin_input = layer["bin_input"]
@@ -51,24 +54,24 @@ class NetworkParser():
         self.layers.append({
             "type": "conv_layer",
             "object": ConvLayer(
-                size=size, filters=filters, channels=channels,
-                binary=binary, bin_input=bin_input,
-                bin_output=bin_output, weights=layer_weights)
+                size=size, filters=filters, channels=channels, binary=binary,
+                bin_input=bin_input, bin_output=bin_output,
+                weights=layer_weights, layer_id=index)
         })
         return
 
-    def __parse_max_pool_layer(self, layer, filters, channels):
+    def __parse_max_pool_layer(self, index, layer, filters, channels):
         binary = layer["binary"]
         self.width /= 2
 
         self.layers.append({
             "type": "max_pool_layer",
             "object": MaxPoolLayer(
-                binary=binary, filters=filters)
+                binary=binary, filters=filters, layer_id=index)
         })
         return
 
-    def __parse_buffer_layer(self, layer, filters, channels):
+    def __parse_buffer_layer(self, index, layer, filters, channels):
         binary = layer["binary"]
         scattering = layer["scattering"]
 
@@ -76,10 +79,9 @@ class NetworkParser():
             "type": "buffer_layer",
             "object": BufferLayer(
                 binary=binary, filters=filters, scattering=scattering,
-                width=self.width)
+                width=self.width, layer_id=index)
         })
         return
-
 
     def parse_network(self):
         print("\n" + "%-24s%-10s%-10s%-16s%-10s%-10s" % ("component",
@@ -89,24 +91,40 @@ class NetworkParser():
         channels = self.input_channels
         # intialize array of layers
         self.layers = []
+        index = 0
 
         for group in self.layer_groups:
             # get the number of outputs of the current group
             filters = group["filters"]
             for layer in group["layers"]:
-                self.__parse_layer(layer, filters, channels)
+                self.__parse_layer(index, layer, filters, channels)
+                index += 1
                 print(80*"-")
             # update number of inputs of the next layers
             channels = filters
         return
 
+    def call_convertion(self, object, name, path):
+        object.convert(name, path)
+
     def generate(self):
-        for i in range(len(self.layers)):
-            layer = self.layers[i]
-            type = layer["type"]
-            object = layer["object"]
-            object.convert(name="{type}{index}".format(type=type, index=i),
-                           path=self.output_path)
+        with Pool(processes=(round(os.cpu_count()*3/4))) as pool:
+            i = 0
+            while len(self.layers) > 0:
+                layer = self.layers[0]
+                type = layer["type"]
+                object = layer["object"]
+
+                name = "{type}{index}".format(type=type, index=i),
+                path = self.output_path
+
+                pool.apply_async(self.call_convertion, (object, name, path))
+
+                i += 1
+                del self.layers[0]
+
+            pool.close()
+            pool.join()
 
 
 if __name__ == '__main__':
