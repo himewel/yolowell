@@ -10,6 +10,10 @@ from hwt.synthesizer.hObjList import HObjList
 
 
 class FixedPointMultiplier(Unit):
+    """
+    .. hwt-schematic::
+    """
+
     def __init__(self, width=16, pixel_id=0, **kwargs):
         self.logger = logging.getLogger(self.__class__.__name__)
 
@@ -105,6 +109,10 @@ class FixedPointMultiplier(Unit):
 
 
 class ConcatValues(Unit):
+    """
+    .. hwt-schematic::
+    """
+
     def __init__(self, index=0, pixel_id=0, width=0, **kwargs):
         self.logger = logging.getLogger(self.__class__.__name__)
 

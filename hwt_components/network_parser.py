@@ -2,7 +2,7 @@ import yaml
 import logging
 
 from conv_layer import ConvLayer
-# from max_pool_layer import MaxPoolLayer
+from max_pool_layer import MaxPoolLayer
 # from buffer_layer import BufferLayer
 from utils import read_floats
 
@@ -97,15 +97,23 @@ class NetworkParser():
         binary = layer["binary"]
         self.width /= 2
 
-        layer = MaxPoolLayer(
-            binary=binary, filters=filters, layer_id=index, top_entity=False)
+        layer = {
+            "class": MaxPoolLayer,
+            "filename": f"MaxPoolLayerL{index}",
+            "path": f"{self.output_path}/MaxPoolLayerL{index}",
+            "args": {
+                "filters": filters,
+                "binary": binary,
+                "layer_id": index
+            }
+        }
         self.layers.append(layer)
 
     def __parse_buffer_layer(self, index, layer, filters, channels):
         binary = layer["binary"]
         scattering = layer["scattering"]
 
-        layer = BufferLayer(
+        layer = BufferLayer(  # noqa
             binary=binary, filters=filters, scattering=scattering,
             width=self.width, layer_id=index, top_entity=False)
         self.layers.append(layer)
@@ -173,7 +181,7 @@ def worker_process(layer_class, path, name, convert_function, **kwargs):
 
 
 if __name__ == '__main__':
-    from utils import get_file_logger, get_std_logger, to_vhdl
+    from utils import get_file_logger, get_std_logger, to_vhdl  # noqa
     # get_file_logger()
     get_std_logger()
     net = NetworkParser("xnor_net.yaml")
