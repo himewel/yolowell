@@ -112,70 +112,44 @@ def get_std_logger():
     return logger
 
 
-def to_vhdl(unit=None, path="", name=""):
-    from hwt.synthesizer.utils import to_rtl, to_rtl_str
-    from hwt.serializer.vhdl import Vhdl2008Serializer
-    import os
-    os.makedirs(path, exist_ok=True)
-    unit.logger.info(f"Healthcheck: PID {os.getpid()}")
-
+def to_vhdl(unit=None, path=".", name=""):
     print("Converting hdl file... ", end="")
+    from hwt.serializer.vhdl import Vhdl2008Serializer
+    save_file(unit, Vhdl2008Serializer, path, name)
+    print("Ok!")
+
+
+def to_verilog(unit=None, path=".", name=""):
+    print("Converting hdl file... ", end="")
+    from hwt.serializer.verilog import VerilogSerializer
+    save_file(unit, VerilogSerializer, path, name)
+    print("Ok!")
+
+
+def to_systemc(unit=None, path=".", name=""):
+    from hwt.serializer.systemC import SystemCSerializer
+    print("Converting hdl file... ", end="")
+    save_file(unit, SystemCSerializer, path, name)
+    print("Ok!")
+
+
+def save_file(unit, serializer, path, name):
+    from hwt.synthesizer.utils import to_rtl, to_rtl_str
+    import os
+
+    os.makedirs(path, exist_ok=True)
+    unit.logger.info(f"Worker healthcheck: PID {os.getpid()}")
+
+    file_extension = serializer.fileExtension
     unit.logger.info(f"Process {unit.process_id} Layer {unit.layer_id} "
                      f"Unit {unit.unit_id} Channel {unit.channel_id} WRITER")
-    unit.logger.info(f"Converting to VHDL in {path}/{name}.vhd")
+    unit.logger.info(f"Converting to {file_extension} in "
+                     f"{path}/{name}{file_extension}")
 
     if (unit.top_entity):
-        store_manager = SaveTopEntity(Vhdl2008Serializer, path, name)
+        store_manager = SaveTopEntity(serializer, path, name)
         to_rtl(unit, store_manager)
     else:
-        code = to_rtl_str(unit, serializer_cls=Vhdl2008Serializer)
-        unit.logger.info(f"Converting to VHDL in {path}/{name}.vhd")
-        with open(f"{path}/{name}.vhd", "w") as file:
+        code = to_rtl_str(unit, serializer_cls=serializer)
+        with open(f"{path}/{name}{file_extension}", "w") as file:
             file.write(code)
-    print("Ok!")
-
-
-def to_verilog(unit=None, path=""):
-    from hwt.synthesizer.utils import to_rtl, to_rtl_str
-    from hwt.serializer.verilog import VerilogSerializer
-    from hwt.synthesizer.dummyPlatform import DummyPlatform
-
-    healthcheck(unit)
-    name = unit._name if unit._name else unit._getDefaultName()
-
-    print("Converting hdl file... ", end="")
-    unit.logger.info(f"Process {unit.process_id} Layer {unit.layer_id} "
-                     f"Unit {unit.unit_id} Channel {unit.channel_id} WRITER")
-    unit.logger.info(f"Converting to Verilog in {path}/{name}.v")
-
-    if (unit.top_entity):
-        store_manager = SaveTopEntity(VerilogSerializer, path, name)
-        to_rtl(unit, store_manager, None, DummyPlatform())
-    else:
-        code = to_rtl_str(unit, serializer_cls=VerilogSerializer)
-        with open(f"{path}/{unit._name}.v", "w") as file:
-            file.write(code)
-    print("Ok!")
-
-
-def to_systemc(unit=None, path=""):
-    from hwt.synthesizer.utils import to_rtl, to_rtl_str
-    from hwt.serializer.systemC import SystemCSerializer
-    from hwt.synthesizer.dummyPlatform import DummyPlatform
-
-    healthcheck(unit)
-    name = unit._name if unit._name else unit._getDefaultName()
-
-    print("Converting hdl file... ", end="")
-    unit.logger.info(f"Process {unit.process_id} Layer {unit.layer_id} "
-                     f"Unit {unit.unit_id} Channel {unit.channel_id} WRITER")
-    unit.logger.info(f"Converting to SystemC in {path}/{name}.cpp")
-
-    if (unit.top_entity):
-        store_manager = SaveTopEntity(SystemCSerializer, path, name)
-        to_rtl(unit, store_manager, None, DummyPlatform())
-    else:
-        code = to_rtl_str(unit, serializer_cls=SystemCSerializer)
-        with open(f"{path}/{unit._name}.cpp", "w") as file:
-            file.write(code)
-    print("Ok!")
