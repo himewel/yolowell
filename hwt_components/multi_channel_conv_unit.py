@@ -3,6 +3,7 @@ from math import log, ceil
 
 from utils import print_info
 from bin_conv_unit import BinConvUnit
+from conv_unit import ConvUnit
 
 from hwt.code import If
 from hwt.hdl.types.bits import Bits
@@ -68,7 +69,11 @@ class MultiChannelConvUnit(Unit):
                 width=self.width, size=self.size, process_id=self.process_id)
                 for i in range(self.channels))
         else:
-            pass
+            self.conv_units = HObjList(ConvUnit(
+                layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
+                weights=self.bucket_weights[i], bin_input=self.bin_input,
+                width=self.width, size=self.size, process_id=self.process_id)
+                for i in range(self.channels))
 
         name = "MultiChannelConvUnitL{layer}F{filter}P{process}".format(
             layer=self.layer_id,
