@@ -12,10 +12,10 @@ class BinConvUnit(Unit):
     """
     .. hwt-schematic::
     """
-    logger = logging.getLogger(__name__)
 
     def __init__(self, size=9, width=16, bin_input=False, weights=[15],
                  **kwargs):
+        self.logger = logging.getLogger(self.__class__.__name__)
         sum_weights = sum(weights)
         avg_weights = 0 if not sum_weights \
             else sum_weights/len(weights)
@@ -106,8 +106,8 @@ class BinConvUnit(Unit):
 
         signed_kernel = kernel._convSign(True)
         cast(delta * signed_kernel)
-        resized_cast = \
-            cast[self.lower_output_bit+self.width:self.lower_output_bit]
+        resized_cast = cast[self.lower_output_bit+self.width:
+                            self.lower_output_bit]
 
         # different cases to different number of inputs
         if (self.SIZE == 9):
@@ -151,14 +151,13 @@ class BinConvUnit(Unit):
 
 if __name__ == "__main__":
     from sys import argv
-    from utils import to_vhdl, get_logger
+    from utils import to_vhdl, get_std_logger
 
     if (len(argv) > 1):
         path = argv[1]
 
-        get_logger()
+        get_std_logger()
         unit = BinConvUnit(weights=[2.58], size=9, width=8, bin_input=False)
-        unit._hdl_module_name = "teste"
         to_vhdl(unit, path)
     else:
         print("file.py <outputpath>")

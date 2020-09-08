@@ -138,6 +138,9 @@ class NetworkParser():
         self.logger.info(f"Multiprocessing: {cores} cpus...")
 
         pool = Pool(processes=cores)
+        for i in range(cores):
+            pool.apply_async(func=worker_healthcheck)
+
         for i in range(len(layers)):
             layer = layers[i]
             layer_class = layer["class"]
@@ -153,6 +156,13 @@ class NetworkParser():
         pool.join()
 
 
+def worker_healthcheck():
+    import logging
+    import os
+    logger = logging.getLogger("Worker")
+    logger.info(f"Worker healthcheck: PID {os.getpid()}")
+
+
 def worker_process(layer_class, path, name, convert_function, **kwargs):
     unit = layer_class(**kwargs)
     try:
@@ -163,9 +173,9 @@ def worker_process(layer_class, path, name, convert_function, **kwargs):
 
 
 if __name__ == '__main__':
-    from utils import get_file_logger, to_vhdl
-    get_file_logger()
-    # utils.get_std_logger()
+    from utils import get_file_logger, get_std_logger, to_vhdl
+    # get_file_logger()
+    get_std_logger()
     net = NetworkParser("xnor_net.yaml")
     layers = net.parse_network()
     net.generate(layers, to_vhdl)
