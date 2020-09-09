@@ -57,8 +57,8 @@ class ConvLayer(Unit):
             # instantiate empty ConvLayerPart
             self.conv_layer_part = HObjList(ConvLayerPart(
                 input_width=self.size*self.channels*self.INPUT_WIDTH,
-                output_width=output_width,
-                layer_id=self.layer_id, process_id=i)
+                output_width=output_width, layer_id=self.layer_id,
+                process_id=i, log_level=0)
                 for i in range(self.parallelism))
             name = f"ConvLayerL{self.layer_id}"
         else:
@@ -67,8 +67,8 @@ class ConvLayer(Unit):
                 layer_id=self.layer_id, unit_id=i, width=self.width,
                 channels=self.channels, binary=self.binary, size=self.size,
                 bin_input=self.bin_input, bin_output=self.bin_output,
-                weights=self.bucket_weights[i], process_id=self.process_id)
-                for i in range(self.filters))
+                weights=self.bucket_weights[i], process_id=self.process_id,
+                log_level=self.log_level+1) for i in range(self.filters))
             name = f"ConvLayerL{self.layer_id}P{self.process_id}"
         self._hdl_module_name = name
         self._name = name
@@ -97,7 +97,7 @@ class ConvLayer(Unit):
 
 class ConvLayerPart(Unit):
     def __init__(self, input_width=9, output_width=1, layer_id=0,
-                 process_id=0):
+                 process_id=0, **kwargs):
         self.input_width = input_width
         self.output_width = output_width
 

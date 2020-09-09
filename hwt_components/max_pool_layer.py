@@ -31,8 +31,8 @@ class MaxPoolLayer(Unit):
 
         self.pool_unit = HObjList(MaxPoolUnit(
             width=self.width, binary=self.binary, layer_id=self.layer_id,
-            unit_id=i, channel_id=self.channel_id, process_id=self.process_id)
-            for i in range(self.filters))
+            unit_id=i, channel_id=self.channel_id, process_id=self.process_id,
+            log_level=self.log_level+1) for i in range(self.filters))
 
         name = "MaxPoolLayerL{layer}F{filter}C{channel}P{process}".format(
             layer=self.layer_id,

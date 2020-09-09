@@ -89,8 +89,12 @@ def print_info(self, **kwargs):
     self.layer_id = kwargs.get("layer_id", 0)
     self.unit_id = kwargs.get("unit_id", 0)
     self.channel_id = kwargs.get("channel_id", 0)
-    self.logger.info(f"Process {self.process_id} Layer {self.layer_id} "
-                     f"Unit {self.unit_id} Channel {self.channel_id} PARSER")
+    self.log_level = kwargs.get("log_level", 0)
+
+    if self.log_level < 2:
+        self.logger.info(f"Process {self.process_id} Layer {self.layer_id} "
+                         f"Unit {self.unit_id} Channel {self.channel_id} "
+                         "PARSER")
 
 
 def get_file_logger():

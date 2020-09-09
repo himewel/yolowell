@@ -46,7 +46,7 @@ class ConvUnit(Unit):
         self.multiplier = HObjList(FixedPointMultiplier(
             width=self.width, layer_id=self.layer_id, unit_id=self.unit_id,
             channel_id=self.channel_id, process_id=self.process_id,
-            pixel_id=i) for i in range(self.size))
+            pixel_id=i, log_level=self.log_level+1) for i in range(self.size))
 
         name = "ConvUnitL{layer}F{filter}C{channel}P{process}".format(
             layer=self.layer_id,

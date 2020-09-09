@@ -66,14 +66,14 @@ class MultiChannelConvUnit(Unit):
             self.conv_units = HObjList(BinConvUnit(
                 layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
                 weights=self.bucket_weights[i], bin_input=self.bin_input,
-                width=self.width, size=self.size, process_id=self.process_id)
-                for i in range(self.channels))
+                width=self.width, size=self.size, process_id=self.process_id,
+                log_level=self.log_level+1) for i in range(self.channels))
         else:
             self.conv_units = HObjList(ConvUnit(
                 layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
                 weights=self.bucket_weights[i], bin_input=self.bin_input,
-                width=self.width, size=self.size, process_id=self.process_id)
-                for i in range(self.channels))
+                width=self.width, size=self.size, process_id=self.process_id,
+                log_level=self.log_level+1) for i in range(self.channels))
 
         name = "MultiChannelConvUnitL{layer}F{filter}P{process}".format(
             layer=self.layer_id,

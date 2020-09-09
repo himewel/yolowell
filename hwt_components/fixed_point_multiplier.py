@@ -35,8 +35,8 @@ class FixedPointMultiplier(Unit):
         self.concat_units = HObjList(ConcatValues(
             index=i, layer_id=self.layer_id, unit_id=self.unit_id,
             channel_id=self.channel_id, process_id=self.process_id,
-            pixel_id=self.pixel_id, width=self.width)
-            for i in range(15))
+            pixel_id=self.pixel_id, width=self.width,
+            log_level=self.log_level+1) for i in range(15))
 
         name = ("FixedPointMultiplierL{layer}F{filter}C{channel}Px{pixel}"
                 "P{process}").format(
