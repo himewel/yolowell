@@ -26,7 +26,7 @@ class MaxPoolUnit(Unit):
         self.rst = Signal()
         self.en_pool = Signal()
         self.input = VectSignal(self.width*4)
-        self.output = VectSignal(self.width)._m()
+        self.output = VectSignal(self.width, signed=True)._m()
 
         name = "MaxPoolUnitL{layer}F{filter}C{channel}P{process}".format(
             layer=self.layer_id,
@@ -37,50 +37,42 @@ class MaxPoolUnit(Unit):
         self._hdl_module_name = name
 
     def __comparison(self, param_a, param_b, out):
-        If(
-            param_a > param_b,
-            out(param_a)
-        ).Else(
-            out(param_b)
-        )
+        return If(param_a > param_b, out(param_a)).Else(out(param_b))
 
     def __bin_comparison(self, param_a, param_b, out):
-        If(
-            param_a & param_b,
-            out(param_a)
-        ).Else(
-            out(param_b)
-        )
+        return If(param_a & param_b, out(param_a)).Else(out(param_b))
 
     def _impl(self):
         signal_width = Bits(bit_length=self.width, force_vector=True)
+        inputs = [self._sig(name=f"input{i}", dtype=signal_width)
+                  for i in range(4)]
+        for i in range(4):
+            inputs[i](self.input[(i+1)*self.width:i*self.width])
+
         first_pool0 = self._sig(name="first_pool0", dtype=signal_width)
         first_pool1 = self._sig(name="first_pool1", dtype=signal_width)
+        pool_result = self._sig(name="pool_result", dtype=signal_width)
 
-        if self.binary:
-            compare_function = self.__bin_comparison
-        else:
-            compare_function = self.__comparison
+        comparison = self.__bin_comparison if self.binary \
+            else self.__comparison
 
-        compare_function(
-            self.input[self.width:],
-            self.input[2*self.width:self.width],
-            first_pool0)
-        compare_function(
-            self.input[4*self.width:3*self.width],
-            self.input[3*self.width:2*self.width],
-            first_pool1)
+        comparison(inputs[0], inputs[1], first_pool0)
+        comparison(inputs[2], inputs[3], first_pool1)
 
         If(
             self.rst,
-            self.output(0)
+            pool_result(0)
         ).Else(
-            self.clk._onRisingEdge(),
             If(
-                self.en_pool,
-                compare_function(first_pool0, first_pool1, self.output)
+                self.clk._onRisingEdge(),
+                If(
+                    self.en_pool,
+                    comparison(first_pool0, first_pool1, pool_result)
+                )
             )
         )
+
+        self.output(pool_result)
 
 
 if __name__ == '__main__':
@@ -91,7 +83,7 @@ if __name__ == '__main__':
         path = argv[1]
 
         get_std_logger()
-        unit = MaxPoolUnit(width=16)
+        unit = MaxPoolUnit(width=8, binary=True)
         to_vhdl(unit, path)
     else:
         print("file.py <outputpath>")
