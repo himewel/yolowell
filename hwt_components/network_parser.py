@@ -44,7 +44,7 @@ class NetworkParser():
         binary = layer["binary"]
         bin_input = layer["bin_input"]
         bin_output = layer["bin_output"]
-        parallelism = layer.get("parallelism", 1)
+        parallelism = layer.get("parallelism", 4)
         proccess_filters = int(filters/parallelism)
 
         for process_id in range(parallelism):
@@ -182,8 +182,8 @@ def worker_process(layer_class, path, name, convert_function, **kwargs):
 
 if __name__ == '__main__':
     from utils import get_file_logger, get_std_logger, to_vhdl  # noqa
-    # get_file_logger()
-    get_std_logger()
+    get_file_logger()
+    # get_std_logger()
     net = NetworkParser("xnor_net.yaml")
     layers = net.parse_network()
     net.generate(layers, to_vhdl)
