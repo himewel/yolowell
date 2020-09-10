@@ -7,4 +7,6 @@ from .fixed_point_multiplier import FixedPointMultiplier
 from .max_pool_layer import MaxPoolLayer
 from .max_pool_unit import MaxPoolUnit
 
+from .network_parser import NetworkParser
+
 from .utils import read_floats, float2fixed, print_info, get_logger, to_vhdl

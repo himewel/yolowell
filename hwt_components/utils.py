@@ -16,6 +16,7 @@ class SaveTopEntity(StoreManager):
             return
         f_name = name + self.serializer_cls.fileExtension
         fp = os.path.join(self.root, f_name)
+        self.filepath = fp
 
         with open(fp, 'w') as f:
             s = SaveToStream(self.serializer_cls, f, self.filter,
@@ -119,22 +120,25 @@ def get_std_logger():
 def to_vhdl(unit=None, path=".", name=""):
     print("Converting hdl file... ", end="")
     from hwt.serializer.vhdl import Vhdl2008Serializer
-    save_file(unit, Vhdl2008Serializer, path, name)
+    file = save_file(unit, Vhdl2008Serializer, path, name)
     print("Ok!")
+    return file
 
 
 def to_verilog(unit=None, path=".", name=""):
     print("Converting hdl file... ", end="")
     from hwt.serializer.verilog import VerilogSerializer
-    save_file(unit, VerilogSerializer, path, name)
+    file = save_file(unit, VerilogSerializer, path, name)
     print("Ok!")
+    return file
 
 
 def to_systemc(unit=None, path=".", name=""):
     from hwt.serializer.systemC import SystemCSerializer
     print("Converting hdl file... ", end="")
-    save_file(unit, SystemCSerializer, path, name)
+    file = save_file(unit, SystemCSerializer, path, name)
     print("Ok!")
+    return file
 
 
 def save_file(unit, serializer, path, name):
@@ -153,7 +157,9 @@ def save_file(unit, serializer, path, name):
     if (unit.top_entity):
         store_manager = SaveTopEntity(serializer, path, name)
         to_rtl(unit, store_manager)
+        return store_manager.filepath
     else:
         code = to_rtl_str(unit, serializer_cls=serializer)
         with open(f"{path}/{name}{file_extension}", "w") as file:
             file.write(code)
+        return f"{path}/{name}{file_extension}"

@@ -18,6 +18,7 @@ class NetworkParser():
         self.input_channels = network["channels"]
         self.layer_groups = network["layer_groups"]
         self.width = network["width"]
+        self.project = network.get("project", "darknet_hdl.qsf")
 
         # parse the file with weights
         self.logger.info("Reading weights...")
@@ -44,7 +45,7 @@ class NetworkParser():
         binary = layer["binary"]
         bin_input = layer["bin_input"]
         bin_output = layer["bin_output"]
-        parallelism = layer.get("parallelism", 4)
+        parallelism = layer.get("parallelism", 8)
         proccess_filters = int(filters/parallelism)
 
         for process_id in range(parallelism):
@@ -100,7 +101,7 @@ class NetworkParser():
         layer = {
             "class": MaxPoolLayer,
             "filename": f"MaxPoolLayerL{index}",
-            "path": f"{self.output_path}/MaxPoolLayerL{index}",
+            "path": f"{self.output_path}",
             "args": {
                 "filters": filters,
                 "binary": binary,
@@ -136,6 +137,18 @@ class NetworkParser():
             channels = filters
         del self.weights
         return self.layers
+
+    def build_project(self, layers):
+        text = "\n"
+        for i in range(len(layers)-1, -1, -1):
+            filename = f"{layers[i]['filename']}.vhd"
+            path = f"{layers[i]['path']}"
+
+            text += "set_global_assignment -name VHDL_FILE "
+            text += f"{path}/{filename}\n"
+
+        with open(self.project, "a+") as file:
+            file.write(text)
 
     def generate(self, layers, convert_function):
         from multiprocessing import Pool
@@ -182,8 +195,9 @@ def worker_process(layer_class, path, name, convert_function, **kwargs):
 
 if __name__ == '__main__':
     from utils import get_file_logger, get_std_logger, to_vhdl  # noqa
-    get_file_logger()
-    # get_std_logger()
+    # get_file_logger()
+    get_std_logger()
     net = NetworkParser("xnor_net.yaml")
     layers = net.parse_network()
     net.generate(layers, to_vhdl)
+    net.build_project(layers)
