@@ -15,7 +15,7 @@ class MaxPoolLayer(Unit):
 
     def __init__(self, width=16, filters=0, binary=False, **kwargs):
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.width = width
+        self.width = width if not binary else 1
         self.filters = filters
         self.binary = binary
         self.top_entity = False
@@ -34,11 +34,7 @@ class MaxPoolLayer(Unit):
             unit_id=i, channel_id=self.channel_id, process_id=self.process_id,
             log_level=self.log_level+1) for i in range(self.filters))
 
-        name = "MaxPoolLayerL{layer}F{filter}C{channel}P{process}".format(
-            layer=self.layer_id,
-            filter=self.unit_id,
-            channel=self.channel_id,
-            process=self.process_id)
+        name = f"MaxPoolLayerL{self.layer_id}"
         self._name = name
         self._hdl_module_name = name
 
