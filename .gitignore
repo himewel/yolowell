@@ -16,3 +16,4 @@ generated/*
 *.qpf
 *.qsf
 *.log
+*.vhd
