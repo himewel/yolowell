@@ -161,7 +161,7 @@ class MultiChannelConvUnit(Unit):
         bn_product = self._sig(name="bn_product", dtype=data_width)
         ssi_coef = self._sig(name="ssi_coef", dtype=data_width,
                              def_val=self.ssi_coef)
-        bn_coef = self._sig(name="ssi_coef", dtype=data_width,
+        bn_coef = self._sig(name="bn_coef", dtype=data_width,
                             def_val=self.bn_coef)
         cast = self._sig(name="cast_mult", dtype=mult_data_width)
         cast(reg_accumulator * ssi_coef)
