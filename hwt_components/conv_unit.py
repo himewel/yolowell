@@ -1,6 +1,6 @@
 import logging
 
-from utils import float2fixed, print_info
+from utils import print_info
 from fixed_point_multiplier import FixedPointMultiplier
 
 from hwt.code import If
@@ -8,29 +8,20 @@ from hwt.hdl.types.bits import Bits
 from hwt.interfaces.std import Signal, VectSignal
 from hwt.synthesizer.unit import Unit
 from hwt.synthesizer.hObjList import HObjList
+from hwt.serializer.mode import serializeParamsUniq
 
 
+@serializeParamsUniq
 class ConvUnit(Unit):
     """
     .. hwt-schematic::
     """
 
-    def __init__(self, size=9, width=16, weights=[], **kwargs):
+    def __init__(self, size=9, width=16, **kwargs):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.size = size
         self.width = width
         self.top_entity = False
-
-        if (width == 16):
-            self.kernel = float2fixed(
-                weights=weights,
-                integer_portion=4,
-                decimal_portion=11)
-        else:
-            self.kernel = float2fixed(
-                weights=weights,
-                integer_portion=3,
-                decimal_portion=4)
 
         print_info(self, **kwargs)
         super().__init__()
@@ -43,16 +34,15 @@ class ConvUnit(Unit):
         self.input = VectSignal(self.width*self.size)
         self.output = VectSignal(self.width, signed=True)._m()
 
+        for i in range(self.size):
+            setattr(self, f"kernel_{i}", VectSignal(self.width))
+
         self.multiplier = HObjList(FixedPointMultiplier(
             width=self.width, layer_id=self.layer_id, unit_id=self.unit_id,
             channel_id=self.channel_id, process_id=self.process_id,
             pixel_id=i, log_level=self.log_level+1) for i in range(self.size))
 
-        name = "ConvUnitL{layer}F{filter}C{channel}P{process}".format(
-            layer=self.layer_id,
-            filter=self.unit_id,
-            channel=self.channel_id,
-            process=self.process_id)
+        name = f"ConvUnitL{self.layer_id}"
         self._name = name
         self._hdl_module_name = name
 
@@ -83,7 +73,7 @@ class ConvUnit(Unit):
             multiplier.clk(self.clk)
             multiplier.rst(self.rst)
             multiplier.param_a(self.input[self.width*(i+1):self.width*i])
-            multiplier.param_b(self.kernel[i])
+            multiplier.param_b(getattr(self, f"kernel_{i}"))
 
             If(
                 self.rst,
@@ -136,7 +126,7 @@ if __name__ == '__main__':
         path = argv[1]
 
         get_std_logger()
-        unit = ConvUnit(weights=9*[2.59], size=1, width=16)
+        unit = ConvUnit(size=1, width=16)
         to_vhdl(unit, path)
     else:
         print("file.py <outputpath>")

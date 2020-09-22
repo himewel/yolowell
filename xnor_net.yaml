@@ -1,5 +1,6 @@
-weights: "/content/yolov3_tiny_weights.h"
-output_path: "/content"
+weights: "/home/welberthime/Documentos/nios-darknet/include/yolov3_tiny/yolov3_tiny_weights.h"
+output_path: "/home/welberthime/Documentos/nios-darknet/darknet_hdl/generated"
+project: "/home/welberthime/Documentos/nios-darknet/darknet_hdl/darknet_hdl.qsf"
 width: 416
 channels: 3
 layer_groups:
@@ -7,18 +8,19 @@ layer_groups:
 - filters: 16
   layers:
   - type: conv_layer
+    parallelism: 4
     size: 3
     binary: False
     bin_input: False
     bin_output: True
-  - type: buffer_layer
-    binary: True
-    scattering: 2
+#   - type: buffer_layer
+#     binary: True
+#     scattering: 2
   - type: max_pool_layer
     binary: True
-  - type: buffer_layer
-    binary: True
-    scattering: 3
+#   - type: buffer_layer
+#     binary: True
+#     scattering: 3
 # -----------------------------------------------------------------------------
 - filters: 32
   layers:
@@ -27,14 +29,14 @@ layer_groups:
     binary: True
     bin_input: True
     bin_output: True
-  - type: "buffer_layer"
-    binary: True
-    scattering: 2
+#   - type: "buffer_layer"
+#     binary: True
+#     scattering: 2
   - type: "max_pool_layer"
     binary: True
-  - type: "buffer_layer"
-    binary: True
-    scattering: 3
+#   - type: "buffer_layer"
+#     binary: True
+#     scattering: 3
 # -----------------------------------------------------------------------------
 - filters: 64
   layers:
@@ -43,64 +45,16 @@ layer_groups:
     binary: True
     bin_input: True
     bin_output: True
-  - type: "buffer_layer"
-    binary: True
-    scattering: 2
+#   - type: "buffer_layer"
+#     binary: True
+#     scattering: 2
   - type: "max_pool_layer"
     binary: True
-  - type: "buffer_layer"
-    binary: True
-    scattering: 3
+#   - type: "buffer_layer"
+#     binary: True
+#     scattering: 3
 # -----------------------------------------------------------------------------
-- filters: 128
-  layers:
-  - type: "conv_layer"
-    size: 3
-    binary: True
-    bin_input: True
-    bin_output: True
-  - type: "buffer_layer"
-    binary: True
-    scattering: 2
-  - type: "max_pool_layer"
-    binary: True
-  - type: "buffer_layer"
-    binary: True
-    scattering: 3
-# -----------------------------------------------------------------------------
-- filters: 256
-  layers:
-  - type: "conv_layer"
-    size: 3
-    binary: True
-    bin_input: True
-    bin_output: True
-  - type: "buffer_layer"
-    binary: True
-    scattering: 2
-  - type: "max_pool_layer"
-    binary: True
-  - type: "buffer_layer"
-    binary: True
-    scattering: 3
-# -----------------------------------------------------------------------------
-- filters: 512
-  layers:
-  - type: "conv_layer"
-    size: 3
-    binary: True
-    bin_input: True
-    bin_output: True
-  - type: "buffer_layer"
-    binary: True
-    scattering: 2
-  - type: "max_pool_layer"
-    binary: True
-  - type: "buffer_layer"
-    binary: True
-    scattering: 3
-# -----------------------------------------------------------------------------
-# - filters: 1024
+# - filters: 128
 #   layers:
 #   - type: "conv_layer"
 #     size: 3
@@ -109,7 +63,58 @@ layer_groups:
 #     bin_output: True
 #   - type: "buffer_layer"
 #     binary: True
-#     scattering: 1
+#     scattering: 2
+  # - type: "max_pool_layer"
+  #   binary: True
+#   - type: "buffer_layer"
+#     binary: True
+#     scattering: 3
+# -----------------------------------------------------------------------------
+# - filters: 256
+#   layers:
+#   - type: "conv_layer"
+#     parallelism: 64
+#     size: 3
+#     binary: True
+#     bin_input: True
+#     bin_output: True
+#   - type: "buffer_layer"
+#     binary: True
+#     scattering: 2
+  # - type: "max_pool_layer"
+  #   binary: True
+#   - type: "buffer_layer"
+#     binary: True
+#     scattering: 3
+# -----------------------------------------------------------------------------
+# - filters: 512
+#   layers:
+#   - type: "conv_layer"
+#     parallelism: 64
+#     size: 3
+#     binary: True
+#     bin_input: True
+#     bin_output: True
+#   - type: "buffer_layer"
+#     binary: True
+#     scattering: 2
+  # - type: "max_pool_layer"
+  #   binary: True
+#   - type: "buffer_layer"
+#     binary: True
+#     scattering: 3
+# -----------------------------------------------------------------------------
+#- filters: 1024
+#  layers:
+#  - type: "conv_layer"
+#    parallelism: 8
+#    size: 3
+#    binary: True
+#    bin_input: True
+#    bin_output: True
+  # - type: "buffer_layer"
+  #   binary: True
+  #   scattering: 1
 # -----------------------------------------------------------------------------
 # - filters: 256
 #   layers:

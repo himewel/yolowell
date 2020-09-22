@@ -7,8 +7,10 @@ from hwt.hdl.types.bits import Bits
 from hwt.interfaces.std import Signal, VectSignal
 from hwt.synthesizer.unit import Unit
 from hwt.synthesizer.hObjList import HObjList
+from hwt.serializer.mode import serializeParamsUniq
 
 
+@serializeParamsUniq
 class FixedPointMultiplier(Unit):
     """
     .. hwt-schematic::
@@ -38,13 +40,7 @@ class FixedPointMultiplier(Unit):
             pixel_id=self.pixel_id, width=self.width,
             log_level=self.log_level+1) for i in range(15))
 
-        name = ("FixedPointMultiplierL{layer}F{filter}C{channel}Px{pixel}"
-                "P{process}").format(
-            layer=self.layer_id,
-            filter=self.unit_id,
-            channel=self.channel_id,
-            pixel=self.pixel_id,
-            process=self.process_id)
+        name = f"FixedPointMultiplierL{self.layer_id}"
         self._name = name
         self._hdl_module_name = name
 
@@ -130,14 +126,7 @@ class ConcatValues(Unit):
         self.param_b = VectSignal(15)
         self.output = VectSignal(self.width*2-1)._m()
 
-        name = ("ConcatValuesL{layer}F{filter}C{channel}Px{pixel}"
-                "I{index}P{process}").format(
-            layer=self.layer_id,
-            filter=self.unit_id,
-            channel=self.channel_id,
-            pixel=self.pixel_id,
-            index=self.index,
-            process=self.process_id)
+        name = f"ConcatValuesL{self.layer_id}I{self.index}"
         self._name = name
         self._hdl_module_name = name
 
@@ -193,6 +182,6 @@ if __name__ == '__main__':
 
         get_std_logger()
         unit = FixedPointMultiplier(width=16)
-        to_vhdl(unit, path, name="FixedPointMultiplierL0F0C0Px0P0")
+        to_vhdl(unit, path, name="FixedPointMultiplierL0")
     else:
         print("file.py <outputpath>")

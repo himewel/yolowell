@@ -1,12 +1,13 @@
 import logging
 
-from utils import print_info
+from utils import print_info, float2fixed
 from multi_channel_conv_unit import MultiChannelConvUnit
 
 from hwt.interfaces.std import Signal, VectSignal
 from hwt.synthesizer.unit import Unit
 from hwt.hdl.types.bits import Bits
 from hwt.synthesizer.hObjList import HObjList
+from hwt.interfaces.utils import propagateClkRst, addClkRst
 
 
 class ConvLayer(Unit):
@@ -27,12 +28,7 @@ class ConvLayer(Unit):
         self.bin_output = bin_output
         self.top_entity = top_entity
         self.parallelism = parallelism
-
-        # sort weights in buckets of size^2 values
-        self.bucket_weights = []
-        if not top_entity:
-            for i in range(0, self.size*channels*filters, self.size*channels):
-                self.bucket_weights.append(weights[i:i+self.size*channels])
+        self.weights = weights
 
         # set input and output width
         self.INPUT_WIDTH = 1 if bin_input else self.width
@@ -42,8 +38,7 @@ class ConvLayer(Unit):
         super().__init__()
 
     def _declr(self):
-        self.clk = Signal()
-        self.rst = Signal()
+        addClkRst(self)
         self.en_mult = Signal()
         self.en_sum = Signal()
         self.en_channel = Signal()
@@ -58,8 +53,7 @@ class ConvLayer(Unit):
             self.conv_layer_part = HObjList(ConvLayerPart(
                 input_width=self.size*self.channels*self.INPUT_WIDTH,
                 output_width=output_width, layer_id=self.layer_id,
-                process_id=i, log_level=0)
-                for i in range(self.parallelism))
+                process_id=i, log_level=0) for i in range(self.parallelism))
             name = f"ConvLayerL{self.layer_id}"
         else:
             # instantiate dynamically multichannel units
@@ -67,24 +61,31 @@ class ConvLayer(Unit):
                 layer_id=self.layer_id, unit_id=i, width=self.width,
                 channels=self.channels, binary=self.binary, size=self.size,
                 bin_input=self.bin_input, bin_output=self.bin_output,
-                weights=self.bucket_weights[i], process_id=self.process_id,
-                log_level=self.log_level+1) for i in range(self.filters))
+                process_id=self.process_id, log_level=self.log_level+1)
+                for i in range(self.filters))
             name = f"ConvLayerL{self.layer_id}P{self.process_id}"
         self._hdl_module_name = name
         self._name = name
 
     def _impl(self):
+        propagateClkRst(self)
         if self.top_entity:
             offset = int(self.filters/self.parallelism)*self.OUTPUT_WIDTH
             range_limit = self.parallelism
         else:
+            self.logger.debug(f"weights in this part {len(self.weights)}")
+            # multi channel instantiation
+            self.bucket_weights = []
+            offset = self.size*self.channels
+            for i in range(self.filters):
+                weight_part = self.weights[i*offset:(i+1)*offset]
+                self.bucket_weights.append(weight_part)
+
             offset = self.OUTPUT_WIDTH
             range_limit = self.filters
 
         for i in range(range_limit):
             conv_layer_part = self.conv_layer_part[i]
-            conv_layer_part.clk(self.clk)
-            conv_layer_part.rst(self.rst)
             conv_layer_part.en_mult(self.en_mult)
             conv_layer_part.en_sum(self.en_sum)
             conv_layer_part.en_channel(self.en_channel)
@@ -92,11 +93,47 @@ class ConvLayer(Unit):
             conv_layer_part.en_act(self.en_act)
             conv_layer_part.input(self.input)
 
+            if not self.top_entity:
+                conv_layer_part.ssi_coef(20)
+                conv_layer_part.bn_coef(30)
+
+                # multi channel conv units instantiation
+                weights = self.bucket_weights[i]
+                integer_portion = 4 if self.width == 16 else 3
+                decimal_portion = 11 if self.width == 16 else 4
+                self.logger.debug("bucket list length "
+                                  f"{len(self.bucket_weights)}")
+                self.logger.debug(f"weights list length {len(weights)}")
+
+                for j in range(self.channels):
+                    channel_weights = weights[j*self.size:(j+1)*self.size]
+                    self.logger.debug("weights by channel "
+                                      f"{len(channel_weights)}")
+
+                    sum_weights = sum(channel_weights)
+                    avg_weights = 0 if not sum_weights \
+                        else sum_weights/self.size
+                    convert_list = [avg_weights] if self.binary \
+                        else channel_weights
+
+                    kernel = float2fixed(
+                        weights=convert_list,
+                        integer_portion=integer_portion,
+                        decimal_portion=decimal_portion)
+
+                    if self.binary:
+                        getattr(conv_layer_part, f"kernel_{j}")(kernel[0])
+                    else:
+                        for k in range(self.size):
+                            kernel_port = getattr(conv_layer_part,
+                                                  f"kernel_{j*self.size+k}")
+                            kernel_port(kernel[k])
+
             self.output[(i+1)*offset:i*offset](conv_layer_part.output)
 
 
 class ConvLayerPart(Unit):
-    def __init__(self, input_width=9, output_width=1, layer_id=0,
+    def __init__(self, input_width=9, output_width=1, layer_id=0, width=16,
                  process_id=0, **kwargs):
         self.input_width = input_width
         self.output_width = output_width
@@ -118,9 +155,8 @@ class ConvLayerPart(Unit):
         self.output = VectSignal(self.output_width)._m()
 
     def _impl(self):
-        self.output(
-            self._sig(name="dummy_signal", def_val=1,
-                      dtype=Bits(self.output_width, force_vector=True)))
+        self.output(self._sig(name="dummy_signal", def_val=1,
+                    dtype=Bits(self.output_width, force_vector=True)))
 
 
 if __name__ == '__main__':

@@ -1,36 +1,22 @@
 import logging
 
-from utils import float2fixed, print_info
+from utils import print_info
 
 from hwt.code import If
 from hwt.hdl.types.bits import Bits
 from hwt.interfaces.std import Signal, VectSignal
+from hwt.serializer.mode import serializeOnce
 from hwt.synthesizer.unit import Unit
 
 
+@serializeOnce
 class BinConvUnit(Unit):
     """
     .. hwt-schematic::
     """
 
-    def __init__(self, size=9, width=16, bin_input=False, weights=[15],
-                 **kwargs):
+    def __init__(self, size=9, width=16, bin_input=False, **kwargs):
         self.logger = logging.getLogger(self.__class__.__name__)
-        sum_weights = sum(weights)
-        avg_weights = 0 if not sum_weights \
-            else sum_weights/len(weights)
-
-        if (width == 16):
-            self.kernel = float2fixed(
-                weights=[avg_weights],
-                integer_portion=4,
-                decimal_portion=11)[0]
-        else:
-            self.kernel = float2fixed(
-                weights=[avg_weights],
-                integer_portion=3,
-                decimal_portion=4)[0]
-
         self.width = width
         self.lower_output_bit = int(width - width/2)
         # set input and output width
@@ -47,12 +33,9 @@ class BinConvUnit(Unit):
         self.en_sum = Signal()
         self.input = VectSignal(self.INPUT_WIDTH*self.SIZE)
         self.output = VectSignal(self.width, signed=True)._m()
+        self.kernel = VectSignal(self.width)
 
-        name = "BinConvUnitL{layer}F{filter}C{channel}P{process}".format(
-            layer=self.layer_id,
-            filter=self.unit_id,
-            channel=self.channel_id,
-            process=self.process_id)
+        name = f"BinConvUnitL{self.layer_id}"
         self._name = name
         self._hdl_module_name = name
 
@@ -89,14 +72,12 @@ class BinConvUnit(Unit):
     def _impl(self):
         # declare signal widths
         bit_adders_width = Bits(bit_length=self.width, signed=True)
-        kernel_width = Bits(bit_length=self.width, signed=False, const=True)
         mult_width = Bits(bit_length=2*self.width, signed=True)
         # declaring registers
         delta = self._sig(name="delta", dtype=bit_adders_width)
         mult = self._sig(name="mult", dtype=bit_adders_width)
         # declaring kernel constant
-        kernel = self._sig(name="kernel", dtype=kernel_width,
-                           def_val=self.kernel)
+        kernel = self.kernel
         # declaring signal casting multiplication
         cast = self._sig(name="cast_mult", dtype=mult_width)
 
@@ -157,7 +138,7 @@ if __name__ == "__main__":
         path = argv[1]
 
         get_std_logger()
-        unit = BinConvUnit(weights=[2.58], size=9, width=8, bin_input=False)
+        unit = BinConvUnit(size=9, width=8, bin_input=False)
         to_vhdl(unit, path)
     else:
         print("file.py <outputpath>")

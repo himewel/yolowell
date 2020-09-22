@@ -87,7 +87,6 @@ class NetworkParser():
                 "bin_input": bin_input,
                 "bin_output": bin_output,
                 "layer_id": index,
-                "process_id": process_id,
                 "parallelism": parallelism,
                 "top_entity": True
             }
@@ -155,7 +154,7 @@ class NetworkParser():
         import os
 
         self.logger.info("Starting network convertion...")
-        cores = round(os.cpu_count()*3/4)
+        cores = round(os.cpu_count()*4/4)
         self.logger.info(f"Multiprocessing: {cores} cpus...")
 
         pool = Pool(processes=cores)
@@ -195,9 +194,9 @@ def worker_process(layer_class, path, name, convert_function, **kwargs):
 
 if __name__ == '__main__':
     from utils import get_file_logger, get_std_logger, to_vhdl  # noqa
-    # get_file_logger()
-    get_std_logger()
+    get_file_logger()
+    # get_std_logger()
     net = NetworkParser("xnor_net.yaml")
     layers = net.parse_network()
     net.generate(layers, to_vhdl)
-    net.build_project(layers)
+    # net.build_project(layers)

@@ -1,4 +1,5 @@
-from hwt.serializer.store_manager import StoreManager, SaveToStream
+from hwt.serializer.store_manager import (StoreManager, SaveToStream,
+                                          SaveToFilesFlat)
 
 
 class SaveTopEntity(StoreManager):
@@ -142,7 +143,7 @@ def to_systemc(unit=None, path=".", name=""):
 
 
 def save_file(unit, serializer, path, name):
-    from hwt.synthesizer.utils import to_rtl, to_rtl_str
+    from hwt.synthesizer.utils import to_rtl
     import os
 
     os.makedirs(path, exist_ok=True)
@@ -159,7 +160,9 @@ def save_file(unit, serializer, path, name):
         to_rtl(unit, store_manager)
         return store_manager.filepath
     else:
-        code = to_rtl_str(unit, serializer_cls=serializer)
-        with open(f"{path}/{name}{file_extension}", "w") as file:
-            file.write(code)
+        manager = SaveToFilesFlat(serializer, path)
+        to_rtl(unit, manager)
+        # code = to_rtl_str(unit, serializer_cls=serializer)
+        # with open(f"{path}/{name}{file_extension}", "w") as file:
+        #     file.write(code)
         return f"{path}/{name}{file_extension}"

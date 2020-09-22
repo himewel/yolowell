@@ -6,8 +6,10 @@ from hwt.code import If
 from hwt.hdl.types.bits import Bits
 from hwt.interfaces.std import Signal, VectSignal
 from hwt.synthesizer.unit import Unit
+from hwt.serializer.mode import serializeParamsUniq
 
 
+@serializeParamsUniq
 class MaxPoolUnit(Unit):
     """
     .. hwt-schematic::

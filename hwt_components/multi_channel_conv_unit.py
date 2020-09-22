@@ -4,21 +4,25 @@ from math import log, ceil
 from utils import print_info
 from bin_conv_unit import BinConvUnit
 from conv_unit import ConvUnit
+from fixed_point_multiplier import FixedPointMultiplier
 
 from hwt.code import If
 from hwt.hdl.types.bits import Bits
 from hwt.interfaces.std import Signal, VectSignal
 from hwt.synthesizer.unit import Unit
+from hwt.interfaces.utils import propagateClkRst, addClkRst
 from hwt.synthesizer.hObjList import HObjList
+from hwt.serializer.mode import serializeOnce
 
 
+@serializeOnce
 class MultiChannelConvUnit(Unit):
     """
     .. hwt-schematic::
     """
 
     def __init__(self, channels=3, width=16, size=9, binary=True,
-                 bin_input=False, bin_output=False, weights=27*[20], **kwargs):
+                 bin_input=False, bin_output=False, **kwargs):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.channels = channels
         self.size = size
@@ -26,6 +30,7 @@ class MultiChannelConvUnit(Unit):
         self.bin_input = bin_input
         self.binary = binary
         self.lower_output_bit = int(width - width/2)
+        self.top_entity = False
 
         # set coeficients to build the tree adders
         if (self.channels & (self.channels - 1) == 0):
@@ -36,13 +41,6 @@ class MultiChannelConvUnit(Unit):
             self.acc_id = 2 ** ceil(log(self.channels)/log(2))-1
         self.half_elements = int((self.acc_id+1)/2)
 
-        # sort the weights in buckets to each conv unit
-        self.bucket_weights = []
-        for i in range(0, self.size*channels, self.size):
-            self.bucket_weights.append(weights[i:i+self.size])
-        self.ssi_coef = 20
-        self.bn_coef = 30
-
         # set input and output width
         self.INPUT_WIDTH = 1 if bin_input else self.width
         self.OUTPUT_WIDTH = 1 if bin_output else self.width
@@ -51,58 +49,73 @@ class MultiChannelConvUnit(Unit):
         super().__init__()
 
     def _declr(self):
-        self.clk = Signal()
-        self.rst = Signal()
+        addClkRst(self)
         self.en_mult = Signal()
         self.en_sum = Signal()
         self.en_channel = Signal()
         self.en_batch = Signal()
         self.en_act = Signal()
-        self.input = VectSignal(self.size*self.channels*self.INPUT_WIDTH, )
+        self.input = VectSignal(self.size*self.channels*self.INPUT_WIDTH)
         self.output = VectSignal(self.OUTPUT_WIDTH, signed=True)._m()
 
+        self.ssi_coef = VectSignal(self.width)
+        self.bn_coef = VectSignal(self.width)
+
+        self.multiplier = FixedPointMultiplier(
+            width=self.width, layer_id=self.layer_id, unit_id=self.unit_id,
+            channel_id=self.channel_id, process_id=self.process_id,
+            pixel_id=0, log_level=self.log_level+1)
+
+        conv_units_list = []
         # instantiate binary conv unit if it is setted
         if (self.binary):
-            self.conv_units = HObjList(BinConvUnit(
-                layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
-                weights=self.bucket_weights[i], bin_input=self.bin_input,
-                width=self.width, size=self.size, process_id=self.process_id,
-                log_level=self.log_level+1) for i in range(self.channels))
+            for i in range(self.channels):
+                setattr(self, f'kernel_{i}', VectSignal(self.width))
+                conv_unit = BinConvUnit(
+                    layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
+                    bin_input=self.bin_input, width=self.width, size=self.size,
+                    process_id=self.process_id, log_level=self.log_level+1)
+                conv_units_list.append(conv_unit)
         else:
-            self.conv_units = HObjList(ConvUnit(
-                layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
-                weights=self.bucket_weights[i], bin_input=self.bin_input,
-                width=self.width, size=self.size, process_id=self.process_id,
-                log_level=self.log_level+1) for i in range(self.channels))
+            for i in range(self.channels):
+                for j in range(self.size):
+                    setattr(self, f'kernel_{i*self.size+j}',
+                            VectSignal(self.width))
+                conv_unit = ConvUnit(
+                    layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
+                    bin_input=self.bin_input, width=self.width, size=self.size,
+                    process_id=self.process_id, log_level=self.log_level+1)
+                conv_units_list.append(conv_unit)
+        self.conv_units = HObjList(conv_units_list)
 
-        name = "MultiChannelConvUnitL{layer}F{filter}P{process}".format(
-            layer=self.layer_id,
-            filter=self.unit_id,
-            process=self.process_id)
+        name = f"MultiChannelConvUnitL{self.layer_id}"
         self._name = name
         self._hdl_module_name = name
-        self.__free()
-
-    def __free(self):
-        i = 0
-        while len(self.bucket_weights) > 0:
-            del self.bucket_weights[i]
 
     def __map_conv_signals(self, data_width):
-        outputs = [self._sig(name=f"wire_outputs_{i}", dtype=data_width)
-                   for i in range(self.channels)]
+        output_list = []
 
         for i in range(self.channels):
             conv_unit = self.conv_units[i]
-            conv_unit.clk(self.clk)
-            conv_unit.rst(self.rst)
             conv_unit.en_mult(self.en_mult)
             conv_unit.en_sum(self.en_sum)
-            conv_unit.input(
-                self.input[(i+1)*self.INPUT_WIDTH*self.size:
-                           i*self.INPUT_WIDTH*self.size])
-            outputs[i](conv_unit.output)
-        return outputs
+            conv_unit.input(self.input[(i+1)*self.INPUT_WIDTH*self.size:
+                            i*self.INPUT_WIDTH*self.size])
+
+            if self.binary:
+                kernel = getattr(self, "kernel_0")
+                conv_unit.kernel(kernel)
+            else:
+                for j in range(self.size):
+                    conv_kernel_port = getattr(conv_unit, f'kernel_{j}')
+                    parent_kernel_port = \
+                        getattr(self, f'kernel_{i*self.size+j}')
+                    conv_kernel_port(parent_kernel_port)
+
+            output = self._sig(name=f"wire_outputs_{i}", dtype=data_width)
+            output(conv_unit.output)
+            output_list.append(output)
+        return output_list
 
     def __tree_conv_adders(self, data_width, conv_outputs):
         acc = [self._sig(name=f"acc_{i}", dtype=data_width)
@@ -151,22 +164,18 @@ class MultiChannelConvUnit(Unit):
         return shift_value
 
     def _impl(self):
+        propagateClkRst(self)
         data_width = Bits(bit_length=self.width, signed=True)
-        mult_data_width = Bits(bit_length=2*self.width, signed=True)
         conv_outputs = self.__map_conv_signals(data_width)
 
         reg_batch = self._sig(name="reg_batch", dtype=data_width)
         reg_accumulator = self._sig(name="reg_accumulator", dtype=data_width)
 
         bn_product = self._sig(name="bn_product", dtype=data_width)
-        ssi_coef = self._sig(name="ssi_coef", dtype=data_width,
-                             def_val=self.ssi_coef)
-        bn_coef = self._sig(name="bn_coef", dtype=data_width,
-                            def_val=self.bn_coef)
-        cast = self._sig(name="cast_mult", dtype=mult_data_width)
-        cast(reg_accumulator * ssi_coef)
-        bn_product(
-            cast[self.lower_output_bit+self.width:self.lower_output_bit])
+
+        self.multiplier.param_a(reg_accumulator)
+        self.multiplier.param_b(self.ssi_coef)
+        bn_product(self.multiplier.product)
 
         If(
             self.rst,
@@ -175,7 +184,7 @@ class MultiChannelConvUnit(Unit):
         ).Else(
             If(
                 self.clk._onRisingEdge(),
-                If(self.en_batch, reg_batch(bn_product + bn_coef)),
+                If(self.en_batch, reg_batch(bn_product + self.bn_coef)),
                 If(self.en_channel, reg_accumulator(
                     self.__tree_conv_adders(data_width, conv_outputs)))
             )
@@ -213,14 +222,14 @@ class MultiChannelConvUnit(Unit):
 
 if __name__ == '__main__':
     from sys import argv
-    from utils import get_logger, to_vhdl
+    from utils import get_std_logger, to_vhdl
 
     if (len(argv) > 1):
         path = argv[1]
 
-        get_logger()
-        unit = MultiChannelConvUnit(channels=3, size=9, weights=36*[30],
-                                    binary=True, bin_input=False)
-        to_vhdl(unit, path)
+        get_std_logger()
+        unit = MultiChannelConvUnit(channels=3, size=9, binary=False,
+                                    bin_input=False)
+        to_vhdl(unit, path, name="MultiChannelConvUnitL0F0P0")
     else:
         print("file.py <outputpath>")
