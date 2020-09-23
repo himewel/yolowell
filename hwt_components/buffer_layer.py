@@ -22,12 +22,12 @@ class BufferLayer(Unit):
         self.scattering = scattering
         self.n_outputs = scattering * scattering
         self.mode_width = scattering + 1
-        self.width = 1 if binary else width
         self.filters = filters
         self.binary = binary
 
+        self.data_width = 1 if binary else width
         self.mem_size = int(2 ** ceil(log(width, 2)))
-        self.counter_size = int(log(self.mem_size, 2)) + 1
+        self.counter_width = int(log(self.mem_size, 2)) + 1
 
         self.top_entity = False
         print_info(self, **kwargs)
@@ -39,7 +39,7 @@ class BufferLayer(Unit):
         self.input_counter = VectSignal(self.counter_width)
         self.output_counter = VectSignal(self.counter_width)
         self.en_zero = Signal()
-        self.mode = VectSignal(self.size+1)
+        self.mode = VectSignal(self.mode_width)
         self.en_read = Signal()
         self.en_write = Signal()
         self.output = \
@@ -47,7 +47,7 @@ class BufferLayer(Unit):
 
         self.scatter_units = HObjList(ScatterUnit(
             layer_id=self.layer_id, unit_id=i, mem_size=self.mem_size,
-            counter_size=self.counter_size, binary=self.binary,
+            counter_size=self.counter_width, binary=self.binary,
             size=self.scattering, log_level=self.log_level+1)
             for i in range(self.filters))
 
@@ -65,8 +65,10 @@ class BufferLayer(Unit):
             scatter_unit.mode(self.mode)
             scatter_unit.en_read(self.en_read)
             scatter_unit.en_write(self.en_write)
-            scatter_unit.input(self.input[self.width*(i+1):self.width*i])
-            self.output[self.width*(i+1):self.width*i](scatter_unit.output)
+            scatter_unit.input(self.input[self.data_width*(i+1):
+                                          self.data_width*i])
+            self.output[self.n_outputs*self.data_width*(i+1):
+                        self.n_outputs*self.data_width*i](scatter_unit.output)
 
 
 if __name__ == '__main__':
