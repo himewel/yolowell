@@ -184,8 +184,8 @@ def worker_healthcheck():
 
 
 def worker_process(layer_class, path, name, convert_function, **kwargs):
-    unit = layer_class(**kwargs)
     try:
+        unit = layer_class(**kwargs)
         convert_function(unit, path, name)
     except Exception as e:
         unit.logger.critical(e, exc_info=True)

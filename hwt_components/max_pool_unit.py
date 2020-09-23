@@ -28,13 +28,9 @@ class MaxPoolUnit(Unit):
         self.rst = Signal()
         self.en_pool = Signal()
         self.input = VectSignal(self.width*4)
-        self.output = VectSignal(self.width, signed=True)._m()
+        self.output = VectSignal(self.width)._m()
 
-        name = "MaxPoolUnitL{layer}F{filter}C{channel}P{process}".format(
-            layer=self.layer_id,
-            filter=self.unit_id,
-            channel=self.channel_id,
-            process=self.process_id)
+        name = f"MaxPoolUnitL{self.layer_id}"
         self._name = name
         self._hdl_module_name = name
 
