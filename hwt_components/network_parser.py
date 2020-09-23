@@ -3,7 +3,7 @@ import logging
 
 from conv_layer import ConvLayer
 from max_pool_layer import MaxPoolLayer
-# from buffer_layer import BufferLayer
+from buffer_layer import BufferLayer
 from utils import read_floats
 
 
@@ -113,9 +113,18 @@ class NetworkParser():
         binary = layer["binary"]
         scattering = layer["scattering"]
 
-        layer = BufferLayer(  # noqa
-            binary=binary, filters=filters, scattering=scattering,
-            width=self.width, layer_id=index, top_entity=False)
+        layer = {
+            "class": BufferLayer,
+            "filename": f"BufferLayerL{index}",
+            "path": f"{self.output_path}",
+            "args": {
+                "scattering": scattering,
+                "width": self.width,
+                "filters": filters,
+                "binary": binary,
+                "layer_id": index
+            }
+        }
         self.layers.append(layer)
 
     def parse_network(self):
