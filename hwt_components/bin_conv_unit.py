@@ -23,6 +23,7 @@ class BinConvUnit(Unit):
         self.INPUT_WIDTH = 1 if bin_input else self.width
         self.SIGNAL_BIT = self.INPUT_WIDTH - 1
         self.SIZE = size
+        self.top_entity = False
         print_info(self, **kwargs)
         super().__init__()
 
@@ -138,7 +139,7 @@ if __name__ == "__main__":
         path = argv[1]
 
         get_std_logger()
-        unit = BinConvUnit(size=9, width=8, bin_input=False)
+        unit = BinConvUnit(size=1, width=16, bin_input=False)
         to_vhdl(unit, path)
     else:
         print("file.py <outputpath>")

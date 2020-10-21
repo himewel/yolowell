@@ -1,6 +1,0 @@
-:mod:`components.buffer_layer`
-==============================
-
-.. py:module:: components.buffer_layer
-
-

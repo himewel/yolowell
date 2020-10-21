@@ -102,7 +102,7 @@ def print_info(self, **kwargs):
 def get_file_logger():
     import logging
     format = "%(asctime)s %(name)s:%(lineno)d - %(message)s"
-    logging.basicConfig(filename="spellnet_parser.log", filemode="w",
+    logging.basicConfig(filename="network_parser.log", filemode="w",
                         format=format, level=logging.DEBUG)
     logger = logging.getLogger(__name__)
     return logger
@@ -160,8 +160,8 @@ def save_file(unit, serializer, path, name):
         to_rtl(unit, store_manager)
         return store_manager.filepath
     else:
-        manager = SaveToFilesFlat(serializer, path)
-        to_rtl(unit, manager)
+        store_manager = SaveToFilesFlat(serializer, path)
+        to_rtl(unit, store_manager)
         # code = to_rtl_str(unit, serializer_cls=serializer)
         # with open(f"{path}/{name}{file_extension}", "w") as file:
         #     file.write(code)

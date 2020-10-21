@@ -33,11 +33,3 @@ mono_scatter:
 
 buffer_layer:
 	python3 components/buffer_layer.py BufferLayer generated
-
-docs:
-	(\
-		rm -rf ./docs ./docsrc/_build; \
-		sphinx-build -M html docsrc docsrc/_build; \
-		cp -rf docsrc/_build/html docs; \
-		echo "" >> docs/.nojekyll; \
-	)
