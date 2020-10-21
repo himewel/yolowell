@@ -1,193 +1,175 @@
-from sys import argv
 import logging
-from base_component import BaseComponent
+
+from utils import print_info, float2fixed
 from multi_channel_conv_unit import MultiChannelConvUnit
-from utils import read_floats
-from myhdl import always_comb, block, Signal, intbv, ResetSignal
+
+from hwt.interfaces.std import Signal, VectSignal
+from hwt.synthesizer.unit import Unit
+from hwt.hdl.types.bits import Bits
+from hwt.synthesizer.hObjList import HObjList
+from hwt.interfaces.utils import propagateClkRst, addClkRst
 
 
-class ConvLayer(BaseComponent):
+class ConvLayer(Unit):
     """
-    This class gather some MultiChannelConvUnits sharing the same inputs and
-    makes your outputs availables to an external unit, probably a BufferLayer.
-    The number MultiChannelConvUnits instantiated is this class is defined in
-    the constants of the BaseComponent.
-
-    :param filters: number of filters in this layer (outputs).
-    :type filter: int
-    :param channels: number of channels to be convolved (inputs)
-    :type channels: int
-    :param weights: array with weights to be distributed in conv units
-    :type weights: List()
-    :param binary: flag setting if will be used BinConvUnit or ConvUnit
-    :type binary: bool
-    :param bin_input: flag setting if the input is truncated to 1 bit
-    :type bin_input: bool
-    :param bin_output: flag setting if the output will be truncated to 1 bit
-    :type bin_output: bool
+    .. hwt-schematic::
     """
-    logger = logging.getLogger(__name__)
 
-    def __init__(self, size=3, width=16, channels=0, filters=0, binary=False,
-                 bin_input=False, bin_output=False, weights=[], **kwargs):
-        super().__init__(**kwargs)
-
+    def __init__(self, size=3, width=16, channels=3, filters=16, binary=False,
+                 bin_input=False, bin_output=False, weights=[],
+                 top_entity=False, parallelism=1, **kwargs):
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.size = size*size
         self.channels = channels
         self.filters = filters
         self.width = width
-
-        # sort weights in buckets of size^2 values
-        bucket_weights = []
-        for i in range(0, self.size*channels*filters, self.size*channels):
-            bucket_weights.append(weights[i:i+self.size*channels])
+        self.binary = binary
+        self.bin_input = bin_input
+        self.bin_output = bin_output
+        self.top_entity = top_entity
+        self.parallelism = parallelism
+        self.weights = weights
 
         # set input and output width
         self.INPUT_WIDTH = 1 if bin_input else self.width
         self.OUTPUT_WIDTH = 1 if bin_output else self.width
 
-        self.mult_channel_conv_units = [MultiChannelConvUnit(
-            layer_id=self.layer_id, unit_id=i, width=self.width,
-            channels=self.channels, binary=binary, bin_input=bin_input,
-            bin_output=bin_output, weights=bucket_weights[i], size=size)
-            for i in range(self.filters)]
-        return
+        print_info(self, **kwargs)
+        super().__init__()
 
-    @block
-    def rtl(self, clk, reset, input, output, en_mult, en_sum, en_channel,
-            en_batch, en_act):
-        """
-        This function implements the combinational and sequential blocks of
-        this block.
+    def _declr(self):
+        addClkRst(self)
+        self.en_mult = Signal()
+        self.en_sum = Signal()
+        self.en_channel = Signal()
+        self.en_batch = Signal()
+        self.en_act = Signal()
+        self.input = VectSignal(self.size*self.channels*self.INPUT_WIDTH)
+        self.output = VectSignal(self.filters*self.OUTPUT_WIDTH)._m()
 
-        :param clk: clock signal
-        :type clk: Signal()
-        :param reset: reset signal
-        :type reset: ResetSignal()
-        :param en_mult: enable signal
-        :type en_mult: Signal()
-        :param en_sum: enable signal
-        :type en_sum: Signal()
-        :param en_channel: enable signal
-        :type en_channel: Signal()
-        :param en_batch: enable signal
-        :type en_batch: Signal()
-        :param en_act: enable signal
-        :type en_act: Signal()
-        :param input: vector with the nine input values concatenated, each \
-value should be an signed value with 16 bits width
-        :type input: Signal(intbv()[:])
-        :param output: the output value of the convolutions
-        :type output: Signal(intbv()[:])
-        :return: logic of this block
-        :rtype: @block method
-        """
-        wire_channel_outputs = [Signal(intbv(0)[self.INPUT_WIDTH:])
-                                for _ in range(self.filters)]
-        mult_channel_conv_units = [self.mult_channel_conv_units[i].rtl(
-            clk=clk, reset=reset, input=input, en_mult=en_mult, en_sum=en_sum,
-            en_channel=en_channel, en_batch=en_batch, en_act=en_act,
-            output=wire_channel_outputs[i]
-        ) for i in range(self.filters)]
+        if (self.top_entity):
+            output_width = int(self.filters/self.parallelism)*self.OUTPUT_WIDTH
+            # instantiate empty ConvLayerPart
+            self.conv_layer_part = HObjList(ConvLayerPart(
+                input_width=self.size*self.channels*self.INPUT_WIDTH,
+                output_width=output_width, layer_id=self.layer_id,
+                process_id=i, log_level=0) for i in range(self.parallelism))
+            name = f"ConvLayerL{self.layer_id}"
+        else:
+            # instantiate dynamically multichannel units
+            self.conv_layer_part = HObjList(MultiChannelConvUnit(
+                layer_id=self.layer_id, unit_id=i, width=self.width,
+                channels=self.channels, binary=self.binary, size=self.size,
+                bin_input=self.bin_input, bin_output=self.bin_output,
+                process_id=self.process_id, log_level=self.log_level+1)
+                for i in range(self.filters))
+            name = f"ConvLayerL{self.layer_id}P{self.process_id}"
+        self._hdl_module_name = name
+        self._name = name
 
-        @always_comb
-        def process():
-            aux = intbv(0)[self.filters*self.OUTPUT_WIDTH:]
+    def _impl(self):
+        propagateClkRst(self)
+        if self.top_entity:
+            offset = int(self.filters/self.parallelism)*self.OUTPUT_WIDTH
+            range_limit = self.parallelism
+        else:
+            self.logger.debug(f"weights in this part {len(self.weights)}")
+            # multi channel instantiation
+            self.bucket_weights = []
+            offset = self.size*self.channels
             for i in range(self.filters):
-                aux[(i+1)*self.OUTPUT_WIDTH:i*self.OUTPUT_WIDTH] = \
-                    wire_channel_outputs[i]
-            output.next = aux
+                weight_part = self.weights[i*offset:(i+1)*offset]
+                self.bucket_weights.append(weight_part)
 
-        return (mult_channel_conv_units, process)
+            offset = self.OUTPUT_WIDTH
+            range_limit = self.filters
 
-    def get_signals(self):
-        """
-        This function return the necessair signals to instantiate the rtl
-        block and convert the python method to a vhdl file.
+        for i in range(range_limit):
+            conv_layer_part = self.conv_layer_part[i]
+            conv_layer_part.en_mult(self.en_mult)
+            conv_layer_part.en_sum(self.en_sum)
+            conv_layer_part.en_channel(self.en_channel)
+            conv_layer_part.en_batch(self.en_batch)
+            conv_layer_part.en_act(self.en_act)
+            conv_layer_part.input(self.input)
 
-        :return: a dict specifying the input and outputs signals of the block.
-        :rtype: dict of myhdl.Signal
+            if not self.top_entity:
+                conv_layer_part.ssi_coef(20)
+                conv_layer_part.bn_coef(30)
 
-        **Python definition of inputs and ouputs:**
+                # multi channel conv units instantiation
+                weights = self.bucket_weights[i]
+                integer_portion = 4 if self.width == 16 else 3
+                decimal_portion = 11 if self.width == 16 else 4
+                self.logger.debug("bucket list length "
+                                  f"{len(self.bucket_weights)}")
+                self.logger.debug(f"weights list length {len(weights)}")
 
-        .. code-block:: python
+                for j in range(self.channels):
+                    channel_weights = weights[j*self.size:(j+1)*self.size]
+                    self.logger.debug("weights by channel "
+                                      f"{len(channel_weights)}")
 
-            def get_signals(self):
-                return {
-                    "clk": Signal(False),
-                    "reset": ResetSignal(0, active=1, isasync=1),
-                    "input": Signal(intbv(0)[9*self.channels*16:]),
-                    "output": Signal(intbv(0)[self.filters*16:]),
-                    "en_mult": Signal(False),
-                    "en_sum": Signal(False),
-                    "en_channel": Signal(False),
-                    "en_batch": Signal(False),
-                    "en_act": Signal(False)
-                }
+                    sum_weights = sum(channel_weights)
+                    avg_weights = 0 if not sum_weights \
+                        else sum_weights/self.size
+                    convert_list = [avg_weights] if self.binary \
+                        else channel_weights
 
-        **VHDL component generated:**
+                    kernel = float2fixed(
+                        weights=convert_list,
+                        integer_portion=integer_portion,
+                        decimal_portion=decimal_portion)
 
-        .. code-block:: vhdl
+                    if self.binary:
+                        getattr(conv_layer_part, f"kernel_{j}")(kernel[0])
+                    else:
+                        for k in range(self.size):
+                            kernel_port = getattr(conv_layer_part,
+                                                  f"kernel_{j*self.size+k}")
+                            kernel_port(kernel[k])
 
-            component ConvLayer
-                port (
-                    clk        : in  std_logic;
-                    reset      : in  std_logic;
-                    input      : in  unsigned(9*self.channels*16 downto 0);
-                    output     : out  unsigned(self.filters*16 downto 0);
-                    en_mult    : in  std_logic;
-                    en_sum     : in  std_logic;
-                    en_channel : in  std_logic;
-                    en_batch   : in  std_logic;
-                    en_act     : in  std_logic
-                );
-            end component ConvLayer;
-
-        """
-        return {
-            "clk": Signal(False),
-            "reset": ResetSignal(0, active=1, isasync=1),
-            "input":
-                Signal(intbv(0)[self.size*self.channels*self.INPUT_WIDTH:]),
-            "output": Signal(intbv(0)[self.filters*self.OUTPUT_WIDTH:]),
-            "en_mult": Signal(False),
-            "en_sum": Signal(False),
-            "en_channel": Signal(False),
-            "en_batch": Signal(False),
-            "en_act": Signal(False)
-        }
-
-    def fix_syntax(self, name="", path=""):
-        file = open("{path}/{name}.vhd".format(path=path, name=name), "r")
-        text = file.read()
-        text = text.replace("acc(i) <", "acc(i) :")
-        text = text.replace("acc((output_index + i)) <",
-                            "acc((output_index + i)) :")
-        file.close()
-
-        file = open("{path}/{name}.vhd".format(path=path, name=name), "w")
-        file.write(text)
-        file.close()
-        return
+            self.output[(i+1)*offset:i*offset](conv_layer_part.output)
 
 
-if (__name__ == '__main__'):
-    if (len(argv) > 2):
-        name = argv[1]
-        path = argv[2]
+class ConvLayerPart(Unit):
+    def __init__(self, input_width=9, output_width=1, layer_id=0, width=16,
+                 process_id=0, **kwargs):
+        self.input_width = input_width
+        self.output_width = output_width
 
-        file = "yolov3_tiny/yolov3_tiny_weights.h"
-        w_path = "/home/welberthime/Documentos/nios-darknet/include/"
-        f_index = 9 * 32 * 16
-        weights = read_floats(w_path+file, final=f_index+9)
+        super().__init__()
+        name = f"ConvLayerL{layer_id}P{process_id}"
+        self._hdl_module_name = name
+        self._name = name
 
-        header = ("component\t\tlayer_id\tunit_id\tchannel_id\tchannels\t"
-                  "filters")
-        print("\n" + "%-24s%-10s%-10s%-16s%-10s%-10s" % ("component",
-              "layer_id", "unit_id", "channel_id", "channels", "filters"))
-        print(80*"-")
+    def _declr(self):
+        self.clk = Signal()
+        self.rst = Signal()
+        self.en_mult = Signal()
+        self.en_sum = Signal()
+        self.en_channel = Signal()
+        self.en_batch = Signal()
+        self.en_act = Signal()
+        self.input = VectSignal(self.input_width)
+        self.output = VectSignal(self.output_width)._m()
+
+    def _impl(self):
+        self.output(self._sig(name="dummy_signal", def_val=1,
+                    dtype=Bits(self.output_width, force_vector=True)))
+
+
+if __name__ == '__main__':
+    from sys import argv
+    from utils import get_logger, to_vhdl
+
+    if (len(argv) > 1):
+        path = argv[1]
+
+        get_logger()
         unit = ConvLayer(channels=3, filters=16, binary=True, bin_input=False,
-                         width=8, bin_output=True, weights=weights, size=1)
-        unit.convert(name, path)
+                         width=16, bin_output=False, weights=5000*[10], size=3,
+                         top_entity=True, parallelism=4)
+        to_vhdl(unit, path)
     else:
-        print("file.py <entityname> <outputfile>")
+        print("file.py <outputpath>")

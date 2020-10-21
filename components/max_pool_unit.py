@@ -1,76 +1,87 @@
-from sys import argv
 import logging
-from base_component import BaseComponent
-from myhdl import always_seq, always_comb, block, Signal, intbv, ResetSignal
+
+from utils import print_info
+
+from hwt.code import If
+from hwt.hdl.types.bits import Bits
+from hwt.interfaces.std import Signal, VectSignal
+from hwt.synthesizer.unit import Unit
+from hwt.serializer.mode import serializeParamsUniq
 
 
-class MaxPoolUnit(BaseComponent):
+@serializeParamsUniq
+class MaxPoolUnit(Unit):
     """
-    This block describes a max pooling unit. Four inputs feeds three
-    comparators organized in tree format. The output of this block is the input
-    value with the greater value. The en_pool signal enables the output
-    register to be stored.
-
-    :param clk: clock signal
-    :type clk: std_logic
-    :param reset: reset signal
-    :type reset: std_logic
-    :param en_pool: enable signal
-    :type en_pool: std_logic
-    :param input: vector with the four input values cancatenated, each value \
-    should be an signed value with 16 bits width
-    :type input: std_logic_vector
-    :param output: the output value of the comparations
-    :type output: unsigned
+    .. hwt-schematic::
     """
-    logger = logging.getLogger(__name__)
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, width=16, binary=False, **kwargs):
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.width = width
+        self.binary = binary
+        self.top_entity = False
+        print_info(self, **kwargs)
+        super().__init__()
 
-    @block
-    def rtl(self, clk, reset, en_pool, input, output):
-        first_pool0 = Signal(intbv(0)[16:])
-        first_pool1 = Signal(intbv(0)[16:])
+    def _declr(self):
+        self.clk = Signal()
+        self.rst = Signal()
+        self.en_pool = Signal()
+        self.input = VectSignal(self.width*4)
+        self.output = VectSignal(self.width)._m()
 
-        @always_comb
-        def combinatorial_first_pool():
-            if (input[16:0] > input[32:16]):
-                first_pool0.next = input[16:0]
-            else:
-                first_pool0.next = input[32:16]
+        name = f"MaxPoolUnitL{self.layer_id}"
+        self._name = name
+        self._hdl_module_name = name
 
-            if (input[48:32] > input[64:48]):
-                first_pool1.next = input[48:32]
-            else:
-                first_pool1.next = input[64:48]
+    def __comparison(self, param_a, param_b, out):
+        return If(param_a > param_b, out(param_a)).Else(out(param_b))
 
-        @always_seq(clk.posedge, reset=reset)
-        def process():
-            if (en_pool == 1):
-                if (first_pool0 > first_pool1):
-                    output.next = first_pool0
-                else:
-                    output.next = first_pool1
+    def __bin_comparison(self, param_a, param_b, out):
+        return If(param_a & param_b, out(param_a)).Else(out(param_b))
 
-        return process, combinatorial_first_pool
+    def _impl(self):
+        signal_width = Bits(bit_length=self.width, force_vector=True)
+        inputs = [self._sig(name=f"input{i}", dtype=signal_width)
+                  for i in range(4)]
+        for i in range(4):
+            inputs[i](self.input[(i+1)*self.width:i*self.width])
 
-    def get_signals(self):
-        return {
-            "clk": Signal(False),
-            "reset": ResetSignal(0, active=1, isasync=1),
-            "en_pool": Signal(False),
-            "input": Signal(intbv(0)[4*16:]),
-            "output": Signal(intbv(0)[16:])
-        }
+        first_pool0 = self._sig(name="first_pool0", dtype=signal_width)
+        first_pool1 = self._sig(name="first_pool1", dtype=signal_width)
+        pool_result = self._sig(name="pool_result", dtype=signal_width)
+
+        comparison = self.__bin_comparison if self.binary \
+            else self.__comparison
+
+        comparison(inputs[0], inputs[1], first_pool0)
+        comparison(inputs[2], inputs[3], first_pool1)
+
+        If(
+            self.rst,
+            pool_result(0)
+        ).Else(
+            If(
+                self.clk._onRisingEdge(),
+                If(
+                    self.en_pool,
+                    comparison(first_pool0, first_pool1, pool_result)
+                )
+            )
+        )
+
+        self.output(pool_result)
 
 
 if __name__ == '__main__':
-    if (len(argv) > 2):
-        name = argv[1]
-        path = argv[2]
+    from sys import argv
+    from utils import to_vhdl, get_std_logger
 
-        unit = MaxPoolUnit()
-        unit.convert(name, path)
+    if (len(argv) > 1):
+        path = argv[1]
+
+        get_std_logger()
+        unit = MaxPoolUnit(width=8, binary=True)
+        to_vhdl(unit, path)
     else:
-        print("file.py <entityname> <outputfile>")
+        print("file.py <outputpath>")

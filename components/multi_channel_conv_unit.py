@@ -1,54 +1,36 @@
-from sys import argv
 import logging
 from math import log, ceil
-from random import randrange
-from myhdl import (always_seq, always_comb, block, Signal, intbv, ResetSignal)
 
-from fixed_point_multiplier import FixedPointMultiplier
-from base_component import BaseComponent
-from conv_unit import ConvUnit
+from utils import print_info
 from bin_conv_unit import BinConvUnit
+from conv_unit import ConvUnit
+from fixed_point_multiplier import FixedPointMultiplier
+
+from hwt.code import If
+from hwt.hdl.types.bits import Bits
+from hwt.interfaces.std import Signal, VectSignal
+from hwt.synthesizer.unit import Unit
+from hwt.interfaces.utils import propagateClkRst, addClkRst
+from hwt.synthesizer.hObjList import HObjList
+from hwt.serializer.mode import serializeOnce
 
 
-class MultiChannelConvUnit(BaseComponent):
+@serializeOnce
+class MultiChannelConvUnit(Unit):
     """
-    This block gather CHANNELS convolutional units receiveing CHANNEL bus
-    inputs concatenated in one port, the same for the outputs. The kernel, bias
-    and batch normalization values ​​are provided inside this unit for each
-    convolutional unit input, except the control signs comes from a external
-    control unit. Therefore, this constant values are updated to the
-    convolutional units just in the right cicles. The same happens with the
-    convolution units signs, so, the convolution units at principle runs
-    synchronous with each other.
-
-    The output port of this block is the result of the multichannel convolution
-    operation with different kernel values and input channels. After the
-    individual process of convolution between kernel values and input channels,
-    the results are normalized and added with a bias value. Before the output
-    be updated, the value pass in a leaky relu activation function.
-
-    :param filters: number of filters in this layer (outputs).
-    :type filter: int
-    :param channels: number of channels to be convolved (inputs)
-    :type channels: int
-    :param weights: array with weights to be distributed in conv units
-    :type weights: List()
-    :param binary: flag setting if will be used BinConvUnit or ConvUnit
-    :type binary: bool
-    :param bin_input: flag setting if the input is be truncated to 1 bit
-    :type bin_input: bool
-    :param bin_output: flag setting if the output will be truncated to 1 bit
-    :type bin_output: bool
+    .. hwt-schematic::
     """
-    logger = logging.getLogger(__name__)
 
-    def __init__(self, channels=0, width=16, size=3, binary=False,
-                 bin_input=False, bin_output=False, weights=[], **kwargs):
-        super().__init__(**kwargs)
-
+    def __init__(self, channels=3, width=16, size=9, binary=True,
+                 bin_input=False, bin_output=False, **kwargs):
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.channels = channels
-        self.size = size*size
+        self.size = size
         self.width = width
+        self.bin_input = bin_input
+        self.binary = binary
+        self.lower_output_bit = int(width - width/2)
+        self.top_entity = False
 
         # set coeficients to build the tree adders
         if (self.channels & (self.channels - 1) == 0):
@@ -59,169 +41,195 @@ class MultiChannelConvUnit(BaseComponent):
             self.acc_id = 2 ** ceil(log(self.channels)/log(2))-1
         self.half_elements = int((self.acc_id+1)/2)
 
-        # sort the weights in buckets to each conv unit
-        bucket_weights = []
-        for i in range(0, self.size*channels, self.size):
-            bucket_weights.append(weights[i:i+self.size])
-
         # set input and output width
         self.INPUT_WIDTH = 1 if bin_input else self.width
         self.OUTPUT_WIDTH = 1 if bin_output else self.width
 
+        print_info(self, **kwargs)
+        super().__init__()
+
+    def _declr(self):
+        addClkRst(self)
+        self.en_mult = Signal()
+        self.en_sum = Signal()
+        self.en_channel = Signal()
+        self.en_batch = Signal()
+        self.en_act = Signal()
+        self.input = VectSignal(self.size*self.channels*self.INPUT_WIDTH)
+        self.output = VectSignal(self.OUTPUT_WIDTH, signed=True)._m()
+
+        self.ssi_coef = VectSignal(self.width)
+        self.bn_coef = VectSignal(self.width)
+
+        self.multiplier = FixedPointMultiplier(
+            width=self.width, layer_id=self.layer_id, unit_id=self.unit_id,
+            channel_id=self.channel_id, process_id=self.process_id,
+            pixel_id=0, log_level=self.log_level+1)
+
+        conv_units_list = []
         # instantiate binary conv unit if it is setted
-        if (binary):
-            self.conv_units = [BinConvUnit(
-                layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
-                weights=bucket_weights[i], bin_input=bin_input, width=width,
-                size=size) for i in range(self.channels)]
-        else:
-            self.conv_units = [ConvUnit(
-                layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
-                weights=bucket_weights[i], width=width, size=size)
-                for i in range(self.channels)]
-
-        # instantiate batch normalization units
-        self.bn_rom = tuple([randrange(0, 2**self.width),
-                             randrange(0, 2**self.width)])
-        self.bn_multiplier = FixedPointMultiplier(width=width)
-        return
-
-    def get_signals(self):
-        return {
-            "clk": Signal(False),
-            "reset": ResetSignal(0, active=1, isasync=1),
-            "input":
-                Signal(intbv(0)[self.size*self.channels*self.INPUT_WIDTH:]),
-            "output": Signal(intbv(0)[self.OUTPUT_WIDTH:]),
-            "en_mult": Signal(False),
-            "en_sum": Signal(False),
-            "en_channel": Signal(False),
-            "en_batch": Signal(False),
-            "en_act": Signal(False)
-        }
-
-    @block
-    def rtl(self, clk, reset, input, output, en_mult, en_sum, en_channel,
-            en_batch, en_act):
-        """
-        :param clk: clock signal
-        :type clk: std_logic
-        :param reset: reset signal
-        :type reset: std_logic
-        :param en_mult: enable signal
-        :type en_mult: std_logic
-        :param en_sum: enable signal
-        :type en_sum: std_logic
-        :param input: vector with the nine input values cancatenated, each \
-value should be an signed value with 16 bits width
-        :type input: std_logic_vector
-        :param output: the output value of the convolutions
-        :type output: unsigned
-        """
-
-        # treatment to generic number of inputs
-        wire_conv_outputs = [Signal(intbv(0)[self.width:])
-                             for _ in range(self.channels)]
-        wire_inputs = [Signal(intbv(0)[self.size*self.INPUT_WIDTH:])
-                       for _ in range(self.channels)]
-
-        # signals readed from ROMs
-        ssi_coef = Signal(intbv(self.bn_rom[0])[self.width:])
-        bn_coef = Signal(intbv(self.bn_rom[1])[self.width:])
-
-        # pipeline registers
-        reg_accumulator = Signal(intbv(0)[self.width:])
-        reg_batch = Signal(intbv(0)[self.width:])
-
-        # convolutinal units instatiation
-        conv_units = [self.conv_units[i].rtl(
-            clk=clk, reset=reset, en_mult=en_mult, en_sum=en_sum,
-            input=wire_inputs[i], output=wire_conv_outputs[i],
-        ) for i in range(self.channels)]
-
-        # batch normalization units
-        bn_product = Signal(intbv(0)[self.width:])
-        # bn_rom = self.bn_rom.rtl(clk=clk, q_bn=bn_coef, q_ssi=ssi_coef)
-        bn_multiplier = self.bn_multiplier.rtl(
-            clk=clk, reset=reset, param_a=reg_accumulator, param_b=ssi_coef,
-            product=bn_product)
-
-        @always_comb
-        def combinational_wire_inputs():
+        if (self.binary):
             for i in range(self.channels):
-                wire_inputs[i].next = input[(i+1)*self.INPUT_WIDTH*self.size:
-                                            i*self.INPUT_WIDTH*self.size]
+                setattr(self, f'kernel_{i}', VectSignal(self.width))
+                conv_unit = BinConvUnit(
+                    layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
+                    bin_input=self.bin_input, width=self.width, size=self.size,
+                    process_id=self.process_id, log_level=self.log_level+1)
+                conv_units_list.append(conv_unit)
+        else:
+            for i in range(self.channels):
+                for j in range(self.size):
+                    setattr(self, f'kernel_{i*self.size+j}',
+                            VectSignal(self.width))
+                conv_unit = ConvUnit(
+                    layer_id=self.layer_id, channel_id=i, unit_id=self.unit_id,
+                    bin_input=self.bin_input, width=self.width, size=self.size,
+                    process_id=self.process_id, log_level=self.log_level+1)
+                conv_units_list.append(conv_unit)
+        self.conv_units = HObjList(conv_units_list)
 
-        @always_seq(clk.posedge, reset=reset)
-        def acc_process():
-            acc = [intbv(0)[self.width:] for _ in range(self.acc_id)]
-            if (en_channel == 1):
-                n_elements = self.half_elements
-                input_index = 0
-                output_index = n_elements
+        name = f"MultiChannelConvUnitL{self.layer_id}"
+        self._name = name
+        self._hdl_module_name = name
 
-                if (self.tree_cond == 1):
-                    for i in range(self.half_elements):
-                        if (self.acc_id-1-i < self.channels):
-                            acc[i].next = wire_conv_outputs[i] + \
-                                wire_conv_outputs[self.acc_id-1-i]
-                        else:
-                            acc[i].next = wire_conv_outputs[i]
+    def __map_conv_signals(self, data_width):
+        output_list = []
+
+        for i in range(self.channels):
+            conv_unit = self.conv_units[i]
+            conv_unit.en_mult(self.en_mult)
+            conv_unit.en_sum(self.en_sum)
+            conv_unit.input(self.input[(i+1)*self.INPUT_WIDTH*self.size:
+                            i*self.INPUT_WIDTH*self.size])
+
+            if self.binary:
+                kernel = getattr(self, "kernel_0")
+                conv_unit.kernel(kernel)
+            else:
+                for j in range(self.size):
+                    conv_kernel_port = getattr(conv_unit, f'kernel_{j}')
+                    parent_kernel_port = \
+                        getattr(self, f'kernel_{i*self.size+j}')
+                    conv_kernel_port(parent_kernel_port)
+
+            output = self._sig(name=f"wire_outputs_{i}", dtype=data_width)
+            output(conv_unit.output)
+            output_list.append(output)
+        return output_list
+
+    def __tree_conv_adders(self, data_width, conv_outputs):
+        acc = [self._sig(name=f"acc_{i}", dtype=data_width)
+               for i in range(self.acc_id)]
+
+        n_elements = self.half_elements
+        input_index = 0
+        output_index = n_elements
+
+        if (self.tree_cond == 1):
+            for i in range(self.half_elements):
+                if (self.acc_id-1-i < self.channels):
+                    acc[i](conv_outputs[i] + conv_outputs[self.acc_id-1-i])
                 else:
-                    for i in range(self.half_elements):
-                        acc[i].next = wire_conv_outputs[i] + \
-                            wire_conv_outputs[self.channels-1-i]
+                    acc[i].next = conv_outputs[i]
+        else:
+            for i in range(self.half_elements):
+                acc[i](conv_outputs[i] + conv_outputs[self.channels-1-i])
 
-                while (n_elements > 1):
-                    n_elements = int(n_elements//2)
-                    for i in range(n_elements):
-                        acc[output_index+i].next = acc[input_index+i] + \
-                            acc[input_index+n_elements-i]
-                    input_index = output_index
-                    output_index += n_elements
+        while (n_elements > 1):
+            n_elements = int(n_elements//2)
+            for i in range(n_elements):
+                acc[output_index+i](
+                    acc[input_index+i] + acc[input_index+n_elements-i])
+            input_index = output_index
+            output_index += n_elements
 
-                reg_accumulator.next = acc[self.acc_id-1]
+        return acc[self.acc_id-1]
 
-        @always_seq(clk.posedge, reset=reset)
-        def batch_process():
-            if (en_batch == 1):
-                reg_batch.next = bn_product + bn_coef
+    def __right_shift(self, signed_value, shift_offset):
+        mask_dtype = Bits(bit_length=self.width,
+                          force_vector=True)
+        mask_value = 2**(self.width - 1) - 2**(shift_offset)
+        shift_mask = self._sig(name="shift_mask", dtype=mask_dtype,
+                               def_val=mask_value)
+        shift_value = self._sig(name="shift_value", dtype=mask_dtype)
 
-        @always_seq(clk.posedge, reset=reset)
-        def act_process():
-            if (en_act == 1):
-                if (self.OUTPUT_WIDTH == 1):
-                    output.next = reg_batch[self.width-1]
-                else:
-                    if (reg_batch[self.width-1] == 0):
-                        output.next = reg_batch
-                    else:
-                        output.next = reg_batch >> 3
+        negative_fill_value = 2**(self.width) - \
+            2**(self.width - shift_offset - 1)
+        negative_fill = self._sig(name="negative_fill", dtype=mask_dtype,
+                                  def_val=negative_fill_value)
+        unsigned_mask = shift_mask._convSign(False)
+        unsigned_value = signed_value._convSign(False)
+        unsigned_fill = negative_fill._convSign(False)
+        shift_value((unsigned_mask & unsigned_value) + unsigned_fill)
+        return shift_value
 
-        return (acc_process, conv_units, bn_multiplier,
-                combinational_wire_inputs, batch_process, act_process)
+    def _impl(self):
+        propagateClkRst(self)
+        data_width = Bits(bit_length=self.width, signed=True)
+        conv_outputs = self.__map_conv_signals(data_width)
 
-    def fix_syntax(self, name="", path=""):
-        file = open("{path}/{name}.vhd".format(path=path, name=name), "r")
-        text = file.read()
-        text = text.replace("acc(i) <", "acc(i) :")
-        text = text.replace("acc((output_index + i)) <",
-                            "acc((output_index + i)) :")
-        file.close()
+        reg_batch = self._sig(name="reg_batch", dtype=data_width)
+        reg_accumulator = self._sig(name="reg_accumulator", dtype=data_width)
 
-        file = open("{path}/{name}.vhd".format(path=path, name=name), "w")
-        file.write(text)
-        file.close()
-        return
+        bn_product = self._sig(name="bn_product", dtype=data_width)
+
+        self.multiplier.param_a(reg_accumulator)
+        self.multiplier.param_b(self.ssi_coef)
+        bn_product(self.multiplier.product)
+
+        If(
+            self.rst,
+            reg_batch(0),
+            reg_accumulator(0)
+        ).Else(
+            If(
+                self.clk._onRisingEdge(),
+                If(self.en_batch, reg_batch(bn_product + self.bn_coef)),
+                If(self.en_channel, reg_accumulator(
+                    self.__tree_conv_adders(data_width, conv_outputs)))
+            )
+        )
+
+        if (self.OUTPUT_WIDTH == 1):
+            If(
+                self.rst,
+                self.output(0)
+            ).Else(
+                If(
+                    self.clk._onRisingEdge(),
+                    If(self.en_act, self.output(reg_batch[self.width-1]))
+                )
+            )
+        else:
+            If(
+                self.rst,
+                self.output(0)
+            ).Else(
+                If(
+                    self.clk._onRisingEdge(),
+                    If(
+                        self.en_act,
+                        If(
+                            ~reg_batch[self.width-1],
+                            self.output(reg_batch)
+                        ).Else(
+                            self.output(self.__right_shift(reg_batch, 3))
+                        )
+                    )
+                )
+            )
 
 
 if __name__ == '__main__':
-    if (len(argv) > 2):
-        name = argv[1]
-        path = argv[2]
+    from sys import argv
+    from utils import get_std_logger, to_vhdl
 
-        unit = MultiChannelConvUnit(channels=3, size=1, weights=[],
-                                    binary=False)
-        unit.convert(name, path)
+    if (len(argv) > 1):
+        path = argv[1]
+
+        get_std_logger()
+        unit = MultiChannelConvUnit(channels=3, size=9, binary=False,
+                                    bin_input=False)
+        to_vhdl(unit, path, name="MultiChannelConvUnitL0F0P0")
     else:
-        print("file.py <entityname> <outputfile>")
+        print("file.py <outputpath>")
