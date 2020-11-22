@@ -13,14 +13,8 @@ layer_groups:
     binary: False
     bin_input: False
     bin_output: True
-#   - type: buffer_layer
-#     binary: True
-#     scattering: 2
   - type: max_pool_layer
-    binary: True
-#   - type: buffer_layer
-#     binary: True
-#     scattering: 3
+    binary: False
 # -----------------------------------------------------------------------------
 - filters: 32
   layers:
@@ -29,14 +23,8 @@ layer_groups:
     binary: True
     bin_input: True
     bin_output: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 2
   - type: "max_pool_layer"
-    binary: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 3
+    binary: False
 # -----------------------------------------------------------------------------
 - filters: 64
   layers:
@@ -45,30 +33,18 @@ layer_groups:
     binary: True
     bin_input: True
     bin_output: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 2
   - type: "max_pool_layer"
-    binary: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 3
+    binary: False
 # -----------------------------------------------------------------------------
-# - filters: 128
-#   layers:
+- filters: 128
+  layers:
 #   - type: "conv_layer"
 #     size: 3
 #     binary: True
 #     bin_input: True
 #     bin_output: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 2
-  # - type: "max_pool_layer"
-  #   binary: True
-#   - type: "buffer_layer"
-#     binary: True
-#     scattering: 3
+  - type: "max_pool_layer"
+    binary: False
 # -----------------------------------------------------------------------------
 # - filters: 256
 #   layers:

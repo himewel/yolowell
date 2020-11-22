@@ -1,6 +1,6 @@
-<div style="text-align:center">
+<p align="center">
 <img src="dummy/title.gif" alt="yolowell"/>
-</div>
+</p>
 
 *yolowell* is a lib to generate VHDL code of convolutional networks and becomes part of a co-design hardware/software with a simplified version of Darknet running in a NIOS II processor. To improve parameter passing and generate different versions of the architecture better then with TCL or other type of script, we implement all the code in python language with HWToolKit.
 
