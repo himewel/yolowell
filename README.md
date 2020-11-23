@@ -35,13 +35,13 @@ layer_groups:
     binary: False
 ```
 
-So, you need to set come variables:
+So, you need to set some variables:
 
 * *output_path*: path to the generate vhdl files;
 * *weight_path*: file path to the extracted weight values;
 * *bias_path*: file path to the extracted bias values;
-* *ssi_coef_path*: file path to the extracted ssi_coef values;
-* *bn_coef_path*: file path to the extracted bn_coef values;
+* *ssi_coef_path*: file path to the extracted ssi_coef values (as the simplification presented [here](https://ieeexplore.ieee.org/document/8678682)) of batch normalization;
+* *bn_coef_path*: file path to the extracted bn_coef values (as the simplification presented [here](https://ieeexplore.ieee.org/document/8678682)) of batch normalization;
 * *width*: width of the input image;
 * *channels*: set the input channels of the architecture;
 * *filters*: number of filters in the current block of layers (layer_groups will a list of dicts);
@@ -65,3 +65,5 @@ net.generate(layers, to_vhdl)
 
 * Darknet: https://github.com/AlexeyAB/darknet;
 * HWToolKit: https://github.com/Nic30/hwt;
+* A High-Throughput and Power-Efficient FPGA Implementation of YOLO CNN for Object Detection: https://ieeexplore.ieee.org/document/8678682;
+* XNOR-Net: ImageNet Classification Using Binary Convolutional Neural Networks: https://arxiv.org/abs/1603.05279;
