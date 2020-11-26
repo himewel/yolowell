@@ -1,7 +1,7 @@
 import logging
 
-from utils import print_info
-from max_pool_unit import MaxPoolUnit
+from .utils import print_info
+from .max_pool_unit import MaxPoolUnit
 
 from hwt.interfaces.std import Signal, VectSignal
 from hwt.synthesizer.unit import Unit
@@ -26,13 +26,21 @@ class MaxPoolLayer(Unit):
         self.clk = Signal()
         self.rst = Signal()
         self.en_pool = Signal()
-        self.input = VectSignal(4*self.width*self.filters)
-        self.output = VectSignal(self.width*self.filters)._m()
+        self.input = VectSignal(4 * self.width * self.filters)
+        self.output = VectSignal(self.width * self.filters)._m()
 
-        self.pool_unit = HObjList(MaxPoolUnit(
-            width=self.width, binary=self.binary, layer_id=self.layer_id,
-            unit_id=i, channel_id=self.channel_id, process_id=self.process_id,
-            log_level=self.log_level+1) for i in range(self.filters))
+        self.pool_unit = HObjList(
+            MaxPoolUnit(
+                width=self.width,
+                binary=self.binary,
+                layer_id=self.layer_id,
+                unit_id=i,
+                channel_id=self.channel_id,
+                process_id=self.process_id,
+                log_level=self.log_level + 1,
+            )
+            for i in range(self.filters)
+        )
 
         name = f"MaxPoolLayerL{self.layer_id}"
         self._name = name
@@ -44,15 +52,15 @@ class MaxPoolLayer(Unit):
             pool_unit.clk(self.clk)
             pool_unit.rst(self.rst)
             pool_unit.en_pool(self.en_pool)
-            pool_unit.input(self.input[4*self.width*(i+1):4*self.width*i])
-            self.output[self.width*(i+1):self.width*i](pool_unit.output)
+            pool_unit.input(self.input[4 * self.width * (i + 1) : 4 * self.width * i])
+            self.output[self.width * (i + 1) : self.width * i](pool_unit.output)
 
 
 if __name__ == '__main__':
     from sys import argv
     from utils import to_vhdl, get_std_logger
 
-    if (len(argv) > 1):
+    if len(argv) > 1:
         path = argv[1]
 
         get_std_logger()

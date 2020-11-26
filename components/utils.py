@@ -1,5 +1,4 @@
-from hwt.serializer.store_manager import (StoreManager, SaveToStream,
-                                          SaveToFilesFlat)
+from hwt.serializer.store_manager import StoreManager, SaveToStream, SaveToFilesFlat
 
 
 class SaveTopEntity(StoreManager):
@@ -8,41 +7,34 @@ class SaveTopEntity(StoreManager):
         self.root = root
         self.entity = entity
         import os
+
         os.makedirs(root, exist_ok=True)
 
     def write(self, obj):
         import os
+
         name = obj.module_name.val
-        if (name != self.entity):
+        if name != self.entity:
             return
         f_name = name + self.serializer_cls.fileExtension
         fp = os.path.join(self.root, f_name)
         self.filepath = fp
 
         with open(fp, 'w') as f:
-            s = SaveToStream(self.serializer_cls, f, self.filter,
-                             self.name_scope)
+            s = SaveToStream(self.serializer_cls, f, self.filter, self.name_scope)
             s.write(obj)
 
 
-def read_floats(file_path="", start=0, final=0):
+def read_floats(file_path=""):
     """
     This function reads the file passed by the parameters and return the
     float list of values readed in the file.
     """
+    import pickle
+
     weights = []
-    with open("{}".format(file_path), "r") as file:
-        text = file.read().replace("\n", "").replace("\t", "")
-        text = text.split("{")
-        text = text[1].split("}")
-        text = text[0].split(",")
-
-        try:
-            for i in range(start, len(text) if final == 0 else final):
-                weights.append(float(text[i]))
-        except Exception:
-            pass
-
+    with open("{}".format(file_path), "rb") as binary_stream:
+        weights = pickle.load(binary_stream)
     return weights
 
 
@@ -60,16 +52,16 @@ def float2fixed(weights=[], integer_portion=4, decimal_portion=11):
         inteiro = int(abs(w))
         decimal = abs(w - inteiro)
 
-        while (decimal*(decimal_portion-1) <= 2**decimal_portion
-               and decimal != 0):
+        while decimal * (decimal_portion - 1) <= 2 ** decimal_portion and decimal != 0:
             decimal *= 10
 
         integer_mask = '{0:0' + str(integer_portion) + 'b}'
         decimal_mask = '{0:0' + str(decimal_portion) + 'b}'
-        num = "{}{}".format(integer_mask.format(inteiro),
-                            decimal_mask.format(int(decimal)))
+        num = "{}{}".format(
+            integer_mask.format(inteiro), decimal_mask.format(int(decimal))
+        )
 
-        if (sinal == 1):
+        if sinal == 1:
             num = num.replace("0", "-")
             num = num.replace("1", "0")
             num = num.replace("-", "1")
@@ -78,11 +70,16 @@ def float2fixed(weights=[], integer_portion=4, decimal_portion=11):
         else:
             num = int(num, 2)
 
-        fixed_weight_mask = \
-            '{0:0' + str(integer_portion + decimal_portion) + 'b}'
-        fixed_weights.append(
-            int("{}{}".format('{0:01b}'.format(sinal),
-                              fixed_weight_mask.format(int(num))), 2))
+        fixed_weight_mask = '{0:0' + str(integer_portion + decimal_portion) + 'b}'
+        binary_value = "{signal}{integer_value}".format(
+            signal='{0:01b}'.format(sinal),
+            integer_value=fixed_weight_mask.format(int(num)),
+        )
+        int_fixed_weight = int(binary_value, 2)
+        if int_fixed_weight > 2 ** (integer_portion + decimal_portion + 1):
+            int_fixed_weight = 0
+
+        fixed_weights.append(int_fixed_weight)
     return fixed_weights
 
 
@@ -94,16 +91,24 @@ def print_info(self, **kwargs):
     self.log_level = kwargs.get("log_level", 0)
 
     if self.log_level < 2:
-        self.logger.info(f"Process {self.process_id} Layer {self.layer_id} "
-                         f"Unit {self.unit_id} Channel {self.channel_id} "
-                         "PARSER")
+        self.logger.info(
+            f"Process {self.process_id} Layer {self.layer_id} "
+            f"Unit {self.unit_id} Channel {self.channel_id} "
+            "PARSER"
+        )
 
 
 def get_file_logger():
     import logging
+
     format = "%(asctime)s %(name)s:%(lineno)d - %(message)s"
-    logging.basicConfig(filename="network_parser.log", filemode="w",
-                        format=format, level=logging.DEBUG)
+    logging.basicConfig(
+        filename="network_parser.log",
+        filemode="w",
+        format=format,
+        level=logging.DEBUG,
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
     logger = logging.getLogger(__name__)
     return logger
 
@@ -111,9 +116,12 @@ def get_file_logger():
 def get_std_logger():
     import logging
     import coloredlogs
+
     coloredlogs.install()
     format = "%(asctime)s %(name)s:%(lineno)d - %(message)s"
-    logging.basicConfig(format=format, level=logging.CRITICAL)
+    logging.basicConfig(
+        format=format, level=logging.CRITICAL, datefmt="%Y-%m-%d %H:%M:%S"
+    )
     logger = logging.getLogger(__name__)
     return logger
 
@@ -121,6 +129,7 @@ def get_std_logger():
 def to_vhdl(unit=None, path=".", name=""):
     print("Converting hdl file... ", end="")
     from hwt.serializer.vhdl import Vhdl2008Serializer
+
     file = save_file(unit, Vhdl2008Serializer, path, name)
     print("Ok!")
     return file
@@ -129,6 +138,7 @@ def to_vhdl(unit=None, path=".", name=""):
 def to_verilog(unit=None, path=".", name=""):
     print("Converting hdl file... ", end="")
     from hwt.serializer.verilog import VerilogSerializer
+
     file = save_file(unit, VerilogSerializer, path, name)
     print("Ok!")
     return file
@@ -136,6 +146,7 @@ def to_verilog(unit=None, path=".", name=""):
 
 def to_systemc(unit=None, path=".", name=""):
     from hwt.serializer.systemC import SystemCSerializer
+
     print("Converting hdl file... ", end="")
     file = save_file(unit, SystemCSerializer, path, name)
     print("Ok!")
@@ -150,12 +161,13 @@ def save_file(unit, serializer, path, name):
     unit.logger.info(f"Worker healthcheck: PID {os.getpid()}")
 
     file_extension = serializer.fileExtension
-    unit.logger.info(f"Process {unit.process_id} Layer {unit.layer_id} "
-                     f"Unit {unit.unit_id} Channel {unit.channel_id} WRITER")
-    unit.logger.info(f"Converting to {file_extension} in "
-                     f"{path}/{name}{file_extension}")
+    unit.logger.info(
+        f"Process {unit.process_id} Layer {unit.layer_id} "
+        f"Unit {unit.unit_id} Channel {unit.channel_id} WRITER"
+    )
+    unit.logger.info(f"Converting to {file_extension} in {path}/{name}{file_extension}")
 
-    if (unit.top_entity):
+    if unit.top_entity:
         store_manager = SaveTopEntity(serializer, path, name)
         to_rtl(unit, store_manager)
         return store_manager.filepath

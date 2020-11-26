@@ -1,6 +1,6 @@
 import logging
 
-from utils import print_info
+from .utils import print_info
 
 from hwt.code import If
 from hwt.hdl.types.bits import Bits
@@ -27,7 +27,7 @@ class MaxPoolUnit(Unit):
         self.clk = Signal()
         self.rst = Signal()
         self.en_pool = Signal()
-        self.input = VectSignal(self.width*4)
+        self.input = VectSignal(self.width * 4)
         self.output = VectSignal(self.width)._m()
 
         name = f"MaxPoolUnitL{self.layer_id}"
@@ -42,31 +42,23 @@ class MaxPoolUnit(Unit):
 
     def _impl(self):
         signal_width = Bits(bit_length=self.width, force_vector=True)
-        inputs = [self._sig(name=f"input{i}", dtype=signal_width)
-                  for i in range(4)]
+        inputs = [self._sig(name=f"input{i}", dtype=signal_width) for i in range(4)]
         for i in range(4):
-            inputs[i](self.input[(i+1)*self.width:i*self.width])
+            inputs[i](self.input[(i + 1) * self.width : i * self.width])
 
         first_pool0 = self._sig(name="first_pool0", dtype=signal_width)
         first_pool1 = self._sig(name="first_pool1", dtype=signal_width)
         pool_result = self._sig(name="pool_result", dtype=signal_width)
 
-        comparison = self.__bin_comparison if self.binary \
-            else self.__comparison
+        comparison = self.__bin_comparison if self.binary else self.__comparison
 
         comparison(inputs[0], inputs[1], first_pool0)
         comparison(inputs[2], inputs[3], first_pool1)
 
-        If(
-            self.rst,
-            pool_result(0)
-        ).Else(
+        If(self.rst, pool_result(0)).Else(
             If(
                 self.clk._onRisingEdge(),
-                If(
-                    self.en_pool,
-                    comparison(first_pool0, first_pool1, pool_result)
-                )
+                If(self.en_pool, comparison(first_pool0, first_pool1, pool_result)),
             )
         )
 
@@ -77,7 +69,7 @@ if __name__ == '__main__':
     from sys import argv
     from utils import to_vhdl, get_std_logger
 
-    if (len(argv) > 1):
+    if len(argv) > 1:
         path = argv[1]
 
         get_std_logger()
