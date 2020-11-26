@@ -10,8 +10,8 @@ To generate the VHDL code, you will need to extract the weights, bias, and batch
 
 ``` yaml
 weights_path: "./binary/weights.pickle"
-bn_variance_path: "./binary/variance.pickle"
-bn_mean_path: "./binary/mean.pickle"
+variance_path: "./binary/variance.pickle"
+mean_path: "./binary/mean.pickle"
 scale_path: "./binary/scale.pickle"
 biases_path: "./binary/biases.pickle"
 output_path: "./generated"

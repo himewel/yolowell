@@ -52,21 +52,19 @@ def float2fixed(weights=[], integer_portion=4, decimal_portion=11):
         inteiro = int(abs(w))
         decimal = abs(w - inteiro)
 
-        while decimal * (decimal_portion - 1) <= 2 ** decimal_portion and decimal != 0:
-            decimal *= 10
+        str_decimal = ""
+        while len(str_decimal) < decimal_portion:
+            str_decimal += "1" if int(decimal * 2) == 1 else "0"
+            decimal = abs(int(decimal * 2) - float(decimal * 2))
 
         integer_mask = '{0:0' + str(integer_portion) + 'b}'
-        decimal_mask = '{0:0' + str(decimal_portion) + 'b}'
-        num = "{}{}".format(
-            integer_mask.format(inteiro), decimal_mask.format(int(decimal))
-        )
+        num = "{}{}".format(integer_mask.format(inteiro), str_decimal)
 
         if sinal == 1:
             num = num.replace("0", "-")
             num = num.replace("1", "0")
             num = num.replace("-", "1")
             num = int(num, 2) + 1
-            num &= 0b1111111
         else:
             num = int(num, 2)
 
@@ -77,7 +75,10 @@ def float2fixed(weights=[], integer_portion=4, decimal_portion=11):
         )
         int_fixed_weight = int(binary_value, 2)
         if int_fixed_weight > 2 ** (integer_portion + decimal_portion + 1):
-            int_fixed_weight = 0
+            if sinal == 0:
+                int_fixed_weight = 2 ** (integer_portion + decimal_portion + 1) - 1
+            else:
+                int_fixed_weight = 2 ** (integer_portion + decimal_portion + 1)
 
         fixed_weights.append(int_fixed_weight)
     return fixed_weights
