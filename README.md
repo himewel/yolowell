@@ -9,9 +9,12 @@
 To generate the VHDL code, you will need to extract the weights, bias, and batch normalization params from your Darknet model and write him in binary format. After this, you can set a yaml config file as the following example.
 
 ``` yaml
-weights: "yolov3_tiny_weights.bin"
+weights_path: "./binary/weights.pickle"
+bn_variance_path: "./binary/variance.pickle"
+bn_mean_path: "./binary/mean.pickle"
+scale_path: "./binary/scale.pickle"
+biases_path: "./binary/biases.pickle"
 output_path: "./generated"
-width: 416
 channels: 3
 layer_groups:
 - filters: 16
@@ -20,29 +23,23 @@ layer_groups:
     parallelism: 4
     size: 3
     binary: False
-    bin_input: False
-    bin_output: True
   - type: "max_pool_layer"
-    binary: False
 - filters: 32
   layers:
   - type: "conv_layer"
     size: 3
     binary: True
-    bin_input: True
-    bin_output: True
   - type: "max_pool_layer"
-    binary: False
 ```
 
 So, you need to set some variables:
 
 * *output_path*: path to the generate vhdl files;
-* *weight_path*: file path to the extracted weight values;
-* *bias_path*: file path to the extracted bias values;
-* *ssi_coef_path*: file path to the extracted ssi_coef values (as the simplification presented [here](https://ieeexplore.ieee.org/document/8678682)) of batch normalization;
-* *bn_coef_path*: file path to the extracted bn_coef values (as the simplification presented [here](https://ieeexplore.ieee.org/document/8678682)) of batch normalization;
-* *width*: width of the input image;
+* *weights_path*: file path to the float weight values in binary format;
+* *bn_variance_path*: file path to the float variance values from batch normalization in binary format;
+* *bn_mean_path*: file path to the float mean variance from batch normalization values in binary format;
+* *scale_path*: file path to the float scale values in binary format;
+* *biases_path*: file path to the float biases values in binary format;
 * *channels*: set the input channels of the architecture;
 * *filters*: number of filters in the current block of layers (layer_groups will a list of dicts);
 * *type*: "conv_layer" or "max_pool_layer";
@@ -56,7 +53,7 @@ from components.network_parser import NetworkParser
 from utils import get_std_logger, to_vhdl
 
 get_std_logger()
-net = NetworkParser("config_example.yaml")
+net = NetworkParser("config.yaml")
 layers = net.parse_network()
 net.generate(layers, to_vhdl)
 ```

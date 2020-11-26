@@ -1,6 +1,10 @@
-weights: "/home/welberthime/Documentos/nios-darknet/include/yolov3_tiny/yolov3_tiny_weights.h"
-output_path: "/home/welberthime/Documentos/nios-darknet/darknet_hdl/generated"
-project: "/home/welberthime/Documentos/nios-darknet/darknet_hdl/darknet_hdl.qsf"
+weights_path: "./binary/weights.pickle"
+variance_path: "./binary/variance.pickle"
+mean_path: "./binary/mean.pickle"
+scale_path: "./binary/scale.pickle"
+biases_path: "./binary/biases.pickle"
+output_path: "./generated"
+project: "./darknet_hdl.qsf"
 width: 416
 channels: 3
 layer_groups:
@@ -12,7 +16,7 @@ layer_groups:
     size: 3
     binary: False
     bin_input: False
-    bin_output: True
+    bin_output: False
   - type: max_pool_layer
     binary: False
 # -----------------------------------------------------------------------------
@@ -21,8 +25,8 @@ layer_groups:
   - type: "conv_layer"
     size: 3
     binary: True
-    bin_input: True
-    bin_output: True
+    bin_input: False
+    bin_output: False
   - type: "max_pool_layer"
     binary: False
 # -----------------------------------------------------------------------------
@@ -31,20 +35,20 @@ layer_groups:
   - type: "conv_layer"
     size: 3
     binary: True
-    bin_input: True
-    bin_output: True
+    bin_input: False
+    bin_output: False
   - type: "max_pool_layer"
     binary: False
 # -----------------------------------------------------------------------------
-- filters: 128
-  layers:
+# - filters: 128
+#   layers:
 #   - type: "conv_layer"
 #     size: 3
 #     binary: True
 #     bin_input: True
 #     bin_output: True
-  - type: "max_pool_layer"
-    binary: False
+  # - type: "max_pool_layer"
+  #   binary: False
 # -----------------------------------------------------------------------------
 # - filters: 256
 #   layers:
