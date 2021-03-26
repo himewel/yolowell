@@ -1,4 +1,4 @@
 hwt==3.4
 hwtLib==2.8
-pyyaml==5.3
+pyyaml==5.4
 coloredlogs==14.0
